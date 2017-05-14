@@ -63,15 +63,16 @@
             {% for personevent in personevent_list %}
 
                 <div class="ibox float-e-margins">
+
                     {# Event Title  #}
-                    <div class="ibox-title">
-                        <h5> {{ personevent.event }}</h5>
-                        <div class="ibox-tools">
-                            <a class="collapse-link">
+                    <a href="{% url 'records:event_detail' personevent.event.id %}"> 
+                        <div class="ibox-title">
+                                <h5>{{ personevent.event }}</h5>
+                            <div class="ibox-tools">
                                 <i class="fa fa-chevron-up"></i>
-                            </a>
+                            </div>
                         </div>
-                    </div>
+                    </a>
 
                     {# New Content  #}
                     <div class="ibox-content">
@@ -85,7 +86,7 @@
                                         <img alt="image" class="img-circle" src="img/a2.jpg">
                                     </a>
                                     <div class="media-body ">
-                                        <small class="pull-right"> {{evidence.news.created_at }} </small>
+                                        <small class="pull-right"> {{news.created_at }} </small>
                                         <strong> {{evidence.news.media}} </strong> posted <strong>{{evidence.news.title}}</strong>  <br>
                                         <small class="text-muted"> <a href="{{ evidence.news.url}}">{{ evidence.news.url}}</a>  </small>
                                         <div class="well">

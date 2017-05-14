@@ -26,7 +26,7 @@ class Person(models.Model):
     name = models.CharField(max_length=30)
     nick_name = models.CharField(max_length=30, null=True, blank=True)
     birth = models.IntegerField(null=True, blank=True)
-    jobs = models.ManyToManyField(Job)
+    jobs = models.ManyToManyField(Job, blank=True)
     picture = models.ImageField(null=True, blank=True)
     regions = models.ManyToManyField(Region, blank=True)
     tags = models.ManyToManyField('Tag', blank=True)
@@ -66,6 +66,7 @@ class Event(models.Model):
     content = models.TextField(null=True, blank=True)
     category = models.ForeignKey(EventCategory, null=True, blank=True)
     created_user = models.ForeignKey(settings.AUTH_USER_MODEL,null=True, blank=True)
+    happened_at = models.DateField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -77,7 +78,8 @@ class PersonEvent(models.Model):
     """ 설명 """
     person = models.ForeignKey(Person, null=True, blank=True)
     event = models.ForeignKey(Event, null=True, blank=True)
-    created_user = models.ForeignKey(settings.AUTH_USER_MODEL,null=True, blank=True)
+    # news = models.ForeignKey('News', null=True, blank=True)
+    created_user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

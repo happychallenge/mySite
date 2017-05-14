@@ -1,7 +1,7 @@
 # records/admin.py
 from django.contrib import admin
 from .models import Person, Tag, Event, PersonEvent
-from .models import News, Evidence, Evaluation
+from .models import News, Evaluation, Evidence
 # Register your models here.
 @admin.register(Person)
 class PersonAdmin(admin.ModelAdmin):
@@ -18,7 +18,7 @@ class TagAdmin(admin.ModelAdmin):
 class EventAdmin(admin.ModelAdmin):
     class Meta:
         model = Event
-    list_display = ['name', 'category']
+    list_display = [ 'id', 'name', 'category']
 
 @admin.register(PersonEvent)
 class PersonEventAdmin(admin.ModelAdmin):

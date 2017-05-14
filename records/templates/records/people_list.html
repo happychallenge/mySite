@@ -30,13 +30,13 @@
                     <a href="profile.html">
                         <div class="col-sm-6">
                             <div class="text-center">
-                                <a href="{% url 'records:people_detail' person.id %}">
+                                <a href="{% url 'records:person_detail' person.id %}">
                                 <img alt="image" class="img-circle m-t-xs img-responsive" src="{{ person.picture.url }}"> </a> 
                                 
                             </div>
                         </div>
                         <div class="col-sm-6">
-                            <a href="{% url 'records:people_detail' person.id %}">
+                            <a href="{% url 'records:person_detail' person.id %}">
                                 <h3><strong>{{ person.name }}</strong></h3>
                             </a>
                             <p><i class="fa fa-map-marker"></i> {{ person.nick_name }} </p>
