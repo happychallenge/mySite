@@ -1,0 +1,8 @@
+db.sqlite3
+*.pyc
+.idea
+media
+.myenv
+*.ipynb
+.ipynb_checkpoints
+.DS_Store

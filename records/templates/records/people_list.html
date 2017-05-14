@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block main_title %}
+    <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-lg-8">
+            <h2>이분들을 기억하는 것이 역사입니다.</h2>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="index.html">Home</a>
+                </li>
+                <li>
+                    좋은 분 
+                </li>
+                <li class="active">
+                    <strong>사람 </strong>
+                </li>
+            </ol>
+        </div>
+    </div>
+    
+{% endblock main_title %}
+
+{% block content %}
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+
+        {% for person in people_list %}
+            <div class="col-md-6">
+                <div class="contact-box">
+                    <a href="profile.html">
+                        <div class="col-sm-6">
+                            <div class="text-center">
+                                <a href="{% url 'records:people_detail' person.id %}">
+                                <img alt="image" class="img-circle m-t-xs img-responsive" src="{{ person.picture.url }}"> </a> 
+                                
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <a href="{% url 'records:people_detail' person.id %}">
+                                <h3><strong>{{ person.name }}</strong></h3>
+                            </a>
+                            <p><i class="fa fa-map-marker"></i> {{ person.nick_name }} </p>
+                            <p> Birth Year : {{ person.birth }}</p>
+                            <p> Jobs :
+                            {% for job in person.jobs.all %}
+                                {{job}},
+                            {% endfor %}
+                            </p>
+                            <p> Tags :
+                            {% for tag in person.tags.all %}
+                                {{tag}},
+                            {% endfor %}
+                            </p>
+                        </div>
+                        <div class="clearfix"></div>
+                    </a>
+                </div>
+            </div>
+        {% empty %}
+            <h3>No Data </h3>
+        {% endfor %}
+        </div>
+    </div>
+{% endblock content %}
+
