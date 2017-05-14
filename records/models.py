@@ -63,6 +63,7 @@ class Event(models.Model):
     """docstring for Event"""
     """ 설명 """
     name = models.CharField(max_length=30)
+    content = models.TextField(null=True, blank=True)
     category = models.ForeignKey(EventCategory, null=True, blank=True)
     created_user = models.ForeignKey(settings.AUTH_USER_MODEL,null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
