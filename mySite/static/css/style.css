@@ -3912,14 +3912,9 @@ code {
 }
 .ibox.collapsed .ibox-content {
   display: none;
+  overflow: hidden;
 }
-.ibox-content:after {
-    content: ".";
-    display: block;
-    height: 0;
-    clear: both;
-    visibility: hidden;
-}
+
 .ibox.collapsed .fa.fa-chevron-up:before {
   content: "\f078";
 }

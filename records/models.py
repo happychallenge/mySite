@@ -35,9 +35,6 @@ class Person(models.Model):
     status = models.CharField(max_length=1, choices=STATUS_CHOICES, default=DRAFT)
     created_user = models.ForeignKey(settings.AUTH_USER_MODEL)
     created_date = models.DateTimeField(auto_now_add=True,null=True, blank=True)
-    updated_user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, 
-                blank=True, related_name="updated_user")
-    updated_date = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name
