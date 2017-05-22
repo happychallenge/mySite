@@ -25,6 +25,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^master/', include('master.urls', namespace='master')),
     url(r'^records/', include('records.urls', namespace='records')),
+    url(r'^authentication/', include('authentication.urls', namespace='authentication')),
     # url(r'^evidence/', include('evidence.urls', namespace='evidence')),
 
     url(r'^signup/$', signup_views.signup, name='signup'),
@@ -33,9 +34,9 @@ urlpatterns = [
 ]
 
 if settings.DEBUG:
-    import debug_toolbar
-    urlpatterns = [
-        url(r'^__debug__/', include(debug_toolbar.urls)),
-    ] + urlpatterns
+    # import debug_toolbar
+    # urlpatterns = [
+    #     url(r'^__debug__/', include(debug_toolbar.urls)),
+    # ] + urlpatterns
 
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
