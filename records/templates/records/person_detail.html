@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% load i18n static %}
+
 {% block main_title %}
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-lg-10">
@@ -83,7 +85,7 @@
 
                                 <div class="feed-element">
                                     <a href="#" class="pull-left">
-                                        <img alt="image" class="img-circle" src="img/a2.jpg">
+                                        <img alt="image" class="img-circle" src="{% if user.profile.image.url %} {{ user.profile.image.url }} {% else %} {% static 'image/nouser.png' %}{% endif %}">
                                     </a>
                                     <div class="media-body ">
                                         <small class="pull-right"> {{news.created_at }} </small>

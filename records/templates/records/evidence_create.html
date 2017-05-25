@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block main_title %}
+    <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-lg-8">
+            <h2>함께 기억하고, 함께 역사를 만들어 갑시다.</h2>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="index.html">Home</a>
+                </li>
+                <li>
+                    사건에 대한 근거 만들기 
+                </li>
+                <li class="active">
+                    <strong> URL </strong>
+                </li>
+            </ol>
+        </div>
+    </div>
+    
+{% endblock main_title %}
+
+{% block content %}
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-sm-10">
+                <form action="" method='post' id='url-confirm'> 
+                    {% csrf_token %}
+                    근거가 될 수 있는 신문 뉴스의 URL를 입력해 주시기 바랍니다.
+                    <div class="input-group">
+                        <input type="text" class="form-control" name='url'> <span class="input-group-btn"> <button type="button" class="btn btn-primary btn-url">Go!</button> </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div id='summary_content' class='col-sm-10'>
+                
+            </div>
+        </div>
+        <div>
+            <div id="event_person" class="row">
+                
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+
+{% block javascript %}
+<script>
+    $(".btn-url").click(function () {
+        $.ajax({
+          url: "{% url 'records:evidence_records' %}",
+          data: $("#url-confirm").serialize(),
+          type: 'post',
+          cache: false,
+          success: function (data) {
+            $("div#summary_content").prepend(data);
+          }
+        });
+    });
+</script>
+
+{% endblock javascript %}

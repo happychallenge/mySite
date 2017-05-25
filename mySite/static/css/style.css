@@ -2679,7 +2679,6 @@ a.forum-item-title:hover {
   display: table;
   clear: both;
 }
-
 #vertical-timeline {
   position: relative;
   padding: 0;
@@ -3914,7 +3913,6 @@ code {
   display: none;
   overflow: hidden;
 }
-
 .ibox.collapsed .fa.fa-chevron-up:before {
   content: "\f078";
 }
@@ -4996,7 +4994,7 @@ ul.notes li div {
 }
 .file-control {
   color: inherit;
-  font-size: 11px;
+  font-size: 12px;
   margin-right: 10px;
 }
 .file-control.active {
@@ -5081,7 +5079,7 @@ a.compose-mail {
   margin-top: 10px;
   margin-bottom: 5px;
   padding: 10px 20px;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 16px;
 }
 .feed-element .actions {

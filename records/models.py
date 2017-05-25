@@ -4,6 +4,7 @@ from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
 
 from master.models import Job, Region, EventCategory, Media
+
 # Create your models here.
 class Person(models.Model):
     """docstring for Person"""
@@ -79,6 +80,9 @@ class PersonEvent(models.Model):
     created_user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        unique_together = (("person", "event"),)
+
     def __str__(self):
         return '{} {}'.format(self.person, self.event)
 
@@ -87,7 +91,7 @@ class News(models.Model):
     """ 설명 """
     media = models.ForeignKey(Media, null=True, blank=True)
     title = models.CharField(max_length=300)
-    url = models.URLField(null=True, blank=True)
+    url = models.URLField(null=True, blank=True, unique=True)
     content = models.TextField(null=True, blank=True)
     published_at = models.DateField(null=True, blank=True)
     
@@ -104,6 +108,9 @@ class Evidence(models.Model):
     news = models.ForeignKey(News)
     created_user = models.ForeignKey(settings.AUTH_USER_MODEL,null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = (("personevent", "news"),)
 
     def __str__(self):
         return '{}'.format(self.personevent)
