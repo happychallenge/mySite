@@ -94,7 +94,6 @@ class News(models.Model):
     url = models.URLField(null=True, blank=True, unique=True)
     content = models.TextField(null=True, blank=True)
     published_at = models.DateField(null=True, blank=True)
-    
     created_user = models.ForeignKey(settings.AUTH_USER_MODEL,null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 

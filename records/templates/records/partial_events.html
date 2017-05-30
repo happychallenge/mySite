@@ -1,0 +1,29 @@
+{% load static %}
+
+<div class="row">
+{% for event in event_list %}
+    <div class="col-md-12">
+        <div class="ibox float-e-margins">
+            {# Event Title  #}
+            <div class="ibox-title">
+                <h5> {{ event.name }}</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <h3><strong>{{ event.name }}</strong></h3>
+                <p><i class="fa fa-map-marker"> 분류 : {{ event.category }} </i></p>
+                <p> 설명 : <br>
+                    {{ event.content }}
+                </p>
+                <p> Happened At : {{ event.happened_at }}</p>
+                <p> Created At : {{ event.created_at }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="clearfix"></div>    
+{% endfor %}
+</div>

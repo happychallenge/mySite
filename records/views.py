@@ -3,10 +3,11 @@ from django.shortcuts import render, get_object_or_404
 from .models import Person, PersonEvent, Event
 
 # Create your views here.
-def people_list(request):
-    people_list = Person.objects.prefetch_related('tags', 'jobs').all()
-    context = {'people_list': people_list}
-    return render(request, 'records/people_list.html', context)
+def person_list(request):
+    person_list = Person.objects.prefetch_related('tags', 'jobs').all()
+    context = {'person_list': person_list}
+    return render(request, 'records/person_list.html', context)
+
 
 def person_detail(request, person_id):
     person = Person.objects.prefetch_related('tags', 'jobs').get(id=person_id)

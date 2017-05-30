@@ -3,27 +3,81 @@
 {% block main_title %}
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-lg-8">
-            <h2>함께 기억하고, 함께 역사를 만들어 갑시다.</h2>
+            <h2>이분들을 기억하는 것이 역사입니다.</h2>
             <ol class="breadcrumb">
                 <li>
                     <a href="index.html">Home</a>
                 </li>
                 <li>
-                    사건에 대한 근거 만들기 
+                    기록 
                 </li>
                 <li class="active">
-                    <strong> URL </strong>
+                    <strong>사람 + 사건 + URL </strong>
                 </li>
             </ol>
         </div>
     </div>
-    
+
 {% endblock main_title %}
 
+
 {% block content %}
+    <div class="wrapper wrapper-content">
+        <div class="row animated fadeInRight">
+        {# Check Person #}
+            <div class='col-lg-6'>
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>기존 등록된 사람 여부</h5>
+                    </div>
+                    <div class="ibox-content">  
+                        <form action="" method='post' id='person-confirm'> 
+                            {% csrf_token %}
+                            <p>등록하고자 하는 사람이 등록되어 있는지 확인해 보세요.</p>
+                            <p>여러명일 경우 ','로 구분하시기 바랍니다.</p>
+                            <div class="input-group">
+                                <input type="text" class="form-control" name='persons'> <span class="input-group-btn"> <button type="button" class="btn btn-primary btn-person">Go!</button> </span>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                {# Search Result #}
+                <div id="summary_person">
+                    
+                </div>
+            </div>
+
+        {# Check Event #}
+            <div class='col-lg-6'>
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>기존 등록된 사건 여부 확인</h5>
+                    </div>
+                    <div class="ibox-content">  
+                        <form action="" method='post' id='event-confirm'> 
+                            {% csrf_token %}
+                            <p>등록하고자 하는 사건이 등록되어 있는지 확인해 보세요.</p>
+                            <p>중요 Keyword를 ','로 구분하여 입력하시기 바랍니다.</p>
+                            <div class="input-group">
+                                <input type="text" class="form-control" name='events'> <span class="input-group-btn"> <button type="button" class="btn btn-primary btn-event">Go!</button> </span>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                {# Search Result #}
+                <div id="summary_event">
+                    
+                </div>
+            </div>    
+        </div>
+    </div>
+    
+
     <div class="wrapper wrapper-content animated fadeInRight">
         <div class="row">
-            <div class="col-sm-10">
+            <div class="col-sm-12">
                 <form action="" method='post' id='url-confirm'> 
                     {% csrf_token %}
                     근거가 될 수 있는 신문 뉴스의 URL를 입력해 주시기 바랍니다.
@@ -37,30 +91,57 @@
 
     <div class="wrapper wrapper-content animated fadeInRight">
         <div class="row">
-            <div id='summary_content' class='col-sm-10'>
-                
-            </div>
-        </div>
-        <div>
-            <div id="event_person" class="row">
+            <div id='summary_content' class='col-sm-12'>
                 
             </div>
         </div>
     </div>
-
 {% endblock content %}
 
 
 {% block javascript %}
 <script>
+    $(".btn-person").click(function () {
+        $.ajax({
+          url: "{% url 'records:check_person_ajax' %}",
+          data: $("#person-confirm").serialize(),
+          type: 'post',
+          cache: false,
+          beforeSend: function(){
+            $("div#summary_person").html("<img src='/static/images/loading.gif'>");
+          },
+          success: function (data) {
+            $("div#summary_person").html(data);
+          }
+        });
+    });
+
+    $(".btn-event").click(function () {
+        $.ajax({
+          url: "{% url 'records:check_event_ajax' %}",
+          data: $("#event-confirm").serialize(),
+          type: 'post',
+          cache: false,
+          beforeSend: function(){
+            $("div#summary_event").html("<img src='/static/images/loading.gif'>");
+          },
+          success: function (data) {
+            $("div#summary_event").html(data);
+          }
+        });
+    });
+
     $(".btn-url").click(function () {
         $.ajax({
           url: "{% url 'records:evidence_records' %}",
           data: $("#url-confirm").serialize(),
           type: 'post',
           cache: false,
+          beforeSend: function(){
+            $("div#summary_content").html("<img src='/static/images/loading.gif'>");
+          },
           success: function (data) {
-            $("div#summary_content").prepend(data);
+            $("div#summary_content").html(data);
           }
         });
     });

@@ -7,9 +7,12 @@ def get_person_info(person):
     search_url = 'http://people.search.naver.com/search.naver'  # Search URL
     params = { 'where':'nexearch' , 'query': person }           # Search Parameters
     html = requests.get(search_url, params=params).text
-    soup = BeautifulSoup(html, 'lxml')                          # BeautifulSoup
+    soup = BeautifulSoup(html, 'html.parser')                          # BeautifulSoup
     pattern = re.compile('(?<=oAPIResponse :)(.*?)(?=, sAPIURL)', re.DOTALL)
     matches = pattern.search(html)
+    if matches == None:
+        return None
+
     data = matches[0]
     result = json.loads(data)           # Json Data Load from Javascript
 
@@ -28,6 +31,8 @@ def get_person_info(person):
             job.append(jobs['job_name'])
         sub['job'] = job
         result[index] = sub
+        if index == 1:
+            break
 
     return result
 

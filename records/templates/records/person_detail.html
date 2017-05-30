@@ -85,10 +85,10 @@
 
                                 <div class="feed-element">
                                     <a href="#" class="pull-left">
-                                        <img alt="image" class="img-circle" src="{% if user.profile.image.url %} {{ user.profile.image.url }} {% else %} {% static 'image/nouser.png' %}{% endif %}">
+                                        <img alt="image" class="img-circle" src="{% if evidence.created_user.profile.image.url %} {{ evidence.created_user.profile.image.url }} {% else %} {% static 'image/nouser.png' %}{% endif %}">
                                     </a>
                                     <div class="media-body ">
-                                        <small class="pull-right"> {{news.created_at }} </small>
+                                        <small class="pull-right"> {{evidence.news.created_at }} </small>
                                         <strong> {{evidence.news.media}} </strong> posted <strong>{{evidence.news.title}}</strong>  <br>
                                         <small class="text-muted"> <a href="{{ evidence.news.url}}">{{ evidence.news.url}}</a>  </small>
                                         <div class="well">

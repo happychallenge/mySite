@@ -9,23 +9,26 @@ def extract_name(url):
     name = re.findall('\.(\w+)\.com?', url)
     return name[0]
 
-def get_person_name(html):
-    old = [ '정부의', '정부가', '지지율', '호남의', '하지만',  '구치소', '문제가', '복잡한', '대통령', '문제다', '지난해', '보이지', '사람이', '심지어', '기록이', '방대한', '제대로', '상당한', '인력이', '아니다', '어렵다', '이라고', '정치적', '자기가', '유리한', '아니면', '시간이', '태극기', '인상이', '한동안', '최대한', '설치로', '이동식', '나머지', '시설도', '반입한', '반입해', '여의도', '갈등이', '위기가', '예정인', '보인다', '기반인']
-    pattern = re.compile(r'\b[김이박최정강조윤장임오한신서권황안송류홍전고문손양배조백허남심유노하전정곽성차유구우주임나신민진지엄원채강천양공현방변함노염여추변도석신소선주설방마정길위연표명기금왕반옥육진인맹제탁모남궁여장어유국은편용강구예봉한경소사석부황보가복천목태지형피계전감음두진동장온송경제갈사공호하빈선우연채우범설양갈좌노반팽승공간상기국시서문위도시이호채강진빈방단서견원방창당순마화구모이양종승성독고옹빙장추편아도평대풍궁강연견점흥섭국내제여낭봉해판초필궉근사매동방호두미요옹야묵자만운환범탄곡종창사영포엽수애단부순순돈학비개영후십뇌난춘수준초운내묘담장곡어금강전삼저군초교영순단후누돈소봉][^히은는을를늘에르었겼엔워할에쉬했떻쩌렇드디갔움들팎\.\s\(\)][^히은는을를늘에르었겼엔워할에된와야과했디체터니데\"\.\s\(\)=]\b', re.MULTILINE)
-    names = pattern.findall(html)
+# def get_person_name(html):
+#     return None
 
-    result = []
-    count = Counter(names)
-    print(count.most_common(5))
-    for name,value in count.most_common(5):
-        if name not in old:
-            result.append(name)
-    return result
-
+# def get_person_name(html):
+#     old = [ '정부의', '정부가', '지지율', '호남의', '하지만',  '구치소', '문제가', '복잡한', '대통령', '문제다', '지난해', '보이지', '사람이', '심지어', '기록이', '방대한', '제대로', '상당한', '인력이', '아니다', '어렵다', '이라고', '정치적', '자기가', '유리한', '아니면', '시간이', '태극기', '인상이', '한동안', '최대한', '설치로', '이동식', '나머지', '시설도', '반입한', '반입해', '여의도', '갈등이', '위기가', '예정인', '보인다', '기반인']
+#     pattern = re.compile(r'\b[김이박최정강조윤장임오한신서권황안송류홍전고문손양배조백허남심유노하전정곽성차유구우주임나신민진지엄원채강천양공현방변함노염여추변도석신소선주설방마정길위연표명기금왕반옥육진인맹제탁모남궁여장어유국은편용강구예봉한경소사석부황보가복천목태지형피계전감음두진동장온송경제갈사공호하빈선우연채우범설양갈좌노반팽승공간상기국시서문위도시이호채강진빈방단서견원방창당순마화구모이양종승성독고옹빙장추편아도평대풍궁강연견점흥섭국내제여낭봉해판초필궉근사매동방호두미요옹야묵자만운환범탄곡종창사영포엽수애단부순순돈학비개영후십뇌난춘수준초운내묘담장곡어금강전삼저군초교영순단후누돈소봉][^히은는을를늘에르었겼엔워할에쉬했떻쩌렇드디갔움들팎\.\s\(\)][^히은는을를늘에르었겼엔워할에된와야과했디체터니데\"\.\s\(\)=]\b', re.MULTILINE)
+#     names = pattern.findall(html)
+# 
+#     result = []
+#     count = Counter(names)
+#     # print(count.most_common(2))
+#     for name,value in count.most_common(2):
+#         if name not in old:
+#             result.append(name)
+#     return result
 
 # Naver
 def get_contents_from_naver(url):
     result = {}
+    result['url'] = url
     result['media'] = extract_name(url)
     html = requests.get(url).text
     script = re.compile(r'<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>')
@@ -35,28 +38,49 @@ def get_contents_from_naver(url):
     result['title'] = soup.find('h3', id='articleTitle' ).get_text()
     content = soup.find('div', id='articleBodyContents').get_text()
     result['published_at'] = soup.find('span', {'class':'t11'}).get_text()
-    result['body'] = content[:400]
+    result['content'] = content[:400]
 
-    names = get_person_name(content)
+    # names = get_person_name(content)
     result['names'] = names
     
     return result
 
 # print(get_contents_from_naver('http://news.naver.com/main/hotissue/read.nhn?mid=hot&sid1=100&cid=1045984&iid=49376956&oid=001&aid=0009223780&ptype=052'))
 
+
+# yonhapnews
+def get_contents_from_yonhapnews(url):
+    result = {}
+    result['url'] = url
+    result['media'] = extract_name(url)
+    html = requests.get(url).text
+    soup = BeautifulSoup(html, 'html.parser')
+        
+    result['title'] = soup.find('h1', {'class':'tit-article'} ).get_text()
+    content = soup.find('div', { 'class':'article'}).get_text()
+    result['content'] = content[:400]
+    span = soup.select('.share-info .tt > em')[0].get_text()
+    result['published_at'] = span
+    # result['names'] = get_person_name(content)
+    
+    return result
+
+# print(get_contents_from_yonhapnews('http://www.yonhapnews.co.kr/bulletin/2017/04/12/0200000000AKR20170412112300054.HTML'))
+
 # Daum
 def get_contents_from_daum(url):
     result = {}
+    result['url'] = url
     result['media'] = extract_name(url)
     html = requests.get(url).text
     soup = BeautifulSoup(html, 'html.parser')
         
     result['title'] = soup.find('h3', {'class':'tit_view'} ).get_text()
     content = soup.find('div', { 'class':'article_view'}).get_text()
-    result['body'] = content[:400]
+    result['content'] = content[:400]
     span = soup.select('.head_view .info_view > span.txt_info')[1].get_text()[3:]
     result['published_at'] = span[:4] + '-' + span[5:7] + '-' + span[8:10] + span[11:]
-    result['names'] = get_person_name(content)
+    # result['names'] = get_person_name(content)
     
     return result
 
@@ -65,15 +89,16 @@ def get_contents_from_daum(url):
 # JOONGANG 
 def get_contents_from_joins(url):
     result = {}
+    result['url'] = url
     result['media'] = extract_name(url)
     html = requests.get(url).text
     soup = BeautifulSoup(html, 'html.parser')
     result['title'] = soup.find('h1', id='article_title' ).get_text()
     content = soup.find('div', id='article_body').get_text()
-    result['body'] = content[:400]
+    result['content'] = content[:400] + ' ......'
     span = soup.select('div.byline > em')[1].get_text()[3:]
-    result['published_at'] = span[:4] + '-' + span[5:7] + '-' + span[8:10] + span[10:]
-    result['names'] = get_person_name(content)
+    result['published_at'] = span[:4] + '-' + span[5:7] + '-' + span[8:10]
+    # result['names'] = get_person_name(content)
 
     return result
 
@@ -82,6 +107,7 @@ def get_contents_from_joins(url):
 # Donga
 def get_contents_from_donga(url):
     result = {}
+    result['url'] = url
     result['media'] = extract_name(url)
     html = requests.get(url).text
     script = re.compile(r'<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>')
@@ -91,9 +117,9 @@ def get_contents_from_donga(url):
     try:
         result['title'] = soup.find('title').get_text()
         content = soup.find('div', {'class':'article_txt'}).get_text()
-        result['body'] = content[:400]
+        result['content'] = content[:400]
         result['published_at'] = soup.select('div.title_foot > span')[1].get_text()[3:]
-        result['names'] = get_person_name(content)
+        # result['names'] = get_person_name(content)
 
     except AttributeError as e:
         print(e)
@@ -105,6 +131,7 @@ def get_contents_from_donga(url):
 #SBS
 def get_contents_from_sbs(url):
     result = {}
+    result['url'] = url
     result['media'] = extract_name(url)
     html = requests.get(url).text
     soup = BeautifulSoup(html, 'html.parser')
@@ -112,9 +139,9 @@ def get_contents_from_sbs(url):
     try:
         result['title'] = soup.find('h3', {'id':'vmNewsTitle'}).get_text()
         content = soup.find('div', {'class':'main_text'}).get_text()
-        result['body'] = content[:400]
+        result['content'] = content[:400]
         result['published_at'] = soup.select('span.date > span')[0].get_text()
-        result['names'] = get_person_name(content)
+        # result['names'] = get_person_name(content)
 
     except AttributeError as e:
         print(e)
@@ -134,9 +161,9 @@ def get_contents_from_hani(url):
     try:
         result['title'] = soup.find('span', {'class':'title'}).get_text()
         content = soup.find('div', {'class':'text'}).get_text()[:400]
-        result['body'] = content[:400]
+        result['content'] = content[:400]
         result['published_at'] = soup.select('p.date-time > span')[0].get_text()[4:]
-        result['names'] = get_person_name(content)
+        # result['names'] = get_person_name(content)
     except AttributeError as e:
         print(e)
     except TypeError as e:
@@ -156,10 +183,10 @@ def get_contents_from_chosun(url):
     try:
         result['title'] = soup.find('h1', {'id':'news_title_text_id'}).get_text()
         content = soup.find('div', {'id':'news_body_id'}).get_text()
-        result['body'] = content[:400]
+        result['content'] = content[:400]
         span = soup.select('div.date_ctrl_2011 > p#date_text')[0].get_text().strip()[5:]
         result['published_at'] = span[:4] + '-' + span[5:7] + '-' + span[8:10] + span[10:]
-        result['names'] = get_person_name(content)
+        # result['names'] = get_person_name(content)
     except AttributeError as e:
         print(e)
     except TypeError as e:
@@ -180,11 +207,11 @@ def get_contents_from_khan(url):
     try:
         result['title'] = soup.find('h1', {'id':'article_title'}).get_text()
         content = soup.find('div', {'class':'art_cont'}).get_text()
-        result['body'] = content[:400]
+        result['content'] = content[:400]
         span = soup.select('div.byline > em')[0].get_text()[5:]
         print(span)
         result['published_at'] = span[:4] + '-' + span[5:7] + '-' + span[8:10] + span[10:]
-        result['names'] = get_person_name(content)
+        # result['names'] = get_person_name(content)
     except AttributeError as e:
         print(e)
     
@@ -201,7 +228,7 @@ def get_contents_from_khan(url):
 #     try:
 #         result['title'] = soup.find('h1').get_text()
 #         content = soup.find('div', {'class':'view_page_news_article_wrapper'}).get_text()
-#         result['body'] = content[:400]
+#         result['content'] = content[:400]
 #         result['published_at'] = soup.select('div.info_arti span.upload_date')
 #         print(span)
 #         result['names'] = get_person_name(content)
@@ -223,11 +250,11 @@ def get_contents_from_segye(url):
     try:
         result['title'] = soup.find('h1', {'class': 'headline'}).get_text()
         content = soup.find('div', {'id':'article_txt'}).get_text()[:400]
-        result['body'] = content[:400]
+        result['content'] = content[:400]
         span = soup.select('.article_head .clearfix > div')[1].get_text()
         print(span)
         result['published_at'] = span[:4] + '-' + span[5:7] + '-' + span[8:10] + span[10:]
-        result['names'] = get_person_name(content)
+        # result['names'] = get_person_name(content)
     except AttributeError as e:
         print(e)
     
@@ -245,7 +272,7 @@ def get_contents_from_mk(url):
     
     try:
         result['title'] = soup.find('p', {'class': 'tit'}).get_text()
-        result['body'] = soup.find('div', {'id':'newsViewArea'}).get_text()[:400]
+        result['content'] = soup.find('div', {'id':'newsViewArea'}).get_text()[:400]
 
     except AttributeError as e:
         print(e)
@@ -262,7 +289,7 @@ def get_contents_from_heraldcorp(url):
     
     try:
         result['title'] = soup.find('h1').get_text()
-        result['body'] = soup.find('div', {'id':'articleText'}).get_text()[:400]
+        result['content'] = soup.find('div', {'id':'articleText'}).get_text()[:400]
     except AttributeError as e:
         print(e)
     
@@ -278,7 +305,7 @@ def get_contents_from_pressian(url):
     
     try:
         result['title'] = soup.find('div', {'class':'title'}).get_text()
-        result['body'] = soup.find('div', {'id':'CmAdContent'}).get_text()[:400]
+        result['content'] = soup.find('div', {'id':'CmAdContent'}).get_text()[:400]
     except AttributeError as e:
         print(e)
     
@@ -294,7 +321,7 @@ def get_contents_from_hankookilbo(url):
     
     try:
         result['title'] = soup.findAll(attrs={"name":"title"})[0]['content']
-        result['body'] = soup.find('article', {'id':'article-body'}).get_text()[:500]
+        result['content'] = soup.find('article', {'id':'article-body'}).get_text()[:500]
     except AttributeError as e:
         print(e)
     
@@ -310,7 +337,7 @@ def get_contents_from_nocutnews(url):
     
     try:
         result['title'] = soup.findAll(attrs={"name":"og:title"})[0]['content']
-        result['body'] = soup.find('div', {'id':'pnlContent'}).get_text()[:400]
+        result['content'] = soup.find('div', {'id':'pnlContent'}).get_text()[:400]
     except AttributeError as e:
         print(e)
     
@@ -326,7 +353,7 @@ def get_contents_from_newsis(url):
     
     try:
         result['title'] = soup.findAll(attrs={"property":"og:title"})[0]['content']
-        result['body'] = soup.find('div', {'id':'textBody'}).get_text()[:400]
+        result['content'] = soup.find('div', {'id':'textBody'}).get_text()[:400]
     except AttributeError as e:
         print(e)
     
@@ -343,7 +370,7 @@ def get_contents_from_wowtv(url):
     
     try:
         result['title'] = soup.find('title').get_text()
-        result['body'] = soup.find('div', {'id':'viewContent_3'}).get_text()[:400]
+        result['content'] = soup.find('div', {'id':'viewContent_3'}).get_text()[:400]
     except AttributeError as e:
         print(e)
     
@@ -360,7 +387,7 @@ def get_contents_from_munhwa(url):
     
     try:
         result['title'] = soup.find('span', {'class':'title'}).get_text()
-        result['body'] = soup.find('div', {'id':'NewsAdContent'}).get_text()[:400]
+        result['content'] = soup.find('div', {'id':'NewsAdContent'}).get_text()[:400]
     except AttributeError as e:
         print(e)
     
@@ -377,7 +404,7 @@ def get_contents_from_mt(url):
     
     try:
         result['title'] = soup.findAll(attrs={"property":"og:title"})[0]['content']
-        result['body'] = soup.find('div', {'id':'textBody'}).get_text()[:400]
+        result['content'] = soup.find('div', {'id':'textBody'}).get_text()[:400]
     except AttributeError as e:
         print(e)
     
@@ -393,7 +420,7 @@ def get_contents_from_fnnews(url):
     
     try:
         result['title'] = soup.findAll(attrs={"property":"og:title"})[0]['content']
-        result['body'] = soup.find('div', {'class':'cont_txt_read'}).get_text()[:400]
+        result['content'] = soup.find('div', {'class':'cont_txt_read'}).get_text()[:400]
     except AttributeError as e:
         print(e)
     
@@ -409,7 +436,7 @@ def get_contents_from_kbs(url):
     
     try:
         result['title'] = soup.findAll(attrs={"name":"title"})[0]['content']
-        result['body'] = soup.find('div', {'id':'cont_newstext'}).get_text()[:400]
+        result['content'] = soup.find('div', {'id':'cont_newstext'}).get_text()[:400]
     except AttributeError as e:
         print(e)
     
@@ -425,7 +452,7 @@ def get_contents_from_sedaily(url):
     
     try:
         result['title'] = soup.findAll(attrs={"name":"title"})[0]['content']
-        result['body'] = soup.find('div', {'class':'view_con'}).get_text()[:400]
+        result['content'] = soup.find('div', {'class':'view_con'}).get_text()[:400]
     except AttributeError as e:
         print(e)
     
@@ -442,7 +469,7 @@ def get_contents_from_kmib(url):
     
     try:
         result['title'] = soup.findAll(attrs={"name":"title"})[0]['content']
-        result['body'] = soup.find('div', {'id':'articleBody'}).get_text()[:400]
+        result['content'] = soup.find('div', {'id':'articleBody'}).get_text()[:400]
     except AttributeError as e:
         print(e)
     
@@ -458,7 +485,7 @@ def get_contents_from_kheraldm(url):
     
     try:
         result['title'] = soup.find('title').get_text()
-        result['body'] = soup.find('div', {'id':'articleText'}).get_text()[:400]
+        result['content'] = soup.find('div', {'id':'articleText'}).get_text()[:400]
     except AttributeError as e:
         print(e)
     
@@ -475,7 +502,7 @@ def get_contents_from_dt(url):
     
     try:
         result['title'] = soup.find('title').get_text()
-        result['body'] = soup.find('div', {'id':'NewsAdContent'}).get_text()[:400]
+        result['content'] = soup.find('div', {'id':'NewsAdContent'}).get_text()[:400]
     except AttributeError as e:
         print(e)
     
@@ -492,7 +519,7 @@ def get_contents_from_mediatoday(url):
     
     try:
         result['title'] = soup.find('title').get_text()
-        result['body'] = soup.find('div', {'id':'talklink_contents'}).get_text()[:400]
+        result['content'] = soup.find('div', {'id':'talklink_contents'}).get_text()[:400]
     except AttributeError as e:
         print(e)
     
@@ -509,7 +536,7 @@ def get_contents_from_hankyung(url):
     
     try:
         result['title'] = soup.findAll(attrs={"name":"title"})[0]['content']
-        result['body'] = soup.find('div', {'id':'newsView'}).get_text()[:400]
+        result['content'] = soup.find('div', {'id':'newsView'}).get_text()[:400]
     except AttributeError as e:
         print(e)
     
@@ -526,7 +553,7 @@ def get_contents_from_bloter(url):
     
     try:
         result['title'] = soup.find('title').get_text()
-        result['body'] = soup.find('div', {'class':'article--content'}).get_text()[:400]
+        result['content'] = soup.find('div', {'class':'article--content'}).get_text()[:400]
     except AttributeError as e:
         print(e)
     
@@ -545,7 +572,7 @@ def get_contents_from_seoul(url):
     
     try:
         result['title'] = soup.find('title').get_text()
-        result['body'] = soup.find('div', {'id':'atic_txt1'}).get_text()[:400]
+        result['content'] = soup.find('div', {'id':'atic_txt1'}).get_text()[:400]
     except AttributeError as e:
         print(e)
     
@@ -562,7 +589,7 @@ def get_contents_from_ohmynews(url):
     
     try:
         result['title'] = soup.find('title').get_text()
-        result['body'] = soup.find('div', {'class':'at_contents'}).get_text()[:400]
+        result['content'] = soup.find('div', {'class':'at_contents'}).get_text()[:400]
     except AttributeError as e:
         print(e)
     
@@ -579,7 +606,7 @@ def get_contents_from_ytn(url):
     
     try:
         result['title'] = soup.find('title').get_text()
-        result['body'] = soup.find('div', {'id':'CmAdContent'}).get_text()[:400]
+        result['content'] = soup.find('div', {'id':'CmAdContent'}).get_text()[:400]
     except AttributeError as e:
         print(e)
     
@@ -596,7 +623,7 @@ def get_contents_from_etnews(url):
     
     try:
         result['title'] = soup.find('title').get_text()
-        result['body'] = soup.find('section', {'id':'articleBody'}).get_text()[:400]
+        result['content'] = soup.find('section', {'id':'articleBody'}).get_text()[:400]
     except AttributeError as e:
         print(e)
     
@@ -613,7 +640,7 @@ def get_contents_from_inews24(url):
     
     try:
         result['title'] = soup.find('title').get_text()
-        result['body'] = soup.find('div', {'id':'news_content'}).get_text()[:400]
+        result['content'] = soup.find('div', {'id':'news_content'}).get_text()[:400]
     except AttributeError as e:
         print(e)
     
@@ -630,7 +657,7 @@ def get_contents_from_asiae(url):
     
     try:
         result['title'] = soup.find('title').get_text()
-        result['body'] = soup.find('div', {'class':'article'}).get_text()[:400]
+        result['content'] = soup.find('div', {'class':'article'}).get_text()[:400]
     except AttributeError as e:
         print(e)
     

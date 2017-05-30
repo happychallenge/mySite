@@ -3983,6 +3983,14 @@ table.table-mail tr td {
 .ibox-content {
   clear: both;
 }
+.ibox-content:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+
 .ibox-heading {
   background-color: #f3f6fb;
   border-bottom: none;
