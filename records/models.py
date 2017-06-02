@@ -26,12 +26,12 @@ class Person(models.Model):
     )
     name = models.CharField(max_length=30)
     nick_name = models.CharField(max_length=30, null=True, blank=True)
-    birth = models.IntegerField(null=True, blank=True)
+    birth_year = models.IntegerField(null=True, blank=True)
     jobs = models.ManyToManyField(Job, blank=True)
     picture = models.ImageField(null=True, blank=True)
     regions = models.ManyToManyField(Region, blank=True)
     tags = models.ManyToManyField('Tag', blank=True)
-    behavior = models.ManyToManyField('Event', through='PersonEvent',
+    event = models.ManyToManyField('Event', through='PersonEvent',
                 through_fields=('person', 'event'),)
     status = models.CharField(max_length=1, choices=STATUS_CHOICES, default=DRAFT)
     created_user = models.ForeignKey(settings.AUTH_USER_MODEL)

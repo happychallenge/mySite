@@ -70,9 +70,9 @@ MEDIA_CATEGORY = (
 class Media(models.Model):
     """docstring for Media"""
     """ Media """
-    name    = models.CharField(max_length=30)
+    name    = models.CharField(max_length=30, blank=True)
     short    = models.CharField(max_length=30)
-    category = models.CharField(max_length=10, choices=MEDIA_CATEGORY)
+    category = models.CharField(max_length=10, choices=MEDIA_CATEGORY, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

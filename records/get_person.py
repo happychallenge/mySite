@@ -6,8 +6,7 @@ from bs4 import BeautifulSoup
 def get_person_info(person):
     search_url = 'http://people.search.naver.com/search.naver'  # Search URL
     params = { 'where':'nexearch' , 'query': person }           # Search Parameters
-    html = requests.get(search_url, params=params).text
-    soup = BeautifulSoup(html, 'html.parser')                          # BeautifulSoup
+    html = requests.get(search_url, params=params).text                      # BeautifulSoup
     pattern = re.compile('(?<=oAPIResponse :)(.*?)(?=, sAPIURL)', re.DOTALL)
     matches = pattern.search(html)
     if matches == None:

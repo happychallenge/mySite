@@ -7,7 +7,7 @@ from .models import News, Evaluation, Evidence
 class PersonAdmin(admin.ModelAdmin):
     class Meta:
         model = Person
-    list_display = ['name', 'nick_name', 'birth']
+    list_display = ['name', 'nick_name', 'birth_year']
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):

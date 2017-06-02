@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block main_title %}
     <div class="row wrapper border-bottom white-bg page-heading">
@@ -75,31 +76,46 @@
     </div>
     
 
-    <div class="wrapper wrapper-content animated fadeInRight">
-        <div class="row">
-            <div class="col-sm-12">
-                <form action="" method='post' id='url-confirm'> 
-                    {% csrf_token %}
-                    근거가 될 수 있는 신문 뉴스의 URL를 입력해 주시기 바랍니다.
-                    <div class="input-group">
-                        <input type="text" class="form-control" name='url'> <span class="input-group-btn"> <button type="button" class="btn btn-primary btn-url">Go!</button> </span>
+    <div class="wrapper wrapper-content">
+        <div class="row animated fadeInRight">
+        {# Check Person #}
+            <div class='col-lg-12'>
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>뉴스 정보 등록 및 내용 확인</h5>
                     </div>
-                </form>
+                    <div class="ibox-content">  
+                        <form action="" method='post' id='url-confirm'> 
+                            {% csrf_token %}
+                            근거가 될 수 있는 신문 뉴스의 URL를 입력해 주시기 바랍니다.
+                            <div class="input-group">
+                                <input type="text" class="form-control" name='url'> <span class="input-group-btn"> <button type="button" class="btn btn-primary btn-url">Go!</button> </span>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                {# Search Result #}
+                <div id="summary_content">
+                    
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="wrapper wrapper-content animated fadeInRight">
-        <div class="row">
-            <div id='summary_content' class='col-sm-12'>
-                
-            </div>
+    {# Modal for Add Person and Event #}
+    <div class="modal fade" id="modal-person">
+        <div class="modal-dialog">
+              <div class="modal-content">
+
+              </div>
         </div>
-    </div>
+  </div>
 {% endblock content %}
 
 
 {% block javascript %}
+<script src="{% static 'js/add_person_event.js' %}"></script>
 <script>
     $(".btn-person").click(function () {
         $.ajax({

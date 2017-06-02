@@ -15,3 +15,9 @@
 from django import forms
 
 # Create your forms here.
+from .models import Person
+
+class PersonForm(forms.ModelForm):
+    class Meta:
+        model = Person
+        fields = ['name', 'nick_name', 'birth_year', 'picture', ]

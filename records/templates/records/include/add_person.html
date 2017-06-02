@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block main_title %}
+    <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-lg-8">
+            <h2>이분들을 기억하는 것이 역사입니다.</h2>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="index.html">Home</a>
+                </li>
+                <li>
+                    기록 
+                </li>
+                <li class="active">
+                    <strong>사람 + 사건 + URL </strong>
+                </li>
+            </ol>
+        </div>
+    </div>
+{% endblock main_title %}
+
+
+{% block content %}
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            {# FORM TITLE #}
+            <div class="ibox-title">
+                <h5> 사람 정보 추가 <small>반드시 기존 등록된 사람인지 확인을 하시기 바랍니다.</small></h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-wrench"></i>
+                    </a>
+                </div>
+            </div>
+            {# FORM CONTENT #}
+            <div class="ibox-content">
+                {# FORM START #}
+                <form method="get" class="form-horizontal">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Name</label>
+                        <div class="col-sm-10"><input type="text" name='name' class="form-control"></div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Nick Name</label>
+                        <div class="col-sm-10"><input type="text" name='nick_name' class="form-control">
+                        <span class="help-block m-b-none">해당 인물을 잘 표현하는 별명을 입력해 주시기 바랍니다.</span></div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Birth Year</label>
+                        <div class="col-sm-10"><input type="text" name='birth_year' class="form-control"></div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">JOB</label>
+                        <div class="col-sm-10"><input type="text" name='jobs' class="form-control">
+                        <span class="help-block m-b-none">직업이 여러개인 경우 하나씩 입력하시고 선택하시면 됩니다.</span>
+                            <div class="col-sm-10">
+                                <label class="checkbox-inline"> <input type="checkbox" value="" id="inlineCheckbox1"> 국회의원</label> 
+                                <label class="checkbox-inline"> <input type="checkbox" value="option2" id="inlineCheckbox2"> 정치가 </label> 
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Picture</label>
+                        <div class="col-sm-10"><input type="file" name='picture' class="form-control"></div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Tags</label>
+                        <div class="col-sm-10"><input type="text" name='tags' class="form-control">
+                        <span class="help-block m-b-none">Tag를 , 로 구분하여 입력하시기 바랍니다.</span></div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+
+                    <div class="form-group">
+                        <div class="col-sm-4 col-sm-offset-2">
+                            <button class="btn btn-white" type="submit">Cancel</button>
+                            <button class="btn btn-primary" type="submit">Save changes</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock content %}

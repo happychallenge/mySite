@@ -31,6 +31,8 @@
     </div>
 {% endfor %}
 
+{# 추가 버튼을 보여줄지 말지? 검색 List에서는 보여주고, Ajax추가 에서는 보여주지 않 #}
+{% if add_person_flag %}
     <div class="wrapper wrapper-content">
         <div class="row animated fadeInRight">
         {# Check Person #}
@@ -42,14 +44,17 @@
 
                     <div class="ibox-content">
                         <p>등록된 사람이 없으면 새로 추가를 하시기 바랍니다.</p>
-                        <a href="" id="add_person"> 
-                          <p class="text-center">
-                              <i class="fa fa-male big-icon"></i>
-                          </p>
+                        <a href="{% url 'records:add_person' %}"> 
+                        <button type="button" class="btn btn-default" id="js-create-person" data-url="{% url 'records:add_person' %}">  
+                    
+                              <span class="fa fa-male big-icon" id='add-person'></span>
+                        </button>
                         </a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+{% endif %}
+
 </div>

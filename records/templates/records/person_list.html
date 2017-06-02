@@ -39,7 +39,7 @@
                             <h3><strong>{{ person.name }}</strong></h3>
                         </a>
                         <p><i class="fa fa-map-marker"></i> {{ person.nick_name }} </p>
-                        <p> Birth Year : {{ person.birth }}</p>
+                        <p> Birth Year : {{ person.birth_year }}</p>
                         <p> Jobs :
                         {% for job in person.jobs.all %}
                             {{job}},

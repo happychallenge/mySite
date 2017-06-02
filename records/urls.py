@@ -12,4 +12,5 @@ urlpatterns = [
     url(r'^evidence_records/$', views_reg.evidence_records, name='evidence_records'),
     url(r'^check_person_ajax/$', views_reg.check_person_ajax, name='check_person_ajax'),
     url(r'^check_event_ajax/$', views_reg.check_event_ajax, name='check_event_ajax'),
+    url(r'^add_person/$', views_reg.add_person, name='add_person'),
 ]

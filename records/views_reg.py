@@ -1,14 +1,14 @@
 # records/views_reg.py
 from django.http import HttpResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.template.loader import render_to_string
 
 from decorators import ajax_required
 from master.models import Media
+from .forms import PersonForm
 from .models import News
 from .get_news import get_news
-from .get_person import get_person_info
 from .models import Evidence, Person, Event
 
 @login_required
@@ -28,6 +28,7 @@ def check_person_ajax(request):
 
         html = '{0}{1}'.format(html, render_to_string('records/partial_persons.html', {
                 'person_list':person_list,
+                'add_person_flag': True,
         }))
 
     return HttpResponse(html)
@@ -84,3 +85,35 @@ def evidence_records(request):
         return HttpResponse(html)
     else:
         return HttpResponse('URL을 다시 입력하세요.')
+
+
+# @login_required
+# @ajax_required
+# def add_person(request):
+#     html = ''
+#     if request.method == 'POST':
+#         form = PersonForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             person = form.save(commit=False)
+#             person.created_user = request.user
+#             person.save()
+#             html = render_to_string('records/partial_persons.html', {'form':form})
+#     else:
+#         form = PersonForm()
+#         html = render_to_string('records/add_person.html', {'form':form})
+#     return HttpResponse(html)
+
+
+@login_required
+def add_person(request):
+    html = ''
+    if request.method == 'POST':
+        form = PersonForm(request.POST, request.FILES)
+        if form.is_valid():
+            person = form.save(commit=False)
+            person.created_user = request.user
+            person.save()
+            return redirect('records:person_list')
+    else:
+        form = PersonForm()
+    return render(request, 'records/include/add_person.html', {'form':form})
