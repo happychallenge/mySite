@@ -1,0 +1,235 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block header-index %}
+    <h2>기억을 통해 실수를 반복하지 맙시다.</h2>
+    <a href="{% url 'records:add_news' %}"> 
+            <button type='button' class='btn btn-primary pull-right'>사람/시건/뉴스 등록</button>
+    </a>
+    <ol class="breadcrumb">
+        <li>
+            <a href="{% url 'home' %}"> <i class="fa fa-home"></i> Home </a> 
+        </li>
+        <li>
+            기록 
+        </li>
+        <li class="active">
+            <strong>사람 + 사건 + URL </strong>
+        </li>
+    </ol>
+{% endblock header-index %}
+
+
+{% block content %}
+    <div class="wrapper wrapper-content">
+        <div class="row animated fadeInRight">
+        {# Check Person #}
+            <div class='col-md-12'>
+                {# URL FORM #}
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>입력한 URL</h5>
+                    </div>
+                    <div class="ibox-content">  
+                        <div >
+                            <input type="text" class="form-control" name='url' disabled value='{{url}}'> 
+                        </div>
+                    </div>
+                </div>
+            
+                {# News Result #}
+                <div class="ibox float-e-margins">
+                    {# News   #}
+                    <div class="ibox-title">
+                        <h5> 뉴스 내용 </h5>
+                    </div>
+                    <div class="ibox-content">
+                        <div>
+                            <div class="feed-activity-list">
+                                <div class="feed-element">
+                                    <div class="media-body">
+                                        <small class="pull-right"> {{ news.created_at }} </small>
+                                        <strong> {{ news.media }} </strong> posted <strong>{{news.title}}</strong>  <br>
+                                        <div class="well">
+                                            {{ news.content | linebreaks }} <br>
+                                            <small> published at : {{ news.published_at }} </small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+          {# Related Person and Event #}
+          {% if evidence_list %}  {#  이미 등록된 정보가 있는 경우 #}
+            {% for evidence in evidence_list %}
+              {# News Result Start #}
+                <div class='col-md-6'>
+                  {# URL FORM #}
+                  <div class="ibox float-e-margins">
+                      <div class="ibox-title">
+                          <h5>해당 뉴스와 관련된 사건과 인물</h5>
+                          <div class="ibox-tools"><i class="fa fa-chevron-up"></i></div>
+                      </div>
+                      <div class="ibox-content">  
+                          {# Event Infomation #}
+                          <div class="col-md-6">
+                              <div class="ibox float-e-margins">
+                                  
+                                  <h5>{{ evidence.personevent.event.name }}</h5>
+                                  <div>
+                                      <div class="profile-content">
+                                          <p><i class="fa fa-map-marker"></i> 분류 : {{ evidence.personevent.event.category }} </p>
+                                          <p><i class="fa fa-note"></i> 설명 : <br>
+                                              {{ evidence.personevent.event.content | linebreaks }}
+                                          </p>
+                                        {% if evidence.personevent.event.happened_at %}
+                                          <p><i class="fa fa-calendar"></i> 발생일 : {{ evidence.personevent.event.happened_at }}</p>
+                                        {% endif %}
+                                          <p><i class="fa fa-calendar"></i> 작성일 : {{ evidence.personevent.event.created_at }}</p>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+
+                          {# Person Evidence #}
+                          <div class="col-md-6">
+                              <div class="ibox float-e-margins">
+                                  {# Person of Event #}
+                                  <div class="ibox-title">
+                                      {# list #}
+                                        <div class="text-center">
+                                            <a href="{% url 'records:person_detail' evidence.personevent.person.id %}">
+                                            <img alt="image" width='200' class="img-circle m-t-xs img-responsive" src="{{ evidence.personevent.person.picture.url }}"> </a>
+                                        </div>
+                                    
+                                        <a href="{% url 'records:person_detail' evidence.personevent.person.id %}">
+                                            <h3><strong>{{ evidence.personevent.person.name }}</strong></h3>
+                                        </a>
+                                        <p><i class="fa fa-map-marker"></i> {{ evidence.personevent.person.nick_name }} </p>
+                                        <p><i class="fa fa-calendar"></i> Birth Year : {{ evidence.personevent.person.birth }}</p>
+                                        <p><i class="fa fa-flag"></i> Jobs :
+                                        {{evidence.personevent.person.jobs.all|join:", "}}
+                                        </p>
+                                        <p><i class="fa fa-pencil"></i> Tags :
+                                        {{evidence.personevent.person.tags.all|join:", "}}
+                                        </p>
+                                    <div class="clearfix"></div>
+                                  </div>
+                              </div>
+                          </div> {# End of Person #}
+
+                      </div>
+                  </div>
+                </div> {# News Result End #}
+            {% endfor %}
+              </div>
+
+          {% else %} {#  이미 등록된 정보가 없는 경우 #}
+              {# News Result #}
+              <div class='col-md-12'>
+                <form action="" onsubmit="return validateForm()" method="POST" name="addPerson"> 
+                  {% csrf_token %}
+                  <input type="hidden" name="url" value="{{news.id}}"> 
+            {% for person in person_list %}
+              {# Person Evidence #}
+                <div class="col-sm-4 col-xs-6">
+                    <div class="ibox float-e-margins">
+                        {# Person of Event #}
+                        <div class="ibox-title">
+                             <strong>{{ person.name }}</strong> <input type="checkbox" name="persons" value="{{person.id}}" id="id_person" />
+                        </div>
+                        <div class="ibox-content">
+                            <div class="text-center">
+                                <a href="{% url 'records:person_detail' person.id %}">
+                                <img alt="image" width='200' class="img-circle m-t-xs img-responsive" src="{{ person.picture.url }}"> </a>
+                            </div>
+                            <p><i class="fa fa-map-marker"></i> {{ person.nick_name }} </p>
+                            <p><i class="fa fa-calendar"></i> Birth Year : {{ person.birth }}</p>
+                            <p> Jobs :
+                              {{person.jobs.all|join:", "}}
+                            </p>
+                            <p> Tags :
+                              {{person.tags.all|join:", "}}
+                            </p>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>{# End of Person #}
+            {% endfor %}
+
+            {% for event in event_list %}
+              {# Person Evidence #}
+                <div class="col-sm-4 col-xs-6">
+                    <div class="ibox float-e-margins">
+                        {# Person of Event #}
+                        <div class="ibox-title">
+                             <strong>{{ person.name }}</strong> <input type="checkbox" name="persons" value="{{person.id}}" id="id_person" />
+                        </div>
+                        <div class="ibox-content">
+                            <div class="text-center">
+                                <a href="{% url 'records:person_detail' person.id %}">
+                                <img alt="image" width='200' class="img-circle m-t-xs img-responsive" src="{{ person.picture.url }}"> </a>
+                            </div>
+                            <p><i class="fa fa-map-marker"></i> {{ person.nick_name }} </p>
+                            <p><i class="fa fa-calendar"></i> Birth Year : {{ person.birth }}</p>
+                            <p> Jobs :
+                              {{person.jobs.all|join:", "}}
+                            </p>
+                            <p> Tags :
+                              {{person.tags.all|join:", "}}
+                            </p>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>{# End of Person #}
+            {% endfor %}
+                {% if person_list %}
+                    <button class='btn btn-default' type='cancel'> Cancel</button>
+                    <button class='btn btn-primary' id='btnSumbit' type='submit'> NEXT (Event 등록)</button>
+                {% endif %}  
+                </form>
+              </div> <!-- col-md-12 -->
+
+        {% endif %} {# End if #}
+
+                <div class="col-sm-4 col-xs-6" id='addPersonResult'>
+                    <div class="ibox float-e-margins">
+                        {# Person of Event #}
+                        <div class="ibox-title">
+                            <h3><strong> 인물 추가 </strong></h3>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="text-center"> 
+                              <a href="{% url 'records:add_person' %}?nexturl={{url}}&person={{person}}&event={{event}}"> 
+                                  <button type='button' class='btn btn-primary btn-lg' id='btn-addPerson'>인력추가</button>
+                               </a>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+    
+            </div> {# col-md-12 #}
+        </div> {# row #}
+    </div> {# End #}
+
+{% endblock content %}
+
+
+{% block javascript %}
+    <script>
+      function validateForm(){
+        var person = document.forms["addPerson"]["person"].value;
+        if( person == "" ) {
+          alert("Select Person");
+          return false;
+        }
+      }
+    </script>
+
+{% endblock javascript %}
+

@@ -18,19 +18,22 @@ from django.contrib import admin
 from django.conf import settings
 from django.contrib.auth import views as login_views
 from django.conf.urls.static import static
-from authentication import views as signup_views
+from django.shortcuts import redirect
+
+from mySite.authentication import views as signup_views
 
 urlpatterns = [
-    # url('^$', lambda r:)
-    url(r'^admin/', admin.site.urls),
-    url(r'^master/', include('master.urls', namespace='master')),
-    url(r'^records/', include('records.urls', namespace='records')),
-    url(r'^authentication/', include('authentication.urls', namespace='authentication')),
+    url('^$', lambda r: redirect('/records/'), name='home'),
+    url(r'^xmlyoon/', admin.site.urls),
+    url(r'^master/', include('mySite.master.urls', namespace='master')),
+    url(r'^records/', include('mySite.records.urls', namespace='records')),
+    url(r'^authentication/', include('mySite.authentication.urls', namespace='authentication')),
     # url(r'^evidence/', include('evidence.urls', namespace='evidence')),
 
     url(r'^signup/$', signup_views.signup, name='signup'),
     url(r'^login', login_views.login, {'template_name': 'authentication/login.html'},
         name='login'),
+    url(r'^logout', signup_views.logout, name='logout'),
 ]
 
 if settings.DEBUG:

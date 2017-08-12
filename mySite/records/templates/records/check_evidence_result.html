@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block header-index %}
+    <h2> 사람과 해당 사람의 사건 그리고 증거를 기억합시다.</h2>
+    <a href="{% url 'records:add_news' %}"> 
+            <button type='button' class='btn btn-primary pull-right'>사람/시건/뉴스 등록</button>
+    </a>
+    <ol class="breadcrumb">
+        <li>
+            <a href="{% url 'home' %}"> <i class="fa fa-home"></i> Home </a> 
+        </li>
+        <li>
+            사람 / 사건 / 증거의 기록 
+        </li>
+        <li class="active">
+            <strong>세번째 단계 : 뉴스 기사 등록  </strong>
+        </li>
+    </ol>
+{% endblock header-index %}
+
+
+{% block content %}
+    <div class="wrapper wrapper-content">
+        <div class="row animated fadeInRight">
+        {# Check Person #}
+
+            <div class='col-md-12'>
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5> 등록하고자 하는 뉴스의 URL 정보를 입력</h5>
+                    </div>
+                    {# 뉴스 URL #}
+                    <div class="ibox-content">
+                        {# FORM START #}
+                        <form method="POST" action="{% url 'records:check_evidence' personevent %}" class="form-horizontal">
+                            {% csrf_token %}
+                            <div class="input-group">
+                                <input type="text" name='url' class="form-control"> 
+                                    <span class="input-group-btn"> 
+                                        <button type="submit" class="btn btn-primary">Check!
+                                        </button> 
+                                    </span>
+                            </div>
+                        </form>
+                    </div> <!-- ibox-content -->
+
+                </div>
+
+                {# 뉴스 검 Result #}
+                <div class="ibox float-e-margins">
+                    {# News   #}
+                    <div class="ibox-title">
+                        <h5> 뉴스 내용 </h5>
+                    </div>
+                    <div class="ibox-content">
+                        <div>
+                            <div class="feed-activity-list">
+                                <div class="feed-element">
+                                    <div class="media-body">
+                                        <small class="pull-right"> {{ news.created_at }} </small>
+                                        <strong> {{ news.media }} </strong> posted <strong>{{news.title}}</strong>  <br>
+                                        <div class="well">
+                                            {{ news.content | linebreaks }} <br>
+                                            <small> published at : {{ news.published_at }} </small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="wrapper wrapper-content">
+        <div class="row animated fadeInRight">
+            <div class='col-md-4'>
+                <h3>등록하고자 하는 사람</h3>
+                {% include 'records/partial/person_info.html' %}
+            </div>
+
+            <div class='col-md-8'>
+                <h3>등록하자고 하는 이벤트 </h3>
+                {% include 'records/partial/event_info.html' %}
+            </div>
+        </div>
+    </div>
+
+    <div class="wrapper wrapper-content">
+        <div class="row animated fadeInRight">
+            <form action="{% url 'records:add_evidence' %}" method="POST"> 
+                {% csrf_token %}
+                {{form}}
+                <button type="submit" class="btn btn-primary btn-rounded btn-block"> 해당 기사를 {{person.name}} 의 {{event.name}}  등록하겠습니다.</button>
+            </form>
+        </div>
+    </div>
+{% endblock content %}
+
+
+{% block javascript %}
+<link href="{% static 'css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css' %}" rel="stylesheet">
+<style>
+   input[type="checkbox"]{
+     zoom: 1.5;
+   }
+</style>
+{% endblock javascript %}

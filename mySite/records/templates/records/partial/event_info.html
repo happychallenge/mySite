@@ -1,0 +1,22 @@
+<div class="ibox float-e-margins">
+    <div class="ibox-title">
+        <h5>{{ event.name }}</h5> 
+        
+    </div>
+    <div class="ibox-content">
+        <div class="ibox-content no-padding profile-content">
+            <p><i class="fa fa-map-marker"> 분류 : {{ event.category }} </i></p>
+            {% if checkbox %}
+                <input type="checkbox" value="{{event.id}}" checked name="event" class="checkbox checkbox-primary pull-right">
+            {% endif %}
+            <p> 설명 : <br>
+                {{ event.content }}
+            </p>
+            {% if event.happened_at %}
+                <p> <small> 발생일 : {{ event.happened_at }} </small></p>
+            {% endif %}
+            <p> <small> 사건기록일 : {{ event.created_at }} </small></p>
+        </div>
+    </div>
+</div>
+

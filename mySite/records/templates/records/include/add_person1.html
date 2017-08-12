@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block main_subtree %}
+    <li>
+        기록 
+    </li>
+    <li class="active">
+        <strong>사람 + 사건 + URL </strong>
+    </li>
+{% endblock main_subtree %}
+
+{% block content %}
+<div class="row">
+    <div class="col-sm-12">
+        <div class="ibox float-e-margins">
+            {# FORM TITLE #}
+            <div class="ibox-title">
+                <h5> 사람 정보 추가 <small> 반드시 이름과 사진을 등록하여 차후 중복 등록이 없도록 합시다.</small></h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-wrench"></i>
+                    </a>
+                </div>
+            </div>
+            {# FORM CONTENT #}
+            <div class="ibox-content">
+                {# FORM START #}
+
+                <form method="POST" enctype='multipart/form-data' class="form-horizontal" id='addPersonForm'>
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Name</label>
+                        <div class="col-sm-10"><input type="text" name='name' class="form-control"></div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Nick Name</label>
+                        <div class="col-sm-10"><input type="text" name='nick_name' class="form-control">
+                        <span class="help-block m-b-none">해당 인물을 잘 표현하는 별명을 입력해 주시기 바랍니다.</span></div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Birth Year</label>
+                        <div class="col-sm-10"><input type="text" name='birth_year' class="form-control"></div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">JOB</label>
+                        <div class="col-sm-10">
+                            <span class="help-block m-b-none"> 직업이 해당 사항을 모두 선택하시면 됩니다.</span>
+                            {% for job in jobs %}
+                                <label class="checkbox-inline"> <input type="checkbox" value="{{job.id}}" name='jobs' id='id_jobs'> {{job.name}} </label>
+                            {% endfor %}
+                        </div>
+
+                    </div>
+                    <div class="hr-line-dashed"></div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Picture</label>
+                        <div class="col-sm-10">
+                            <input type="file" name='picture' class="form-control" id='id_picture' accept="image/*">
+                            <span class="help-block m-b-none">해당 인물의 사진은 반드시 등록을 하시기 바랍니다.</span>
+                        </div>
+                        <input type="hidden" name="x" id="id_x" />
+                        <input type="hidden" name="y" id="id_y" />
+                        <input type="hidden" name="width" id="id_width" />
+                        <input type="hidden" name="height" id="id_height" />
+                    </div>
+                    <div class="hr-line-dashed"></div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Tags</label>
+                        <div class="col-sm-10"><input type="text" name='tags' class="form-control">
+                        <span class="help-block m-b-none">Tag를 , 로 구분하여 입력하시기 바랍니다.</span></div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+
+                    <div class="form-group">
+                        <div class="col-sm-6 col-sm-offset-2">
+                            <button class="btn btn-white" type="cancel">Cancel</button>
+                            <button class="btn btn-primary" type="submit">Save changes</button>
+                        </div>
+                    </div>
+                </form>
+            
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL TO CROP THE IMAGE -->
+<div class="modal fade" id="modalCrop">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close" type='button' data-dismiss='modal' aria-label='Close'>
+                    <span aria-hidden='true'>&times;</span>
+                </button>
+                <h4 class="modal-title">Crop the photo</h4>
+            </div>
+            <div class="modal-body">
+                <img src="" id='image' style='max-width: 100%'>
+            </div>
+            <div class="modal-footer">
+                <div class="btn-group pull-left" role='group'>
+                    <button type='button' class="btn btn-default js-zoom-in">
+                        <span class="glyphicon glyphicon-zoom-in"></span>
+                    </button>
+                    <button type='button' class="btn btn-default js-zoom-out">
+                        <span class="glyphicon glyphicon-zoom-out"></span>
+                    </button>
+                </div>
+                <button type='button' class="btn btn-default" data-dismiss='modal'>Cancel</button>
+                <button type='button' class="btn btn-primary js-crop-and-upload" data-dismiss='modal'>Crop and Upload</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block javascript %}
+<link href="{% static 'css/cropper.min.css' %}" rel="stylesheet">
+<script src="{% static 'js/cropper.min.js' %}"></script>
+<script>
+$(function(){
+
+// SCRIPT TO OPEN the MODAL With the Preview
+    $('#id_picture').change(function() {
+        if(this.files && this.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                $('#image').attr('src', e.target.result);
+                $('#modalCrop').modal("show");
+            }
+            reader.readAsDataURL(this.files[0]);
+        }
+    });
+
+    // SCRIPTS TO HANDLE THE CROPPER BOX
+    var $image = $('#image');
+    var cropBoxData;
+    var canvasData;
+
+    $('#modalCrop').on('shown.bs.modal', function(){
+        $image.cropper({
+            viewMode: 1,
+            aspectRatio: 1/1,
+            minCropBoxWidth: 200,
+            minCropBoxHeight: 200,
+            ready: function(){
+                $image.cropper('setCanvasData', canvasData);
+                $image.cropper('setCropBoxData', cropBoxData);
+            }
+        });
+    }).on('hidden.bs.modal', function(){
+        cropBoxData = $image.cropper('getCropBoxData');
+        canvasData = $image.cropper('getCanvasData');
+        $image.cropper('destory');
+    });
+
+    $(".js-zoom-in").click(function(){
+        $image.cropper('zoom', 0.1);
+    })
+    $(".js-zoom-out").click(function(){
+        $image.cropper('zoom', -0.1);
+    });
+
+    // SCRIPT TO COLLECT THE DATA AND POST TO THE SERVER
+    $('.js-crop-and-upload').click(function(){
+        var cropData = $image.cropper('getData');
+        $('#id_x').val(cropData['x']);
+        $('#id_y').val(cropData['y']);
+        $('#id_height').val(cropData['height']);
+        $('#id_width').val(cropData['width']);
+        // $('#personForm').submit();
+    });
+});
+</script>
+{% endblock javascript %}
+
+
+{% block backup %}
+ 
+{% endblock backup %}

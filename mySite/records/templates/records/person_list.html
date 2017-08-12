@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block header-index %}
+    <h2>기억을 통해 실수를 반복하지 맙시다.</h2>
+    <a href="{% url 'records:check_person' %}"> 
+            <button type='button' class='btn btn-primary pull-right'>사람/시건/뉴스 등록</button>
+    </a>
+    <ol class="breadcrumb">
+        <li>
+            <a href="{% url 'home' %}"> <i class="fa fa-home"></i> Home </a> 
+        </li>
+        <li>
+            좋은 분 
+        </li>
+        <li class="active">
+            <strong>사람 </strong>
+        </li>    
+    </ol>
+{% endblock header-index %}
+
+
+{% block content %}
+    
+    {% for person in person_list %}
+        <div class="col-md-6">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <a href="{% url 'records:person_detail' person.id %}">
+                        <strong>{{ person.name }}</strong>
+                    </a>
+                <!--
+                    <div class="ibox-tools">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <i class="fa fa-wrench"></i>
+                        </a>
+                        
+                        <ul class="dropdown-menu dropdown-user">
+                            <li><a href="#">Following</a></li>
+                        </ul>
+                    </div>
+                -->
+                </div>
+
+                <div class="ibox-content">
+                    <div class="col-sm-6">
+                        <div class="text-center">
+                            <a href="{% url 'records:person_detail' person.id %}">
+                            <img alt="image" class="img-circle m-t-xs img-responsive" width='200px' src="{% if person.picture %} {{ person.picture.url }} {% else %} {% static 'images/nouser.png' %}{% endif %}"></a>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        
+                        <p><i class="fa fa-map-marker"></i> {{ person.nick_name }} </p>
+                        <p> Birth Year : {{ person.birth_year }}</p>
+                        <p> Jobs :
+                        {{person.jobs.all|join:", "}}
+                        </p>
+                        <p> Tags :
+                        {{person.tags.all|join:", "}}
+                        </p>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <h3>No Data </h3>
+    {% endfor %}
+
+{% endblock content %}
+

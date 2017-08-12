@@ -38,10 +38,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'bootstrap3',
 # User
-    'authentication',
-    'master',
-    'records',
+    'mySite.authentication',
+    'mySite.master',
+    'mySite.records',
     # 'evidence',
 ]
 
@@ -81,7 +83,7 @@ WSGI_APPLICATION = 'mySite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'mySite',
+        'NAME': 'postgres',
         'USER': 'mySite',
         'PASSWORD': 'mySite00',
         'HOST': 'localhost',

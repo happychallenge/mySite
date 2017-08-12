@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load static bootstrap3 %}
+
+{% block header-index %}
+    <h2> 사람과 해당 사람의 사건 그리고 증거를 기억합시.</h2>
+    <a href="{% url 'records:add_news' %}"> 
+            <button type='button' class='btn btn-primary pull-right'>사람/시건/뉴스 등록</button>
+    </a>
+    <ol class="breadcrumb">
+        <li>
+            <a href="{% url 'home' %}"> <i class="fa fa-home"></i> Home </a> 
+        </li>
+        <li>
+            사람 / 사건 / 증거의 기록 
+        </li>
+        <li class="active">
+            <strong>두번째 단계 : 사건등록 </strong>
+        </li>
+    </ol>
+{% endblock header-index %}
+
+
+{% block content %}
+<div class="row">
+    <div class="col-sm-12">
+        <div class="ibox float-e-margins">
+            {# FORM TITLE #}
+            <div class="ibox-title">
+                <h5> 사람 정보 추가 <small> 반드시 이름과 사진을 등록하여 차후 중복 등록이 없도록 합시다.</small></h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-wrench"></i>
+                    </a>
+                </div>
+            </div>
+            {# FORM CONTENT #}
+            <div class="ibox-content">
+                {# FORM START #}
+                {% for error in form.non_fields_errors %}
+                    <div class="alert alert-danger"> {{error}} </div> 
+                {% endfor %}
+                <form method="POST" action="{% url 'records:add_event' person %}" class="form-horizontal" id='addEventForm'>
+                    {% csrf_token %}
+                    {% for field in form.hidden_fields %}
+                        {{field}}
+                    {% endfor %}
+
+                    {% for field in form.visible_fields %}
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label"> {{field.label}} </label>
+                            <div class="col-sm-10">
+                                {{field}}
+                                <p class="help-block"> {{field.help_text}} </p>
+                                {% for error in field.errors %}
+                                    <div class="alert alert-danger"> {{error}} </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="hr-line-dashed"></div>
+                    {% endfor %}
+                    
+                    <div class="form-group">
+                        <div class="col-sm-6 col-sm-offset-2">
+                            <button class="btn btn-white" type="cancel">Cancel</button>
+                            <button class="btn btn-primary" type="submit">Save changes</button>
+                        </div>
+                    </div>
+                </form>
+            
+            </div> <!-- ibox-content -->
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+
+{% block javascript %}
+<script>
+$(function(){
+
+    $('.form-group label').addClass('col-sm-2');
+    $('.form-group input, .form-group textarea').addClass('form-control');
+});
+</script>
+{% endblock javascript %}

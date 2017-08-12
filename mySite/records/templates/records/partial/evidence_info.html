@@ -1,0 +1,20 @@
+{% load static %}
+<div class="feed-element">
+   <a href="#" class="pull-left">
+       <img alt="image" class="img-circle" src="{% if evidence.created_user.profile.picture.url %} {{ evidence.created_user.profile.picture.url }} {% else %} {% static 'image/nouser.png' %}{% endif %}">
+   </a>
+   <div class="media-body ">
+        <small class="pull-right"> {{evidence.news.created_at }} </small>
+        <strong> {{evidence.news.media}} </strong> posted <strong>{{evidence.news.title}}</strong>  <br>
+        <small class="text-muted"> <a href="{{ evidence.news.url}}" target="remember">{{ evidence.news.url}}</a>  </small>
+        <div class="well">
+           {{evidence.news.content | linebreaks}} <br>
+           <small> 발행일 : {{evidence.news.published_at }} </small>
+        </div>
+        <div class="pull-right">
+           <a class="btn btn-xs btn-white"><i class="fa fa-thumbs-up"></i> Like </a>
+           <a class="btn btn-xs btn-white"><i class="fa fa-heart"></i> Love</a>
+           <a class="btn btn-xs btn-primary"><i class="fa fa-pencil"></i> Message</a>
+        </div>
+    </div>
+</div>

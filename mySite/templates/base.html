@@ -6,8 +6,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> {% block title %} 우리는 과거를 통해 미래를 예측한다. {% endblock title %} </title>
-    <link href="{% static 'css/vendor/bootstrap.min.css' %}" rel="stylesheet">
+    <title> {% block title %} 우리는 과거의 경험을 통해 발전한다. {% endblock title %} </title>
+    <link href="{% static 'css/vendor/bootstrap.css' %}" rel="stylesheet">
     <link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/animate.css' %}" rel="stylesheet">
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
@@ -39,28 +39,53 @@
             </div>
 
         <!-- Main Title -->
-            {% block main_title %}
+            <div class="row wrapper border-bottom white-bg page-heading">
+                <div class="col-md-12">
+                {% block  header-index %}
                 
-            {% endblock main_title %}
+                {% endblock header-index %}
+                </div> <!-- col-md-12 -->
+            </div>
 
         <!-- Main Content -->
-            {% block content %}
+            <div class="wrapper wrapper-content animated fadeInRight">
+                <div class="row animated fadeInDown">
+                    <div class="col-md-10">
+                {% block content %}
 
-            {% endblock content %}
-
-            {# {% include 'footer.html' %} #}
-
+                {% endblock content %}
+                    </div>
+                    
+                <!--  TAG -->
+                    <div class="col-md-2">
+                {% block right_side %}
+                    {% include 'right_side.html' %}
+                {% endblock right_side %}
+                    </div>
+                </div>
+            </div>
+            <div class="wrapper wrapper-content animated fadeInRight">
+                <div class="row animated fadeInDown">
+                    <div class="col-md-12">
+                    {% include 'footer.html' %}
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+
+
+
     <!-- Mainly scripts --> 
     <script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/plugins/metisMenu/jquery.metisMenu.js' %}"></script>
     <script src="{% static 'js/plugins/slimscroll/jquery.slimscroll.min.js' %}"></script>
+    <script src="{% static 'js/inspinia.js' %}"></script>
+    <script src="{% static 'js/plugins/pace/pace.min.js' %}"></script>
+    
     <!-- Custom and plugin javascript -->
     {% block javascript %}        
-        <script src="{% static 'js/inspinia.js' %}"></script>
-        <script src="{% static 'js/plugins/pace/pace.min.js' %}"></script>
     {% endblock javascript %}
 </body>
 

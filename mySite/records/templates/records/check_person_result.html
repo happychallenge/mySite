@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block header-index %}
+    <h2>기억을 통해 실수를 반복하지 맙시다.</h2>
+    <a href="{% url 'records:add_news' %}"> 
+            <button type='button' class='btn btn-primary pull-right'>사람/시건/뉴스 등록</button>
+    </a>
+    <ol class="breadcrumb">
+        <li>
+            <a href="{% url 'home' %}"> <i class="fa fa-home"></i> Home </a> 
+        </li>
+        <li>
+            기록 
+        </li>
+        <li class="active">
+            <strong>사람 + 사건 + URL </strong>
+        </li>
+    </ol>
+{% endblock header-index %}
+
+
+{% block content %}
+    <div class="wrapper wrapper-content">
+        <div class="row animated fadeInRight">
+        {# Check Person #}
+
+            <div class='col-md-12'>
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5> 등록하고자 하는 사람 등록 여부 확인</h5>
+                    </div>
+                    <div class="ibox-content">
+                        {# FORM START #}
+                        
+                        <form method="POST" action="{% url 'records:check_person' %}" class="form-horizontal" id='addPersonForm'>
+                            {% csrf_token %}
+                            <div class="input-group">
+                                <input type="text" name='person' value='{{name}}' class="form-control"> 
+                                    <span class="input-group-btn"> 
+                                        <button type="submit" class="btn btn-primary">Check!
+                                        </button> 
+                                    </span>
+                            </div>
+                        </form>
+                    
+                    </div> <!-- ibox-content -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+{# 이미 등록된 사람의 관련 뉴스 보여 #}
+   <div class="wrapper wrapper-content">
+       <div class="row animated fadeInRight">
+   
+        {% for person in person_list %}
+           {# Person Infomation #}
+           <div class="col-md-4">
+               {% include 'records/partial/person_info.html' %}
+           </div>
+
+           {# Person Evidence #}
+           <div class="col-md-8">
+           
+           {# Person Evidence List  #}
+           {% for personevent in person.personevent_set.all %}
+
+                <div class="ibox float-e-margins">
+
+                   {# Event Title  #}
+                    <div class="ibox-title">
+                        <h5>{{ personevent.event }}</h5>
+                        <div class="ibox-tools">
+                           <i class="fa fa-chevron-down"></i>
+                        </div>
+                    </div>
+
+                   {# New Content  #}
+                    <div class="ibox-content">
+                        <div class="feed-activity-list">
+
+                        {% for evidence in personevent.evidence_set.all %}
+
+                            {% include 'records/partial/evidence_info.html' %}
+
+                            {% if forloop.last %}
+                                <div class="feed-element">
+                                    <a class="btn btn-default btn-rounded btn-block" href="#">
+                                        <i class="fa fa-plus"></i> 
+                                            추가 증거 등록
+                                    </a>
+                                    
+                                </div>
+                            {% endif %} {# if forloop.last #}
+                        
+                        {% endfor %} {# for evidence in personevent.evidence_set.all #}
+
+                       </div>
+                    </div> <!-- ibox-content -->
+
+                    <div class="ibox-content">
+                        <div class="feed-activity-list">
+                            <div class="feed-element">
+                                <a class="btn btn-info btn-rounded btn-block" href="{% url 'records:check_event' person.id %}">
+                                    <i class="fa fa-bell-o"></i> 
+                                        해당 인물을 다른 사건에 등록 
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+               </div>
+
+            {% empty %} {# for personevent in person.personevent_set.all #}
+                <div class="feed-element">
+                   <div class="media-body ">
+                        <a class="btn btn-info btn-rounded btn-block" href="{% url 'records:check_event' person.id %}">
+                            <i class="fa fa-plus"></i> 
+                              해당 인물을 다른 사건에 등록 
+                        </a>
+                    </div>
+                </div>
+
+            {% endfor %} {# for personevent in person.personevent_set.all #}
+   
+           </div>
+        {% endfor %}  {# for person in person_list #}
+           
+        </div>
+    </div> 
+
+    <div class="wrapper wrapper-content">
+        <div class="row animated fadeInRight">
+            <a class="btn btn-primary btn-rounded btn-block" href="{% url 'records:add_person' %}?person={{name}}"> 
+                <i class="fa fa-info-circle"></i> 
+                {% if person_list %}기존 인력은 동명이라 {% endif %} 새로운 사람 등록
+            </a>
+        </div>
+    </div>
+        
+{% endblock content %}
+
+
+{% block javascript %}
+
+{% endblock javascript %}
+
+

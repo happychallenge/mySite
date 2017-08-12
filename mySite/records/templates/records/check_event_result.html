@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block header-index %}
+    <h2> 사람과 해당 사람의 사건 그리고 증거를 기억합시다.</h2>
+    <a href="{% url 'records:add_news' %}"> 
+            <button type='button' class='btn btn-primary pull-right'>사람/시건/뉴스 등록</button>
+    </a>
+    <ol class="breadcrumb">
+        <li>
+            <a href="{% url 'home' %}"> <i class="fa fa-home"></i> Home </a> 
+        </li>
+        <li>
+            사람 / 사건 / 증거의 기록 
+        </li>
+        <li class="active">
+            <strong>두번째 단계 : 사건등록 </strong>
+        </li>
+    </ol>
+{% endblock header-index %}
+
+
+{% block content %}
+    <div class="wrapper wrapper-content">
+        <div class="row animated fadeInRight">
+        {# Check Person #}
+
+            <div class='col-md-12'>
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5> 등록하고자 하는 사건이되어 있는지 등록 여부 확인</h5>
+                    </div>
+
+                    <div class="ibox-content">
+                        {# FORM START #}
+                        <form method="POST" action="{% url 'records:check_event' person.id %}" class="form-horizontal">
+                            {% csrf_token %}
+                            <div class="input-group">
+                                <input type="text" name='event' class="form-control"> 
+                                    <span class="input-group-btn"> 
+                                        <button type="submit" class="btn btn-primary">Check!
+                                        </button> 
+                                    </span>
+                            </div>
+                        </form>
+                    </div> <!-- ibox-content -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="wrapper wrapper-content">
+
+    <form action="{% url 'records:person_event_matching' person.id %}" method="POST"> 
+        {% csrf_token %}
+        <div class="row animated fadeInRight">
+            <div class='col-md-4'>
+                <h3>등록하고자 하는 사람</h3>
+                {% include 'records/partial/person_info.html' with checkbox=True %}
+            </div>
+
+            <div class='col-md-8'>
+                <h3>관련 이벤트 리스트</h3>
+                {% for event in event_list %}
+                    {% include 'records/partial/event_info.html' with checkbox=True %}
+                    {% for personevent in event.personevent_set.all %}
+                        {% include 'records/partial/event_persons.html' %}
+                    {% endfor %}
+                {% empty %}
+                    <div class="feed-element">
+                       <div class="media-body "> 
+                            <a class="btn btn-info btn-rounded btn-block" href="{% url 'records:add_event' person.id %}">
+                                <i class="fa fa-plus"></i> 
+                                  새로운 사건 등록 
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+    {% if event_list %}
+        <div class="wrapper wrapper-content">
+            <div class="row animated fadeInRight">
+                <button type="submit" class="btn btn-primary btn-rounded btn-block" > 
+                    <i class="fa fa-info-circle"></i> 
+                     {{ person.name }} 과 사건 {{event.name}} 를 매핑하시겠습니까?
+                </a>
+            </div>
+        </div>         
+    {% endif %}  
+
+        </div>
+    </form>
+
+    </div>
+
+    
+{% endblock content %}
+
+
+{% block javascript %}
+<link href="{% static 'css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css' %}" rel="stylesheet">
+<style>
+   input[type="checkbox"]{
+     zoom: 1.5;
+   }
+</style>
+{% endblock javascript %}

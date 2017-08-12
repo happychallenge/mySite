@@ -1,0 +1,3 @@
+{% for item in results %}
+    <label class="checkbox-inline"> <input type="checkbox" value="{{item.id}}" name='jobs' id='id_checkbox_jobs' label='{{item.name}}'> {{item.name}} </label>
+{% endfor %}

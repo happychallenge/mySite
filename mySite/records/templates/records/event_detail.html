@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block header-index %}
+    <h2>기억을 통해 실수를 반복하지 맙시다.</h2>
+    <a href="{% url 'records:add_news' %}"> 
+            <button type='button' class='btn btn-primary pull-right'>사람/시건/뉴스 등록</button>
+    </a>
+    <ol class="breadcrumb">
+        <li>
+            <a href="{% url 'home' %}"> <i class="fa fa-home"></i> Home </a> 
+        </li>
+        <li>
+            <a>Event</a>
+        </li>
+        <li class="active">
+            <strong>Detail</strong>
+        </li>
+    </ol>
+{% endblock header-index %}
+
+
+{% block content %}
+    <div class="wrapper wrapper-content">
+        <div class="row animated fadeInRight">
+    
+            {# Event Infomation #}
+            <div class="col-md-4">
+                {% include 'records/partial/event_info.html' %}
+            </div>
+
+            {# Person Evidence #}
+            <div class="col-md-8">
+            
+                <div class="ibox float-e-margins">
+                    {# Event Title  #}
+                    <div class="ibox-title">
+                        <h4> <strong>{{ event.name }}</strong> 관련된 사람들 </h4>
+                        
+                    </div>
+
+                    <div class="ibox-content">
+                    {# Person Evidence List  #}
+                    {% for personevent in event.personevent_set.all %}
+
+                    {# New Content  #}
+                        {% include 'records/partial/event_persons.html' %}
+                    
+                    {% endfor %}
+                    </div>
+                
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+

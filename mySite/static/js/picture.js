@@ -3,13 +3,15 @@ $(function () {
   var jcrop_api,
       boundx,
       boundy,
-      xsize = 200,
-      ysize = 200;
+      xsize = 300,
+      ysize = 300;
   
   $("#crop-picture").Jcrop({
-    aspectRatio: xsize / ysize,
+    aspectRatio: 1 / 1,
+    minCropBoxWidth: 200,
+    minCropBoxHeight: 200,
     onSelect: updateCoords,
-    setSelect: [0, 0, 200, 200]
+    setSelect: [0, 0, 300, 300]
   },function(){
     var bounds = this.getBounds();
     boundx = bounds[0];

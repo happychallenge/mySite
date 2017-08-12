@@ -1,0 +1,33 @@
+{% load static %}
+<div class="ibox float-e-margins">
+    <div class="ibox-title">
+        <h5>인물 상세정보</h5> 
+        {% if checkbox %}
+            <input type="checkbox" checked value="{{person.id}}" name="person" class="checkbox checkbox-primary pull-right">
+        {% endif %}
+        
+    </div>
+    <div class="ibox-content">
+        <div class="ibox-content no-padding border-left-right">
+            <img alt="image" class="img-responsive" src="{% if person.picture %}{{ person.picture.url }}{% else %}{% static 'images/nouser.png' %}{% endif %}">
+        </div>    
+        <div class="ibox-content no-padding profile-content">
+            <div class="media-body ">
+                <h3><strong>{{ person.name }}</strong></h3>
+                <p><i class="fa fa-speaker"></i> {{ person.nick_name }} </p>
+                <p><i class="fa fa-calendar"></i> Birth Year : {{ person.birth_year }}</p>
+                <p><i class="fa fa-flag"></i> Jobs :
+                    {{person.jobs.all|join:", "}}
+                </p>
+                <p><i class="fa fa-pencil"></i> Tags :
+                    {{person.tags.all|join:", "}}
+                </p>
+            </div>
+            <div>
+                <a class="btn btn-xs btn-white"><i class="fa fa-thumbs-up"></i> Like </a>
+                <a class="btn btn-xs btn-white"><i class="fa fa-heart"></i> Love</a>
+                <a class="btn btn-xs btn-primary"><i class="fa fa-pencil"></i> Message</a>
+            </div>
+        </div>
+    </div>
+</div>
