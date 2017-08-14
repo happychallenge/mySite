@@ -8,30 +8,56 @@ from konlpy.tag import Kkma
 
 # Extract Source Name
 def extract_name(url):
-    name = re.findall('\.?(\w+)\.(?=com?|net)', url)
+    name = re.findall('\.?(\w+)\.(?=com?|net|org|kr)', url)
     return name[0]
 
-# def get_person_name(html):
-#     # old = [ '정부의', '정부가', '지지율', '호남의', '하지만', '구치소', '문제가', '복잡한', '대통령', 
-#     # '문제다', '지난해', '보이지', '사람이', '심지어', '기록이', '방대한', '제대로', '상당한', '어른이',
-#     # '인력이', '아니다', '어렵다', '이라고', '정치적', '자기가', '유리한', '아니면', '시간이', '태극기', 
-#     # '인상이', '한동안', '최대한', '설치로', '이동식', '나머지', '시설도', '반입한', '반입해', '여의도', 
-#     # '갈등이', '위기가', '예정인', '보인다', '기반인', '하려고', '내야수', '수년간', '이어온', '동양의',
-#     # '태어난', '성악가', '아이들', '서울로', '보냈다']
-#     # # pattern = re.compile(r'(?<=[^가-힣])[김이박최정강조윤장임오한신서권황안송류홍전고문손양배조백허남심유노하전정곽성차유구우주임나신민진지엄원채강천양공현방변함노염여추변도석신소선주설방마정길위연표명기금왕반옥육진인맹제탁모남궁여장어유국은편용강구예봉한경소사석부황보가복천목태지형피계전감음두진동장온송경제갈사공호하빈선우연채우범설양갈좌노반팽승공간상기국시서문위도시이호채강진빈방단서견원방창당순마화구모이양종승성독고옹빙장추편아도평대풍궁강연견점흥섭국내제여낭봉해판초필궉근사매동방호두미요옹야묵자만운환범탄곡종창사영포엽수애단부순순돈학비개영후십뇌난춘수준초운내묘담장곡어금강전삼저군초교영순단후누돈소봉][^히은는을를늘에르었겼엔워할에쉬했떻쩌렇드디갔움들팎\.\s\(\)]\w*(?=[^가-힣])', re.MULTILINE)
-#     # #  [^히은는을를늘에르었겼엔워할에된와야과했디체터니데\"\.\s\(\)=]
-#     # pattern = re.compile(r'(?<=[^가-힣])\w(?=[^가-힣])')
-#     kkma = Kkma()
-#     names = kkma.nouns(html)
 
-#     result = []
-#     count = Counter(names)
-#     for name,value in count.most_common(30):
-#         print(name, ": ", value)
-#         if len(name) >= 2 and len(name) <= 4:
-#             result.append(name)
-#     print(result)
-#     return result
+# Naver
+def get_contents_from_insight(url):
+    result = {}
+
+    html = requests.get(url).text
+    script = re.compile(r'<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>')
+    html = script.sub('', html)
+    soup = BeautifulSoup(html, 'html.parser')
+    
+    try:
+        result['title'] = soup.findAll(attrs={"property":"og:title"})[0]['content']
+        content = soup.find('div', {'class':'news__view__article'}).get_text()
+        
+        result['content'] = content
+        result['published_at'] = soup.select('span.news__view__header__date')[0].get_text()[:10]
+    except AttributeError as e:
+        print(e)
+    
+    return result
+
+# print(get_contents_from_insight('http://www.insight.co.kr/news/115737'))
+
+
+# Naver
+def get_contents_from_gdnews(url):
+    result = {}
+
+    html = requests.get(url).text
+    script = re.compile(r'<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>')
+    html = script.sub('', html)
+    soup = BeautifulSoup(html, 'html.parser')
+    
+    try:
+        result['title'] = soup.findAll(attrs={"property":"og:title"})[0]['content']
+        content = soup.find('div', {'class':'cnt_view'}).get_text()
+        
+        result['content'] = content
+        pdate = soup.select('ul.art_info > li')[1].get_text()[3:]
+        result['published_at'] = pdate[:4] + '-' + pdate[5:7] + '-' + pdate[8:10]
+    except AttributeError as e:
+        print(e)
+    
+    return result
+
+# print(get_contents_from_gdnews('http://www.gdnews.kr/news/article.html?no=2986'))
+
 
 # Naver
 def get_contents_from_naver(url):
@@ -53,6 +79,25 @@ def get_contents_from_naver(url):
 # print(get_contents_from_naver('http://news.naver.com/main/read.nhn?mode=LSD&mid=shm&sid1=102&oid=032&aid=0002809430'))
 
 
+# Naver
+def get_contents_from_peoplepower21(url):
+    result = {}
+
+    html = requests.get(url).text
+    soup = BeautifulSoup(html, 'html.parser')
+    
+    try:
+        result['title'] = soup.findAll(attrs={"property":"og:title"})[0]['content']
+        content = soup.find('div', {'class':'xe_content'}).get_text()
+        
+        result['content'] = content
+        # result['published_at'] = soup.select('ul li > span')[0].get_text()[:10]
+    except AttributeError as e:
+        print(e)
+    
+    return result
+# print(get_contents_from_peoplepower21('http://www.peoplepower21.org/Whistleblower/1365271'))
+
 # yonhapnews
 def get_contents_from_yonhapnews(url):
     result = {}
@@ -67,7 +112,7 @@ def get_contents_from_yonhapnews(url):
     content = soup.find('div', { 'class':'article'}).get_text()
     result['content'] = content
     span = soup.select('.share-info .tt > em')[0].get_text()
-    result['published_at'] = result['published_at'] = span[:4] + '-' + span[5:7] + '-' + span[8:10]
+    result['published_at'] = span[:4] + '-' + span[5:7] + '-' + span[8:10]
     # 
     
     return result

@@ -38,13 +38,22 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    'django.contrib.sites',
+# 3rd Party
     'bootstrap3',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.facebook',
+    'allauth.socialaccount.providers.kakao',
+    'allauth.socialaccount.providers.naver',
+
 # User
     'mySite.authentication',
     'mySite.master',
     'mySite.records',
-    # 'evidence',
+    'mySite.comments',
+    'mySite.mistake',
 ]
 
 MIDDLEWARE = [
@@ -55,6 +64,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
 ROOT_URLCONF = 'mySite.urls'
@@ -126,3 +140,6 @@ USE_TZ = True
 LOGIN_URL = '/login/'
 LOGOUT_URL = '/logout/'
 
+SITE_ID = 1
+
+# SOCIALACCOUNT_EMAIL_VERIFICATION = 'none'

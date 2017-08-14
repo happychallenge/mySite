@@ -1,7 +1,15 @@
 <div class="ibox float-e-margins">
     <div class="ibox-title">
         <h5>{{ event.name }}</h5> 
-        
+        <div class="ibox-tools">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                <i class="fa fa-wrench"></i>
+            </a>
+            
+            <ul class="dropdown-menu dropdown-user">
+                <li><a class='following' href="">Following</a></li>
+            </ul>
+        </div>
     </div>
     <div class="ibox-content">
         <div class="ibox-content no-padding profile-content">
@@ -10,13 +18,25 @@
                 <input type="checkbox" value="{{event.id}}" checked name="event" class="checkbox checkbox-primary pull-right">
             {% endif %}
             <p> 설명 : <br>
-                {{ event.content }}
+                {{ event.content|linebreaks }}
             </p>
             {% if event.happened_at %}
                 <p> <small> 발생일 : {{ event.happened_at }} </small></p>
             {% endif %}
             <p> <small> 사건기록일 : {{ event.created_at }} </small></p>
         </div>
+    {% with total_likes=event.user_like.count total_following=event.following.count users_like=event.user_like.all %}
+        <div class="btn-group"> 
+            <button class="btn btn-outline btn-primary btn-xs btnEventLike">
+                <i class="fa fa-thumbs-up"></i> {% if request.user not in users_like %}Like{% else %}UnLike{% endif %}
+                <span class="count"><span class="total"> {{total_likes}} </span> 명</span>
+            </button>
+            <button class="btn btn-primary btn-xs"><i class="fa fa-share"></i> Share</button>
+        </div>
+        <div class="pull-right">
+            <span class="count">following <span class="following"> {{total_following}} </span> 명</span>
+        </div>
+    {% endwith %}
     </div>
 </div>
 

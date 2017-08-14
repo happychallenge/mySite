@@ -28,6 +28,9 @@ urlpatterns = [
     url(r'^master/', include('mySite.master.urls', namespace='master')),
     url(r'^records/', include('mySite.records.urls', namespace='records')),
     url(r'^authentication/', include('mySite.authentication.urls', namespace='authentication')),
+    url(r'^mistake/', include('mySite.mistake.urls', namespace='mistake')),
+
+    url(r'^accounts/', include('allauth.urls')),
     # url(r'^evidence/', include('evidence.urls', namespace='evidence')),
 
     url(r'^signup/$', signup_views.signup, name='signup'),

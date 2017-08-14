@@ -3,6 +3,7 @@ from django.http import HttpResponse, Http404, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.template.loader import render_to_string
+from django.contrib import messages
 
 from mySite.decorators import ajax_required
 from mySite.master.models import Media, Job
@@ -53,6 +54,7 @@ def add_person(request):
                 person.tags.set(tag_array)
 
             person.save()
+            messages.success(request, "{} 이 추가 되었습니다.".format(name))
             return redirect('records:check_event', person.id)
     else:
         person = request.GET.get('person')
@@ -63,11 +65,11 @@ def add_person(request):
 @login_required
 def check_event(request, person_id):
     if request.method == 'POST':
-        name = request.POST.get('event')
+        tag = request.POST.get('event')
         person = get_object_or_404(Person, id=person_id)
-        event_list = Event.objects.prefetch_related('personevent_set').filter(tags=name)
+        event_list = Event.objects.prefetch_related('personevent_set').filter(tags__tag__contains=tag)
         return render(request, 'records/check_event_result.html', {
-                'event_list': event_list, 'person':person
+                'event_list': event_list, 'person':person, 'tag':tag
             })
     else:
         person = get_object_or_404(Person, id=person_id)
@@ -107,6 +109,8 @@ def add_event(request, person_id):
                     tagged, created = Tag.objects.get_or_create(tag=tag)
                     tag_array.append(tagged)
                 event.tags.set(tag_array)
+
+            messages.success(request, "{} 이 추가 되었습니다.".format(event.name))
 
             person = get_object_or_404(Person, id=person_id)
 
@@ -175,97 +179,9 @@ def add_evidence(request):
         news = get_object_or_404(News, id=news_id)
 
         Evidence.objects.create(personevent=personevent, news=news, created_user=request.user)
+        messages.success(request, "{} 이 {} 사건에 뉴스를 추가 하었습니다.".format(
+                    personevent.person.name, personevent.event.name))
 
         return redirect('records:person_detail', personevent.person.id)
 
-
-
-@login_required
-def add_news(request):
-    form = PersonEventNewsForm()
-    return render(request, 'records/add_news.html', {'form': form})
-
-
-@login_required
-def add_news_result(request, person=None, event=None, url=None):
-    evidence_list = None
-    person_list = None
-    event_list = None
-    news = None
-
-    if request.method == 'POST':
-        form = PersonEventNewsForm(request.POST)
-
-        if form.is_valid():
-            person = form.cleaned_data.get('person')
-            event = form.cleaned_data.get('event')
-            url = form.cleaned_data.get('url')
-
-    if News.objects.filter(url=url).count():
-        news_info = get_news(url)
-        content = news_info['content']
-        if not content.count(person):
-            form = PersonEventNewsForm(initial={'event': event, 'url':url})
-            error_message="해당 뉴스에는 '{}'란 이름이 없습니다. 다시 입력해 주시기 바랍니다.".format(person)
-            return render(request, 'records/add_news.html', {
-                        'form': form, 'error_messages': error_message
-                })
-
-        news = get_object_or_404(News, url=url)
-        if news.content.count(person):
-            try:
-                person_list = Person.objects.prefetch_related('personevent_set').filter(name=person)
-            except Person.DoesNotExist:
-                raise Http404
-    else:
-        news_info = get_news(url)
-        content = news_info['content']
-        if content.count(person):
-            media = get_object_or_404(Media, short=news_info['media'])
-            content = content[:400] + ' ......'
-            news = News.objects.create(
-                        url=url, 
-                        media=media, 
-                        title=news_info['title'], 
-                        content=content, 
-                        published_at=news_info.get('published_at', ""),
-                        created_user=request.user,
-                    )
-        else:
-            form = PersonEventNewsForm(initial={'event': event, 'url':url})
-            error_message="해당 뉴스에는 '{}'란 이름이 없습니다. 다시 입력해 주시기 바랍니다.".format(person)
-            return render(request, 'records/add_news.html', {
-                        'form': form, 'error_messages': error_message
-                })
-
-    events = event.split(' ')
-    try:
-        event_list = Event.objects.filter(name__contains=events)
-    except Person.DoesNotExist:
-        raise Http404
-
-    try:
-        evidence_list = Evidence.objects.select_related('personevent').filter(news=news)
-    except Person.DoesNotExist:
-        raise Http404
-
-    return render(request, 'records/add_news_result.html', {
-            'person': person,
-            'event': event,
-            'url': url,
-            'news': news,
-            'evidence_list': evidence_list,
-            'person_list': person_list,
-            'event_list': event_list,
-        })
-
-
-
-
-
-# @login_required
-# def person_news(request):
-#     if request.method == 'POST':
-#         form = PersonNewsForm(request.POST)
-#         if form.is_valid():
 

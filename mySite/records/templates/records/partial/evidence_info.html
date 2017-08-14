@@ -1,20 +1,37 @@
 {% load static %}
-<div class="feed-element">
-   <a href="#" class="pull-left">
+<div class="social-avatar">
+    <a href="#" class="pull-left">
        <img alt="image" class="img-circle" src="{% if evidence.created_user.profile.picture.url %} {{ evidence.created_user.profile.picture.url }} {% else %} {% static 'image/nouser.png' %}{% endif %}">
-   </a>
-   <div class="media-body ">
-        <small class="pull-right"> {{evidence.news.created_at }} </small>
-        <strong> {{evidence.news.media}} </strong> posted <strong>{{evidence.news.title}}</strong>  <br>
+    </a>
+</div>
+<div class="social-feed-box">
+  {# DROP DOWN MENU #}
+    <div class="pull-right social-action dropdown">
+        <button data-toggle="dropdown" class="dropdown-toggle btn-white">
+            <i class="fa fa-angle-down"></i>
+        </button>
+        <ul class="dropdown-menu m-t-xs">
+            <li><a href="#">Config</a></li>
+        </ul>
+    </div>
+    <div class="social-avatar">
+        <a href="#">
+            <strong> {{evidence.news.media}} </strong> posted <strong>{{evidence.news.title}}</strong>
+        </a>
+        <small class="text-muted">{{ evidence.news.created_at }}</small>
+    </div>
+    <div class="social-body ">
         <small class="text-muted"> <a href="{{ evidence.news.url}}" target="remember">{{ evidence.news.url}}</a>  </small>
         <div class="well">
-           {{evidence.news.content | linebreaks}} <br>
+           {{evidence.news.content|linebreaks|truncatewords:"40"}} <br>
            <small> 발행일 : {{evidence.news.published_at }} </small>
         </div>
-        <div class="pull-right">
-           <a class="btn btn-xs btn-white"><i class="fa fa-thumbs-up"></i> Like </a>
-           <a class="btn btn-xs btn-white"><i class="fa fa-heart"></i> Love</a>
-           <a class="btn btn-xs btn-primary"><i class="fa fa-pencil"></i> Message</a>
+        <div class="btn-group">
+            <button class="btn btn-white btn-xs"><i class="fa fa-thumbs-up"></i> Like</button>
+            <button class="btn btn-primary btn-xs"><i class="fa fa-share"></i> Share</button>
+            
         </div>
+        <div class="pull-right">{{evidence.comments.all.count}} 댓글 </div>
     </div>
+    {% include 'records/partial/comments.html' with comments=evidence.comments.all %}
 </div>

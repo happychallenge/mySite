@@ -21,9 +21,6 @@
 
 
 {% block content %}
-
-{% with person=person  %}
-    
     <div class="wrapper wrapper-content">
         <div class="row animated fadeInRight">
     
@@ -53,11 +50,11 @@
                     </div>
 
                     {# New Content  #}
-                    <div class="ibox">
-                        <div class="social-feed-separated">
+                    <div class="ibox-content">
+                        <div class="feed-activity-list">
 
                         {% for evidence in personevent.evidence_set.all %}
-                            {% include 'records/partial/evidence_info.html' with comments=evidence.comments.all %}
+                            {% include 'records/partial/evidence_info.html' %}
                         {% endfor %} 
                             {# 추가 증거 Button #}
                             <div class="feed-element">
@@ -98,64 +95,5 @@
             </div> {# class="col-md-8" #}
         </div> {# class="row animated fadeInRight" #}
     </div>
-{% endwith %}
 {% endblock content %}
 
-
-{% block javascript %}
-<script type='text/javascript'>
-
-    function getCookie(name) {
-        var cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            var cookies = document.cookie.split(';');
-            for (var i = 0; i < cookies.length; i++) {
-                var cookie = jQuery.trim(cookies[i]);
-                // Does this cookie string begin with the name we want?
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
-    var csrftoken = getCookie('csrftoken');
-
-    $("button.btnPersonLike").click(function(){
-
-        $.ajax({
-            url : "{% url 'records:ajax_person_like' person.id %}", 
-            type: "POST",
-            data: {'csrfmiddlewaretoken': csrftoken},
-            dataType : 'json',
-            success: function(data){
-                if(data.status) {
-
-                    $('button.btnPersonLike').html(data.like == 'like' ? '<i class="fa fa-thumbs-up"></i>Like<span class="count"> <span class="total">  </span> 명</span>':'<i class="fa fa-thumbs-down"></i>UnLike<span class="count"> <span class="total"> </span> 명</span>');
-                    $('span.count .total').text(data.total_likes);
-                    alert(data.message);
-                }
-            }
-        });
-    });
-
-    $("a.following").click(function(e){
-        e.preventDefault();
-
-        $.ajax({
-            url : "{% url 'records:ajax_person_following' person.id %}", 
-            type: "POST",
-            data: {'csrfmiddlewaretoken': csrftoken},
-            dataType : 'json',
-            success: function(data){
-                if(data.status) {
-
-                    $('a.following').html(data.follow);
-                    $('span.count .following').text(data.total_following);
-                }
-            }
-        });
-    });
-</script>
-{% endblock javascript %}

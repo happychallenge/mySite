@@ -10,7 +10,7 @@
                             </span>
                             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                                 <span class="clear"> 
-                                    <span class="text-muted text-xs block">{{user.last_name}} <b class="caret"></b></span> 
+                                    <span class="text-muted text-xs block">{{user.first_name}} <b class="caret"></b></span> 
                                 </span>
                             </a>
                             <ul class="dropdown-menu animated fadeInRight m-t-xs">
@@ -39,14 +39,15 @@
                     <li>
                         <a href="{% url 'records:person_list' %}"><i class="fa fa-diamond"></i> <span class="nav-label">좋은 분 목록</span></a> 
                     </li>
+
                     <li>
-                        <a href="{% url 'records:add_news' %}"><i class="fa fa-diamond"></i> <span class="nav-label">사람 등록 프로세스</span></a> 
+                        <a href="{% url 'records:check_person' %}"><i class="fa fa-user"></i> <span class="nav-label">사람/사건/증거</span></a> 
                     </li>
                     <li>
-                        <a href="{% url 'records:check_person' %}"><i class="fa fa-diamond"></i> <span class="nav-label">사람/사건/증거</span></a> 
+                        <a href="{% url 'records:event_list' %}"><i class="fa fa-bar-chart-o"></i> <span class="nav-label">사건 목록</span></a> 
                     </li>
                     <li>
-                        <a href="{% url 'records:person_list' %}"><i class="fa fa-bar-chart-o"></i> <span class="nav-label">사건 목록</span></a> 
+                        <a href="{% url 'mistake:add_report' %}"><i class="fa fa-bar-chart-o"></i> <span class="nav-label">오류 보고</span></a> 
                     </li>
                     <li>
                         <a href="#"><i class="fa fa-bar-chart-o"></i> <span class="nav-label">Graphs</span><span class="fa arrow"></span></a>

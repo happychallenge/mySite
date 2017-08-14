@@ -1,0 +1,36 @@
+{% load static %}
+{% for comment in comments %}
+    <div class="social-footer">
+        <div class="social-comment">
+            <a href="" class="pull-left">
+                <img alt="image" class="img-circle" src="{% if comment.created_user.profile.picture %} {{ comment.created_user.profile.picture.url }}{% else %}{% static 'images/nouser.png' %}{% endif %}">
+            </a>
+            <div class="media-body">
+                <a href="#">
+                    {{ comment.created_user.first_name }}
+                </a> 
+                {{ comment.content|linebreaks}}
+                <a href="#" class="small"><i class="fa fa-thumbs-up"></i> 26 Like this!</a> -
+                <small class="text-muted"> {{comment.created_at}} </small>
+            </div>
+
+        <!--
+            <div class="social-comment">
+                <a href="" class="pull-left">
+                    <img alt="image" src="img/a7.jpg">
+                </a>
+                <div class="media-body">
+                    <a href="#">
+                        Andrew Williams
+                    </a>
+                    Making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words.
+                    <br/>
+                    <a href="#" class="small"><i class="fa fa-thumbs-up"></i> 26 Like this!</a> -
+                    <small class="text-muted">12.06.2014</small>
+                </div>
+            </div>
+        -->
+        </div>
+
+    </div>
+{% endfor %}

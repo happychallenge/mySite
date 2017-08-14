@@ -4,9 +4,11 @@
 
 {% block header-index %}
     <h2>기억을 통해 실수를 반복하지 맙시다.</h2>
-    <a href="{% url 'records:add_news' %}"> 
+{% if user.is_authenticated %}
+    <a href="{% url 'records:check_person' %}"> 
             <button type='button' class='btn btn-primary pull-right'>사람/시건/뉴스 등록</button>
     </a>
+{% endif %}
     <ol class="breadcrumb">
         <li>
             <a href="{% url 'home' %}"> <i class="fa fa-home"></i> Home </a> 
@@ -43,10 +45,8 @@
                     <div class="ibox-content">
                     {# Person Evidence List  #}
                     {% for personevent in event.personevent_set.all %}
-
                     {# New Content  #}
                         {% include 'records/partial/event_persons.html' %}
-                    
                     {% endfor %}
                     </div>
                 
@@ -57,3 +57,60 @@
     </div>
 {% endblock content %}
 
+{% block javascript %}
+<script type='text/javascript'>
+
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    var csrftoken = getCookie('csrftoken');
+
+    $(".btnEventLike").click(function(){
+
+        $.ajax({
+            url : "{% url 'records:ajax_event_like' event.id %}", 
+            type: "POST",
+            data: {'csrfmiddlewaretoken': csrftoken},
+            dataType : 'json',
+            success: function(data){
+                if(data.status) {
+
+                    $('.btnEventLike').html(data.like == 'like' ? '<i class="fa fa-thumbs-up"></i>Like<span class="count"> <span class="total">  </span> 명</span>':'<i class="fa fa-thumbs-down"></i>UnLike<span class="count"> <span class="total"> </span> 명</span>');
+                    $('span.count .total').text(data.total_likes);를
+                    alert(data.message);
+                }
+            }
+        });
+    });
+
+    $("a.following").click(function(e){
+        e.preventDefault();
+
+        $.ajax({
+            url : "{% url 'records:ajax_event_following' event.id %}", 
+            type: "POST",
+            data: {'csrfmiddlewaretoken': csrftoken},
+            dataType : 'json',
+            success: function(data){
+                if(data.status) {
+
+                    $('a.following').html(data.follow);
+                    $('span.count .following').text(data.total_following);
+                }
+            }
+        });
+    });
+</script>
+{% endblock javascript %}

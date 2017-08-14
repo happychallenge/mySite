@@ -33,6 +33,8 @@ class Person(models.Model):
     tags = models.ManyToManyField('Tag', blank=True)
     status = models.CharField(max_length=1, choices=STATUS_CHOICES, default=DRAFT)
     created_user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
+    user_like = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='person_liked', blank=True)
+    following = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='person_follow', blank=True)
     created_date = models.DateTimeField(auto_now_add=True,null=True, blank=True)
 
     def __str__(self):
@@ -45,15 +47,22 @@ class Person(models.Model):
 
     def create_tags(self, tags):
         tags = tags.strip()
-        tag_list = tags.split(' ')
+        tag_list = tags.split(',')
         for tag in tag_list:
             if tag:
                 tag, *_ = tag.split(',')
                 t, created = Tag.objects.get_or_create(tag=tag.lower(),
-                                    article=self)
+                                    person=self)
     def get_tags(self):
-        return Tag.objects.filter(article=self)
+        return Tag.objects.filter(person=self)
 
+    @property
+    def total_likes(self):
+        return self.user_like.count()
+
+    @property
+    def total_following(self):
+        return self.following.count()        
 
 class Event(models.Model):
     """docstring for Event"""
@@ -63,12 +72,21 @@ class Event(models.Model):
     category = models.ForeignKey(EventCategory, null=True, blank=True)
     tags = models.ManyToManyField('Tag', blank=True)
     created_user = models.ForeignKey(settings.AUTH_USER_MODEL,null=True, blank=True)
+    user_like = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='event_liked', blank=True)
+    following = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='event_follow', blank=True)
     happened_at = models.DateField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name
 
+    @property
+    def total_likes(self):
+        return self.user_like.count()
+
+    @property
+    def total_following(self):
+        return self.following.count()   
 
 class PersonEvent(models.Model):
     """docstring for PersonBehavior"""
@@ -110,7 +128,7 @@ class Evidence(models.Model):
         unique_together = (("personevent", "news"),)
 
     def __str__(self):
-        return '{}'.format(self.personevent)
+        return '{} {}'.format(self.personevent, self.news)
 
 
 class Evaluation(models.Model):
@@ -138,15 +156,21 @@ class Tag(models.Model):
         return self.tag
 
     @staticmethod
-    def get_popular_tags():
-        tags = Tag.person_set.all()
+    def get_person_popular_tags():
+        tags = Tag.objects.all()
         count = {}
         for tag in tags:
-            if tag.tag in count:
-                count[tag.tag] = count[tag.tag] + 1
-            else:
-                count[tag.tag] = 1
+            count[tag.tag] = tag.person_set.count()
         sorted_count = sorted(count.items(), key=lambda t: t[1], reverse=True)
-        return sorted_count[:20]
+        return sorted_count[:10]
+
+    @staticmethod
+    def get_event_popular_tags():
+        tags = Tag.objects.all()
+        count = {}
+        for tag in tags:
+            count[tag.tag] = tag.event_set.count()
+        sorted_count = sorted(count.items(), key=lambda t: t[1], reverse=True)
+        return sorted_count[:10]
 
 

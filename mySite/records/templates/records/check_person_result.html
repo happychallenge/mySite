@@ -3,7 +3,7 @@
 
 {% block header-index %}
     <h2>기억을 통해 실수를 반복하지 맙시다.</h2>
-    <a href="{% url 'records:add_news' %}"> 
+    <a href="{% url 'records:check_person' %}"> 
             <button type='button' class='btn btn-primary pull-right'>사람/시건/뉴스 등록</button>
     </a>
     <ol class="breadcrumb">
@@ -11,16 +11,17 @@
             <a href="{% url 'home' %}"> <i class="fa fa-home"></i> Home </a> 
         </li>
         <li>
-            기록 
+            사람 / 사건 / 증거의 기록 
         </li>
         <li class="active">
-            <strong>사람 + 사건 + URL </strong>
-        </li>
+            <strong>첫번째 단계 : 사등록 </strong>
+        </li>람
     </ol>
 {% endblock header-index %}
 
 
 {% block content %}
+    {# 사 검색 INPUT 부문 #}
     <div class="wrapper wrapper-content">
         <div class="row animated fadeInRight">
         {# Check Person #}
@@ -50,17 +51,17 @@
         </div>
     </div>
 
-{# 이미 등록된 사람의 관련 뉴스 보여 #}
-   <div class="wrapper wrapper-content">
-       <div class="row animated fadeInRight">
+    {# 사 검색 OUTPUT 부문 #}
+    <div class="wrapper wrapper-content">
+        <div class="row animated fadeInRight">
    
         {% for person in person_list %}
-           {# Person Infomation #}
+           {# 001. 등록하자고 하는 사람 정보 #}
            <div class="col-md-4">
                {% include 'records/partial/person_info.html' %}
            </div>
 
-           {# Person Evidence #}
+           {# 002. 사람의 등록된 사건과 증 #}
            <div class="col-md-8">
            
            {# Person Evidence List  #}
@@ -79,21 +80,16 @@
                    {# New Content  #}
                     <div class="ibox-content">
                         <div class="feed-activity-list">
-
+                        {# 사건에 관련된 증거 보여 주기 #}
                         {% for evidence in personevent.evidence_set.all %}
-
                             {% include 'records/partial/evidence_info.html' %}
-
-                            {% if forloop.last %}
-                                <div class="feed-element">
-                                    <a class="btn btn-default btn-rounded btn-block" href="#">
-                                        <i class="fa fa-plus"></i> 
-                                            추가 증거 등록
-                                    </a>
-                                    
+                        {# 증거가 없을 때 #}
+                        {% empty %}    
+                            <div class="ibox ibox-content">
+                               <div class="media-body "> 
+                                    <h3> '{{personevent.event}}' 의 증거 없습니다. </h3>
                                 </div>
-                            {% endif %} {# if forloop.last #}
-                        
+                            </div>
                         {% endfor %} {# for evidence in personevent.evidence_set.all #}
 
                        </div>
@@ -124,20 +120,37 @@
             {% endfor %} {# for personevent in person.personevent_set.all #}
    
            </div>
+        {% empty %} 
+            <div class="ibox ibox-content">
+               <div class="media-body "> 
+                    <h3> '{{name}}' 라는 사람이 없습니다. </h3>
+                </div>
+            </div>
+
+            <div class="feed-element">
+               <div class="media-body "> 
+                    <a class="btn btn-info btn-rounded btn-block" href="{% url 'records:add_person' %}?person={{name}}">
+                        <i class="fa fa-plus"></i> 
+                          '{{name}}'을 새로운 사람으로 등록 
+                    </a>
+                </div>
+            </div>
         {% endfor %}  {# for person in person_list #}
            
-        </div>
-    </div> 
+        </div> <!-- class="row animated fadeInRight"  -->
+    </div> <!-- class="wrapper wrapper-content"  -->
 
+{% if person_list %}
     <div class="wrapper wrapper-content">
         <div class="row animated fadeInRight">
             <a class="btn btn-primary btn-rounded btn-block" href="{% url 'records:add_person' %}?person={{name}}"> 
                 <i class="fa fa-info-circle"></i> 
-                {% if person_list %}기존 인력은 동명이라 {% endif %} 새로운 사람 등록
+                기존 인력은 동명이라 '{{name}}'을 새로운 사람 등록
             </a>
         </div>
     </div>
-        
+{% endif %}
+
 {% endblock content %}
 
 

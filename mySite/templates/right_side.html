@@ -12,14 +12,9 @@
 
             <h5 class="tag-title">Tags</h5>
             <ul class="tag-list" style="padding: 0">
-                <li><a href=""><i class="fa fa-tag"></i> Family</a></li>
-                <li><a href=""><i class="fa fa-tag"></i> Work</a></li>
-                <li><a href=""><i class="fa fa-tag"></i> Home</a></li>
-                <li><a href=""><i class="fa fa-tag"></i> Children</a></li>
-                <li><a href=""><i class="fa fa-tag"></i> Holidays</a></li>
-                <li><a href=""><i class="fa fa-tag"></i> Music</a></li>
-                <li><a href=""><i class="fa fa-tag"></i> Photography</a></li>
-                <li><a href=""><i class="fa fa-tag"></i> Film</a></li>
+        {% for tag, count in popular_tags %}
+                <li><a href="{% url 'records:tag' tag type %}"><i class="fa fa-tag"></i> {{ count }} {{ tag }}</a></li> 
+        {% endfor %}
             </ul>
             <div class="clearfix"></div>
         </div>

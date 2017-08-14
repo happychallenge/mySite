@@ -1,11 +1,17 @@
 {% load static %}
 <div class="ibox float-e-margins">
     <div class="ibox-title">
-        <h5>인물 상세정보</h5> 
-        {% if checkbox %}
-            <input type="checkbox" checked value="{{person.id}}" name="person" class="checkbox checkbox-primary pull-right">
+        <h5>인물 상세정보</h5>
+        {% if not checkbox %}
+            <div class="ibox-tools">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                    <i class="fa fa-wrench"></i>
+                </a>
+                <ul class="dropdown-menu dropdown-user">
+                    <li><a class='following' href="">Following</a></li> 
+                </ul> 
+            </div>
         {% endif %}
-        
     </div>
     <div class="ibox-content">
         <div class="ibox-content no-padding border-left-right">
@@ -14,6 +20,9 @@
         <div class="ibox-content no-padding profile-content">
             <div class="media-body ">
                 <h3><strong>{{ person.name }}</strong></h3>
+                {% if checkbox %}
+                    <input type="checkbox" checked value="{{person.id}}" name="person" class="checkbox checkbox-primary pull-right">
+                {% endif %}
                 <p><i class="fa fa-speaker"></i> {{ person.nick_name }} </p>
                 <p><i class="fa fa-calendar"></i> Birth Year : {{ person.birth_year }}</p>
                 <p><i class="fa fa-flag"></i> Jobs :
@@ -23,11 +32,19 @@
                     {{person.tags.all|join:", "}}
                 </p>
             </div>
-            <div>
-                <a class="btn btn-xs btn-white"><i class="fa fa-thumbs-up"></i> Like </a>
-                <a class="btn btn-xs btn-white"><i class="fa fa-heart"></i> Love</a>
-                <a class="btn btn-xs btn-primary"><i class="fa fa-pencil"></i> Message</a>
+        {% with total_likes=person.user_like.count total_following=person.following.count users_like=person.user_like.all %}
+            <div class="btn-group"> 
+                <button class="btn btn-outline btn-primary btn-xs btnPersonLike">
+                    <i class="fa fa-thumbs-up"></i> {% if request.user not in users_like %}Like{% else %}UnLike{% endif %}
+                    <span class="count"><span class="total"> {{total_likes}} </span> 명</span>
+                </button>
+                <button class="btn btn-primary btn-xs"><i class="fa fa-share"></i> Share</button>
             </div>
+            <div class="pull-right">
+                <span class="count">following <span class="following"> {{total_following}} </span> 명</span>
+            </div>
+        {% endwith %}
+
         </div>
     </div>
 </div>
