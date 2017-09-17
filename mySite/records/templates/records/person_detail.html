@@ -160,6 +160,9 @@
     $("div.evidence_list").on("click", ".comment", function(){
 
         var evidence = $(this).closest(".social-feed-box");
+        var test = $(".comment-count", evidence);
+        var count = $(".commentCount", evidence).length;
+
         if ($(".comment_list", evidence).hasClass("tracking")) {
             $(".comment_list", evidence).slideUp();
             $(".comment_list", evidence).removeClass("tracking");
@@ -180,6 +183,7 @@
                 },
                 success: function(data){
                     $("div.comment_list", evidence).html(data);
+                    // $(".comment-count", evidence).text($(".commentCount", evidence).length)
                 },
             });
             return false;
@@ -191,10 +195,10 @@
 
         var keyCode = evt.which?evt.which:evt.keyCode;
         var evidence = $(this).closest(".social-feed-box");
-        
+
         if (keyCode == 13) {
             var form = $(this).closest("form");
-            var container = $(this).closest(".comment")
+            var container = $(this).closest(".comment_list")
             var input = $(this);
 
             $.ajax({
@@ -207,6 +211,8 @@
                 },
                 success: function(data){
                     $("div.comment_list", evidence).html(data);
+                    var evid_container = $(container).closest(".social-feed-box");
+                    $(".comment-count", evid_container).text($(".commentCount", container).length);
                 },
             });
             return false;
