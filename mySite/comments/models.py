@@ -19,9 +19,8 @@ class Comment(models.Model):
     def __str__(self):
         return "{} {}".format(self.evidence, self.created_user)
 
-
     def as_tree(self):
-        childre = list(slef.children.all())
+        children = list(sf.children.all())
         branch = bool(children)
         yield branch, self
         for child in children:

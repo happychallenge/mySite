@@ -27,6 +27,7 @@ urlpatterns = [
     url(r'^ajax_event_following/(?P<event_id>\d+)/$', views.ajax_event_following, name='ajax_event_following'),
 
     url(r'^tag/(?P<tag_name>\w+)/(?P<type>\w+)/$', views.tag, name='tag'),
+    url(r'^top_search/$', views.top_search, name='top_search'),
     # url(r'^add_news_result/$', views_reg.add_news_result, name='add_news_result'),
     # url(r'^add_news_result/(?P<person>.+)/$', views_reg.add_news_result, name='add_news_result'),
     # AJAX

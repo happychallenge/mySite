@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load i18n static bootstrap3 %}
+
+{% block header-index %}
+    <h2>이 시스템은 개발 경험이 없는 한 사람이 개발했습니다. 오류가 있더라도 이해를 부탁합니다.</h2>
+    
+    <ol class="breadcrumb">
+        <li>
+            <a href="{% url 'home' %}"> <i class="fa fa-home"></i> Home </a> 
+        </li>
+        <li>
+            <a>오류 신고</a>
+        </li>
+    </ol>
+{% endblock header-index %}
+
+
+{% block content %}
+<div class="row">
+    <div class="col-sm-12">
+        <div class="ibox float-e-margins">
+            {# FORM TITLE #}
+            <div class="ibox-title">
+                <h5> 오류 정보 추가 <small> 시스템에서 발생한 오류를 입력해 주시면 수정하겠습니다.</small></h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-wrench"></i>
+                    </a>
+                </div>
+            </div>
+            {# FORM CONTENT #}
+            <div class="ibox-content">
+                {# FORM START #}
+                {% for error in form.non_fields_errors %}
+                    <div class="alert alert-danger"> {{error}} </div> 
+                {% endfor %}
+                <form method="POST" action="{% url 'mistake:add_report' %}" enctype='multipart/form-data' class="form-horizontal">
+                    {% csrf_token %}
+                    
+                    {% bootstrap_form form %}
+                    
+                    <div class="form-group">
+                        <div class="col-sm-6 col-sm-offset-2">
+                            <button class="btn btn-white" type="cancel">Cancel</button>
+                            <button class="btn btn-primary" type="submit">Save changes</button>
+                        </div>
+                    </div>
+                </form>
+            
+            </div> <!-- ibox-content -->
+        </div>
+    </div>
+</div>
+{% endblock content %}
+

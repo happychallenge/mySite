@@ -6,6 +6,6 @@ class Profile(models.Model):
     """docstring for Profile"""
     """ 설명 """
     user = models.OneToOneField(settings.AUTH_USER_MODEL)
-    picture = models.ImageField(upload_to='user_profile/%Y/%m/')
+    picture = models.ImageField(upload_to='user_profile/%Y/%m/', verbose_name='')
     created_at = models.DateTimeField(auto_now_add=True)
 

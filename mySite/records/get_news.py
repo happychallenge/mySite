@@ -11,8 +11,34 @@ def extract_name(url):
     name = re.findall('\.?(\w+)\.(?=com?|net|org|kr)', url)
     return name[0]
 
+# Insight
+def get_contents_from_huffingtonpost(url):
+    result = {}
 
-# Naver
+    # html = requests.get(url).text
+    try:
+        response = requests.get(url, headers={'Accept-Encoding': 'gzip'}).text
+        # html = response.content.decode('cp949') "Accept-Encoding", "gzip"
+
+        # script = re.compile(r'<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>')
+        # html = script.sub('', html)
+        soup = BeautifulSoup(html, 'html.parser')
+    
+        result['title'] = soup.findAll(attrs={"property":"og:title"})[0]['content']
+        content = soup.find('div', {'id':'mainentrycontent'}).get_text()
+        
+        result['content'] = content
+        result['published_at'] = soup.select('span.posted time')[0].get_text()[:10]
+    except AttributeError as e:
+        print(e)
+    
+    return result
+
+# print(get_contents_from_huffingtonpost('http://www.huffingtonpost.kr/2017/07/29/story_n_17621212.html'))
+
+
+
+# Insight
 def get_contents_from_insight(url):
     result = {}
 

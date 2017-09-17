@@ -3,9 +3,7 @@
 
 {% block header-index %}
     <h2> 사람과 해당 사람의 사건 그리고 증거를 기억합시다.</h2>
-    <a href="{% url 'records:add_news' %}"> 
-            <button type='button' class='btn btn-primary pull-right'>사람/시건/뉴스 등록</button>
-    </a>
+
     <ol class="breadcrumb">
         <li>
             <a href="{% url 'home' %}"> <i class="fa fa-home"></i> Home </a> 
@@ -104,6 +102,15 @@
                     </div>
                 </div>         
             {% endif %}  
+
+            <div class="wrapper wrapper-content">
+                <div class="row animated fadeInRight">
+                    <a class="btn btn-info btn-rounded btn-block" href="{% url 'records:add_event' person.id %}">
+                                    <i class="fa fa-plus"></i> 
+                                      새로운 사건 등록 
+                    </a>
+                </div>
+            </div>   
 
             </div>
         </form>

@@ -38,7 +38,7 @@ class NewsAdmin(admin.ModelAdmin):
 class EvidenceAdmin(admin.ModelAdmin):
     class Meta:
         model = Evidence
-    list_display = ['personevent', 'news']
+    list_display = [ 'id', 'personevent', 'news']
 
 @admin.register(Evaluation)
 class EvaluationAdmin(admin.ModelAdmin):

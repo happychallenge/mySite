@@ -29,6 +29,7 @@ urlpatterns = [
     url(r'^records/', include('mySite.records.urls', namespace='records')),
     url(r'^authentication/', include('mySite.authentication.urls', namespace='authentication')),
     url(r'^mistake/', include('mySite.mistake.urls', namespace='mistake')),
+    url(r'^comments/', include('mySite.comments.urls', namespace='comments')),
 
     url(r'^accounts/', include('allauth.urls')),
     # url(r'^evidence/', include('evidence.urls', namespace='evidence')),
@@ -40,9 +41,9 @@ urlpatterns = [
 ]
 
 if settings.DEBUG:
-    import debug_toolbar
-    urlpatterns = [
-        url(r'^__debug__/', include(debug_toolbar.urls)),
-    ] + urlpatterns
+    # import debug_toolbar
+    # urlpatterns = [
+    #     url(r'^__debug__/', include(debug_toolbar.urls)),
+    # ] + urlpatterns
 
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

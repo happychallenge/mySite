@@ -91,7 +91,6 @@ def person_event_matching(request, person_id):
         return render(request, 'records/check_event.html', {'person':person})
 
 
-
 @login_required
 def add_event(request, person_id):
     tag_array = []
@@ -124,8 +123,6 @@ def add_event(request, person_id):
             'form':form, 'person':person_id
         })
 
-###################################
-# 
 
 @login_required
 def check_evidence(request, personevent_id):

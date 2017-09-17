@@ -1,5 +1,6 @@
 # records/models.py
 from django.db import models
+from django.db.models import Count
 from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
 
@@ -29,6 +30,7 @@ class Person(models.Model):
     birth_year = models.IntegerField(null=True, verbose_name='출생년도', blank=True)
     jobs = models.ManyToManyField(Job, blank=True)
     picture = models.ImageField(upload_to='person_picture/%Y/%m/', null=True, blank=True)
+    url = models.URLField(null=True, blank=True)
     regions = models.ManyToManyField(Region, blank=True)
     tags = models.ManyToManyField('Tag', blank=True)
     status = models.CharField(max_length=1, choices=STATUS_CHOICES, default=DRAFT)
@@ -41,8 +43,8 @@ class Person(models.Model):
         return self.name
 
     @staticmethod
-    def get_persons_published():
-        persons = Person.objects.filter(status=Person.PUBLISHED).order_by('-id')
+    def get_persons_following():
+        persons = Person.objects.annotate(num_following=Count('following')).order_by('-num_following')
         return persons
 
     def create_tags(self, tags):
@@ -63,6 +65,34 @@ class Person(models.Model):
     @property
     def total_following(self):
         return self.following.count()        
+
+    def get_parent(self):
+        return [relation.other for relation in Relationship.objects.select_related("other").filter(person=self, relationship='parent')]
+
+    def get_spouse(self):
+        return [relation.other for relation in Relationship.objects.select_related("other").filter(person=self, relationship='spouse')]
+
+    def get_children(self):
+        return [relation.person for relation in Relationship.objects.select_related("person").filter(other=self, relationship='parent')]
+
+    def get_sibling(self):
+        father = [relation.other for relation in Relationship.objects.select_related("other").filter(person=self, relationship='parent', ctype='father')][0]
+        return [relation.person for relation in Relationship.objects.select_related("person").filter(other=father, relationship='parent')]
+
+
+class Relationship(models.Model):
+    person = models.ForeignKey(Person, related_name='relationships')
+    other = models.ForeignKey(Person, related_name='relationothers')
+    relationship = models.CharField(max_length=10, 
+        choices=(('spouse', 'spouse'),('parent', 'parent'),))
+    ctype = models.CharField(max_length=10, 
+        choices=(('결혼', '결혼'),('이혼', '이혼'),('father', 'father'),('mother', 'mother'),))
+    class Meta:
+        unique_together = (('person', 'other'), ('other', 'person'), )
+
+    def __str__(self):
+        return "{} is {} of {}".format(self.other, self.relationship, self.person)
+
 
 class Event(models.Model):
     """docstring for Event"""

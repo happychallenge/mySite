@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 from os.path import dirname, abspath, join
+from django.core.urlresolvers import reverse_lazy
 
 # Build paths inside the project like this:  join(BASE_DIR, ...)
 BASE_DIR = dirname(dirname(dirname(abspath(__file__))))
@@ -39,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+    'django.contrib.humanize',
 # 3rd Party
     'bootstrap3',
     'allauth',
@@ -137,8 +139,10 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
-LOGIN_URL = '/login/'
-LOGOUT_URL = '/logout/'
+LOGIN_URL = reverse_lazy('login')
+LOGOUT_URL = reverse_lazy('logout')
+LOGIN_REDIRECT_URL = reverse_lazy('authentication:profile_detail')
+LOGOUT_REDIRECT_URL = reverse_lazy('home')
 
 SITE_ID = 1
 

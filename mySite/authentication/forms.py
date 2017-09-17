@@ -118,8 +118,6 @@ class ProfileForm(forms.ModelForm):
         y = self.cleaned_data.get('y')
         width = self.cleaned_data.get('width')
         height = self.cleaned_data.get('height')
-        # existed = self.cleaned_data.get('existed')
-
         image = Image.open(profile.picture)
         cropped_image = image.crop((x, y, width+x, height+y))
         resized_image = cropped_image.resize((200, 200), Image.ANTIALIAS)

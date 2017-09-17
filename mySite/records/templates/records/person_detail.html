@@ -11,10 +11,10 @@
             <a href="{% url 'home' %}"> <i class="fa fa-home"></i> Home </a> 
         </li>
         <li>
-            <a>인물상세정보</a>
+            <a>인물</a>
         </li>
         <li class="active">
-            <strong>Profile</strong>
+            <strong>인물상세정보</strong>
         </li>
     </ol>
 {% endblock header-index %}
@@ -37,8 +37,8 @@
             {# Person Evidence List  #}
             {% for personevent in person.personevent_set.all %}
 
-                <div class="ibox float-e-margins">
-                    {# Event Title  #}
+                <div class="ibox">
+                    {# EVENT INFO  #}
                     <div class="ibox-title">
                         <h5>{{ personevent.event }}</h5>
                         <div class="ibox-tools">
@@ -52,20 +52,17 @@
                         </div>
                     </div>
 
-                    {# New Content  #}
-                    <div class="ibox">
-                        <div class="social-feed-separated">
-
-                        {% for evidence in personevent.evidence_set.all %}
-                            {% include 'records/partial/evidence_info.html' with comments=evidence.comments.all %}
-                        {% endfor %} 
-                            {# 추가 증거 Button #}
-                            <div class="feed-element">
-                                <a class="btn btn-default btn-rounded btn-block" href="{% url 'records:check_evidence' personevent.id %}"> 
-                                    <i class="fa fa-plus"></i> 
-                                        추가 증거 등록
-                                </a>
-                            </div>
+                    {# EVIDENCE INFO #}
+                    <div class="ibox evidence_list">
+                    {% for evidence in personevent.evidence_set.all %}
+                        {% include 'records/partial/evidence_info.html' with comments=evidence.comments.all %}
+                    {% endfor %} 
+                        {# 추가 증거 Button #}
+                        <div class="feed-element">
+                            <a class="btn btn-default btn-rounded btn-block" href="{% url 'records:check_evidence' personevent.id %}"> 
+                                <i class="fa fa-plus"></i> 
+                                    추가 증거 등록
+                            </a>
                         </div>
                     </div> <!-- ibox-content -->
                     
@@ -102,6 +99,11 @@
 {% endblock content %}
 
 
+{% block right_side %}
+    {% include 'right_side.html' with type='P' %}
+{% endblock right_side %}
+
+
 {% block javascript %}
 <script type='text/javascript'>
 
@@ -123,7 +125,6 @@
     var csrftoken = getCookie('csrftoken');
 
     $("button.btnPersonLike").click(function(){
-
         $.ajax({
             url : "{% url 'records:ajax_person_like' person.id %}", 
             type: "POST",
@@ -131,10 +132,8 @@
             dataType : 'json',
             success: function(data){
                 if(data.status) {
-
                     $('button.btnPersonLike').html(data.like == 'like' ? '<i class="fa fa-thumbs-up"></i>Like<span class="count"> <span class="total">  </span> 명</span>':'<i class="fa fa-thumbs-down"></i>UnLike<span class="count"> <span class="total"> </span> 명</span>');
                     $('span.count .total').text(data.total_likes);
-                    alert(data.message);
                 }
             }
         });
@@ -142,7 +141,6 @@
 
     $("a.following").click(function(e){
         e.preventDefault();
-
         $.ajax({
             url : "{% url 'records:ajax_person_following' person.id %}", 
             type: "POST",
@@ -150,12 +148,81 @@
             dataType : 'json',
             success: function(data){
                 if(data.status) {
-
                     $('a.following').html(data.follow);
                     $('span.count .following').text(data.total_following);
+                    alert(data.message);
                 }
             }
         });
     });
+
+    // .comment 버턴을 누르면 하단에 커멘트가 리스트로 나옴
+    $("div.evidence_list").on("click", ".comment", function(){
+
+        var evidence = $(this).closest(".social-feed-box");
+        if ($(".comment_list", evidence).hasClass("tracking")) {
+            $(".comment_list", evidence).slideUp();
+            $(".comment_list", evidence).removeClass("tracking");
+
+        } else {
+            $(".comment_list", evidence).show();
+            $(".comment_list", evidence).addClass("tracking");
+            $(".comment_list input[name='content']", evidence).focus();
+
+            var evidence_id = $(evidence).attr('evidence-id');
+            // var evidence_id = 12;
+            $.ajax({
+                url: "{% url 'comments:comment' %}", 
+                data: {'evidence_id': evidence_id },
+                cache: false,
+                beforeSend: function(){
+                    $("div.comment_list", evidence).html("<img src='/static/images/loading.gif'");
+                },
+                success: function(data){
+                    $("div.comment_list", evidence).html(data);
+                },
+            });
+            return false;
+        }
+    });
+
+    // .comment 입력하고 Enter 키를 누르면 Comment가 입력이 됨
+    $("div.evidence_list").on("keydown", ".comment_list textarea[name='content']", function(evt){
+
+        var keyCode = evt.which?evt.which:evt.keyCode;
+        var evidence = $(this).closest(".social-feed-box");
+        
+        if (keyCode == 13) {
+            var form = $(this).closest("form");
+            var container = $(this).closest(".comment")
+            var input = $(this);
+
+            $.ajax({
+                url: "{% url 'comments:comment' %}", 
+                data: $(form).serialize(),
+                type: "POST",
+                cache: false,
+                beforeSend: function(){
+                    $(input).val("");
+                },
+                success: function(data){
+                    $("div.comment_list", evidence).html(data);
+                },
+            });
+            return false;
+        } 
+    });
+
+    // $("button.btnComment").on("click", function(){
+    //     var form = $(this);
+    //     $.ajax({
+    //         url : form.attr("action"), 
+    //         type: form.attr("method"),
+    //         data: form.serialize(),
+    //         success: function(data){
+    //             $("#commentAdd").append(data.html);
+    //         }
+    //     });
+    // });
 </script>
 {% endblock javascript %}

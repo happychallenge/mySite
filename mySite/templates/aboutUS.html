@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block header-index %}
+    <h2> 사람과 해당 사람의 사건 그리고 증거를 기억합시.</h2>
+    <a href="{% url 'records:check_person' %}"> 
+            <button type='button' class='btn btn-primary pull-right'>사람/시건/뉴스 등록</button>
+    </a>
+    <ol class="breadcrumb">
+        <li>
+            <a href="{% url 'home' %}"> <i class="fa fa-home"></i> Home </a> 
+        </li>
+        <li>
+            사람 / 사건 / 증거의 기록 
+        </li>
+        <li class="active">
+            <strong>첫번째 단계 : 사등록 </strong>
+        </li>
+    </ol>
+{% endblock header-index %}
+
+
+{% block content %}
+    <div class="wrapper wrapper-content">
+        <div class="row animated fadeInRight">
+        {# Check Person #}
+
+            <div class='col-md-12'>
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5> 왜 사이트를 만들었나요? </h5>
+                    </div>
+                    <div class="ibox-content">
+                      <ul style="padding: 10px">  
+                        <li> 역사를 기억하지 못하는 자, 다시 그 역사를 반복할 것이다. </li>
+                        <li> 역사를 잊은 민족에게 미래는 없다. </li>
+                        <li> 자랑스러운 기억도 부끄러운 기억도 기억할 때 의미가 있습니다. </li>
+                        <li> 외환 위기 때 금모이기 운동에 참여했던, 태안 앞바다 검은 기름을 걷어내기 위한 봉사 활동을 자랑스럽게 생각하고, 후손들에게 당당하게 이야기를 해야 합니다. </li>
+                        <li> 조국의 독립을 위해 이국 땅에서 쓸쓸히 죽어간 이들을 기억해야 합니다. </li>
+                        <li> 정의를 위해 내부의 비리를 고발한 사람을 기억하고 보호해야 합니다. </li>
+                        <li> 나라를 팔아먹은 이들을 기억하고 반면 교사로 삼아야 합니다. </li>
+                        <li> 국민을 무시하고 막막을 하고, 성추행을 하고, 술마시고 성폭해 하는 인간들을 기억합시다. </li>
+                        
+                      </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class='col-md-12'>
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5> 사이트 운영의 철학 </h5>
+                    </div>
+                    <div class="ibox-content">
+                      <ul style="padding: 10px">  
+                        <li> 반드시 근거가 있는 것을 근거로 합니다. 즉 근거는 인터넷에 있는 객관적 자료을 기반으로 한다는 것입니다.</li>
+                        <li> 남을 비난 하는 것이 목적이 아니고, 잘못된 행위를 기억하자를 것입니다. 따라서 비난은 삼가해 주시기 바랍니다. </li>
+                        <li> 그래서 실명으로 냉정하고 정확한 내용만 작성을 해 주시기 바랍니다. </li>
+                        
+                      </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+
+{% block javascript %}
+<script>
+    $(function(){
+
+        $('.form-group label').addClass('col-sm-2');
+        $('.form-group input, .form-group textarea').addClass('form-control');
+
+        $('.btn-url').click(function(){
+            $('body').addClass('wait');
+        });
+    });
+</script>
+{% endblock javascript %}
+
+

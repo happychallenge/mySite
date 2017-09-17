@@ -3,9 +3,6 @@
 
 {% block header-index %}
     <h2> 사람과 해당 사람의 사건 그리고 증거를 기억합시.</h2>
-    <a href="{% url 'records:add_news' %}"> 
-            <button type='button' class='btn btn-primary pull-right'>사람/시건/뉴스 등록</button>
-    </a>
     <ol class="breadcrumb">
         <li>
             <a href="{% url 'home' %}"> <i class="fa fa-home"></i> Home </a> 
@@ -14,7 +11,7 @@
             사람 / 사건 / 증거의 기록 
         </li>
         <li class="active">
-            <strong>두번째 단계 : 사건등록 </strong>
+            <strong>두번째 단계 : 사건 등록 </strong>
         </li>
     </ol>
 {% endblock header-index %}

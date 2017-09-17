@@ -3,9 +3,11 @@
 
 {% block header-index %}
     <h2>기억을 통해 실수를 반복하지 맙시다.</h2>
+{% if user.is_authenticated %}
     <a href="{% url 'records:check_person' %}"> 
             <button type='button' class='btn btn-primary pull-right'>사람/시건/뉴스 등록</button>
     </a>
+{% endif %}
     <ol class="breadcrumb">
         <li>
             <a href="{% url 'home' %}"> <i class="fa fa-home"></i> Home </a> 

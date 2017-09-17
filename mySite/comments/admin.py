@@ -7,4 +7,4 @@ from .models import Comment
 class CommentAdmin(admin.ModelAdmin):
     class Meta:
         model = Comment
-    list_display = [ 'id', 'evidence', 'content', 'parent']
+    list_display = [ 'id', 'created_user', 'evidence', 'content', 'parent']

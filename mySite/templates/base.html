@@ -30,9 +30,8 @@
                 <!--  Top Search -->
                     <ul class="nav navbar-top-links navbar-right">
                         <li>
-                            <span class="m-r-sm text-muted welcome-message"> Welcome to "I Remember Your Past." </span>
+                            <span class="m-r-sm text-muted welcome-message"> <h4> "I Remember Your Past." 에 오신 것을 환영합니다. </h4> </span>
                         </li>
-                        {% include 'top_menu.html' %}
 
                     </ul>
                 </nav>
@@ -86,8 +85,6 @@
         </div>
     </div>
 
-
-
     <!-- Mainly scripts --> 
     <script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
@@ -95,7 +92,9 @@
     <script src="{% static 'js/plugins/slimscroll/jquery.slimscroll.min.js' %}"></script>
     <script src="{% static 'js/inspinia.js' %}"></script>
     <script src="{% static 'js/plugins/pace/pace.min.js' %}"></script>
-    
+  
+
+
     <!-- Custom and plugin javascript -->
     {% block javascript %}        
     {% endblock javascript %}

@@ -4,13 +4,14 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 from django.http import JsonResponse
-from django.contrib.auth import get_user_model
+
 
 from .models import Person, PersonEvent, Event, Tag
 
 # Create your views here.
 
 def _person_list(request, person_list):
+    
     paginator = Paginator(person_list, 6)
     page = request.GET.get('page')
 
@@ -22,7 +23,9 @@ def _person_list(request, person_list):
         person_list = paginator.page(paginator.num_pages)
     
     popular_tags = Tag.get_person_popular_tags()
-    context = {'person_list': person_list, 'popular_tags': popular_tags}
+    following = Person.get_persons_following()[:10]
+    context = {'person_list': person_list, 'popular_tags': popular_tags, 
+                'following': following, }
     return render(request, 'records/person_list.html', context)
 
 def person_list(request):
@@ -35,7 +38,10 @@ def person_detail(request, person_id):
             'tags', 'jobs', 'personevent_set__event', 'personevent_set__evidence_set__news', 
             'user_like', 'following').get(id=person_id)
     # personevent_list = PersonEvent.objects.select_related('event', 'person').filter(person=person).all()
-    context = { 'person': person, }
+    popular_tags = Tag.get_person_popular_tags()
+    following = Person.get_persons_following()[:10]
+    context = { 'person': person, 'popular_tags': popular_tags, 
+                'following': following, }
     return render(request, 'records/person_detail.html', context)
 
 
@@ -108,7 +114,7 @@ def ajax_person_following(request, person_id):
     else:
         person.following.add(request.user)
         data['follow'] = 'unfollowing'
-        data['message'] = '{} 님 지켜 보기가 신청되었습니다.'.format(person.name)
+        data['message'] = '{} 님 지켜 보기를 신청하셨습니다.'.format(person.name)
 
     data['status'] = True
     data['total_following'] = person.total_following
@@ -155,7 +161,7 @@ def ajax_event_following(request, event_id):
     else:
         event.following.add(request.user)
         data['follow'] = 'unfollowing'
-        data['message'] = '사건 "{}" 지켜 보기가 신청되었습니다.'.format(event.name)
+        data['message'] = '사건 "{}" 지켜 보기를 신청하셨습니다.'.format(event.name)
 
     data['status'] = True
     data['total_following'] = event.total_following
@@ -165,7 +171,6 @@ def ajax_event_following(request, event_id):
 ############################
 # Tag
 ############################
-@login_required
 def tag(request, tag_name, type):
     tag = Tag.objects.get(tag=tag_name)
     if type == 'P':
@@ -174,3 +179,20 @@ def tag(request, tag_name, type):
     else:
         event_list = tag.event_set.all() 
         return _event_list(request, event_list)
+
+
+############################
+# Search
+############################
+def top_search(request):
+    keyword = request.GET.get('top_search')
+    person_list = Person.objects.filter(name__contains=keyword)
+    popular_tags = Tag.get_person_popular_tags()
+
+    event_list = Event.objects.filter(name__contains=keyword)
+
+    return render(request, 'records/search_result.html', {
+            'person_list': person_list, 
+            'event_list': event_list, 
+            'popular_tags': popular_tags
+        })

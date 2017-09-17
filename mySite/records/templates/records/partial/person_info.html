@@ -23,11 +23,15 @@
                 {% if checkbox %}
                     <input type="checkbox" checked value="{{person.id}}" name="person" class="checkbox checkbox-primary pull-right">
                 {% endif %}
-                <p><i class="fa fa-speaker"></i> {{ person.nick_name }} </p>
                 <p><i class="fa fa-calendar"></i> Birth Year : {{ person.birth_year }}</p>
                 <p><i class="fa fa-flag"></i> Jobs :
                     {{person.jobs.all|join:", "}}
                 </p>
+                {% if  person.url %}
+                <a href="{{ person.url }}" target="remember">
+                    <p><i class="fa fa-id-badge"></i> <b> 상세 내용 : 위키 또는 나무 </b></p>
+                </a>
+                {% endif %}
                 <p><i class="fa fa-pencil"></i> Tags :
                     {{person.tags.all|join:", "}}
                 </p>
@@ -36,12 +40,12 @@
             <div class="btn-group"> 
                 <button class="btn btn-outline btn-primary btn-xs btnPersonLike">
                     <i class="fa fa-thumbs-up"></i> {% if request.user not in users_like %}Like{% else %}UnLike{% endif %}
-                    <span class="count"><span class="total"> {{total_likes}} </span> 명</span>
+                    <span class="count">(<span class="total"> {{total_likes}} </span>)</span>
                 </button>
                 <button class="btn btn-primary btn-xs"><i class="fa fa-share"></i> Share</button>
-            </div>
-            <div class="pull-right">
-                <span class="count">following <span class="following"> {{total_following}} </span> 명</span>
+                <button class="btn btn-outline btn-primary btn-xs">
+                    <span class="count">following (<span class="following"> {{total_following}} </span>)</span>
+                </button>
             </div>
         {% endwith %}
 

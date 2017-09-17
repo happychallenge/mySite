@@ -41,18 +41,18 @@
             {# FORM CONTENT #}
             <div class="ibox-content">
                 {# FORM START #}
-                <h3 style="margin-top: 0">{% trans 'Profile Picture' %} {{user}} </h3>
-                <img src="{% if user.profile.picture.url %} {{ user.profile.picture.url }} {% else %} {% static 'image/nouser.png' %}{% endif %}" style="width: 150px; border-radius: 5px; margin-bottom: 1em;" id='image_existed'>
+                <h3 style="margin-top: 0">{% trans 'Profile Picture' %}  </h3>
+                <img src="{% if user.profile.picture.url %} {{ user.profile.picture.url }} {% else %} {% static 'images/nouser.png' %}{% endif %}" 
+                    style="border-radius: 5px; margin-bottom: 1em;" width="150" id='image_existed'>
 
                 <p>사진을 변경하시려면 파일을 선택해 주시기 바랍니다.</p>
-
                 <form method="POST" enctype='multipart/form-data' class="form-horizontal" id="formUpload">
                     {% csrf_token %}
                     {{ form }}
 
                     <div class="form-group">
-                        <div class="col-sm-4 col-sm-offset-2">
-                           
+                        <div class="col-sm-4">
+                            
                         </div>
                     </div>
                 </form>
@@ -100,7 +100,6 @@
 <script>
     $(function(){
         // SCRIPT TO OPEN the MODAL With the Preview
-        
 
         $('#id_picture').change(function() {
             if(this.files && this.files[0]) {

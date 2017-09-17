@@ -1,37 +1,41 @@
 {% load static %}
-<div class="social-avatar">
-    <a href="#" class="pull-left">
-       <img alt="image" class="img-circle" src="{% if evidence.created_user.profile.picture.url %} {{ evidence.created_user.profile.picture.url }} {% else %} {% static 'image/nouser.png' %}{% endif %}">
-    </a>
-</div>
-<div class="social-feed-box">
-  {# DROP DOWN MENU #}
-    <div class="pull-right social-action dropdown">
-        <button data-toggle="dropdown" class="dropdown-toggle btn-white">
-            <i class="fa fa-angle-down"></i>
-        </button>
-        <ul class="dropdown-menu m-t-xs">
-            <li><a href="#">Config</a></li>
-        </ul>
-    </div>
+
+{# EVIDENCE 뉴스 매체 매칭 #}
+<div class="social-feed-box" evidence-id="{{evidence.id}}">
+    
+    {# 등록자 사진 #}
     <div class="social-avatar">
-        <a href="#">
-            <strong> {{evidence.news.media}} </strong> posted <strong>{{evidence.news.title}}</strong>
+        <a href="#" class="pull-left">
+           <img alt="image" class="img-circle" src="{% if evidence.created_user.profile.picture.url %} {{ evidence.created_user.profile.picture.url }} {% else %} {% static 'image/nouser.png' %}{% endif %}">
         </a>
-        <small class="text-muted">{{ evidence.news.created_at }}</small>
-    </div>
-    <div class="social-body ">
-        <small class="text-muted"> <a href="{{ evidence.news.url}}" target="remember">{{ evidence.news.url}}</a>  </small>
-        <div class="well">
-           {{evidence.news.content|linebreaks|truncatewords:"40"}} <br>
-           <small> 발행일 : {{evidence.news.published_at }} </small>
+        {# 뉴스매체와 뉴스제목 #}
+        <div>
+            <a href="{{ evidence.news.url}}" target="remember">
+                <strong>{{evidence.news.media}}</strong> posted 
+                <strong>{{evidence.news.title}}</strong>
+            </a> <br>
+            <small class="text-muted"> 등록일 : {{ evidence.news.created_at|date:"Y/m/d" }}</small>
         </div>
-        <div class="btn-group">
-            <button class="btn btn-white btn-xs"><i class="fa fa-thumbs-up"></i> Like</button>
-            <button class="btn btn-primary btn-xs"><i class="fa fa-share"></i> Share</button>
-            
-        </div>
-        <div class="pull-right">{{evidence.comments.all.count}} 댓글 </div>
     </div>
-    {% include 'records/partial/comments.html' with comments=evidence.comments.all %}
+
+    {# 뉴스 내용과 URL #}
+    <div class="social-body" >
+        <div class="well" style="padding:0px 10px">
+           {{evidence.news.content|linebreaks|truncatewords:"60"}} <br>
+            <small style="color:#337ab7;"> 발행일 : {{evidence.news.published_at|date:"Y/m/d" }} </small> 
+        </div>
+        <div> 
+            <a href="#" class="comment">
+                <button class='btn btn-white btn-xs'>
+                <i class="fa fa-pencil"></i> Comment
+                (<span class="comment-count">{{ evidence.comments.count }}</span>)
+                </button>
+            </a>
+        </div>
+    </div>
+    
+    {# AJAX COMMENT_LIST #}
+    <div class="social-footer comment_list">
+    </div>
+
 </div>

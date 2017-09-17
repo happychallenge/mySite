@@ -19,7 +19,7 @@ class PersonForm(forms.ModelForm):
 
     class Meta:
         model = Person
-        fields = ['name', 'nick_name', 'birth_year', 'jobs', 'picture', 'x', 'y', 'width', 'height', ]
+        fields = ['name', 'nick_name', 'birth_year', 'jobs', 'picture', 'url', 'x', 'y', 'width', 'height', ]
         widgets = {
             'picture': forms.FileInput(attrs={
                 'accept': 'image/*'  # this is not an actual validation! don't rely on that!

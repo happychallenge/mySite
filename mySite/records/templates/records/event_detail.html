@@ -78,7 +78,6 @@
     var csrftoken = getCookie('csrftoken');
 
     $(".btnEventLike").click(function(){
-
         $.ajax({
             url : "{% url 'records:ajax_event_like' event.id %}", 
             type: "POST",
@@ -86,9 +85,8 @@
             dataType : 'json',
             success: function(data){
                 if(data.status) {
-
                     $('.btnEventLike').html(data.like == 'like' ? '<i class="fa fa-thumbs-up"></i>Like<span class="count"> <span class="total">  </span> 명</span>':'<i class="fa fa-thumbs-down"></i>UnLike<span class="count"> <span class="total"> </span> 명</span>');
-                    $('span.count .total').text(data.total_likes);를
+                    $('span.count .total').text(data.total_likes);
                     alert(data.message);
                 }
             }
@@ -97,7 +95,6 @@
 
     $("a.following").click(function(e){
         e.preventDefault();
-
         $.ajax({
             url : "{% url 'records:ajax_event_following' event.id %}", 
             type: "POST",
@@ -105,7 +102,6 @@
             dataType : 'json',
             success: function(data){
                 if(data.status) {
-
                     $('a.following').html(data.follow);
                     $('span.count .following').text(data.total_following);
                 }

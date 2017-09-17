@@ -1,0 +1,11 @@
+{% load static %}
+<a href="" class="pull-left">
+    <img alt="image" class="img-circle" src="{% if user.profile.picture %}{{ user.profile.picture.url }}{% else %}{% static 'images/nouser.png' %}{% endif %}">
+</a>
+<div class="media-body">
+    <a href="#">
+        {{ user.first_name }}
+    </a> 
+    {{ comment.content|linebreaks}}
+    <small > {{comment.created_at}} </small>
+</div>

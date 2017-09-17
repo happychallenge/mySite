@@ -40,7 +40,7 @@ def signup(request):
 
 
 @login_required
-def add_picture(request):
+def profile_detail(request):
     if request.method == 'POST':
         form = ProfileForm(request.POST, request.FILES)
         if form.is_valid():
@@ -57,8 +57,11 @@ def add_picture(request):
             filename = settings.MEDIA_ROOT + savefile
             resized_image.save( filename )
 
-            Profile.objects.filter(user=request.user).update(picture=savefile)
-            return redirect('authentication:add_picture')
+            if Profile.objects.filter(user=request.user).count():
+                Profile.objects.filter(user=request.user).update(picture=savefile)
+            else:
+                Profile.objects.create(user=request.user, picture=savefile)
+            return redirect('authentication:profile_detail')
     else:
         form = ProfileForm()
     return render(request, 'authentication/add_picture.html', {'form':form})
