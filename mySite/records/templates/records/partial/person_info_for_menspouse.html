@@ -1,0 +1,37 @@
+{% load static %}
+<div class="ibox float-e-margins">
+    <div class="ibox-title">
+        <h5> {{ relationship }} </h5>
+        {% if checkbox %}
+            <div class="ibox-tools">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                    <i class="fa fa-wrench"></i>
+                </a>
+                <ul class="dropdown-menu dropdown-user">
+                    <li><a class='following' href="">Following</a></li> 
+                </ul> 
+            </div>
+        {% endif %}
+    </div>
+
+    {# 조상 반복 #}
+    <div class="ibox-content">
+        {# 본인 #}
+        {% include 'records/partial/relationship_of_person.html' %}
+        {# 아내 또는 남 #}
+        {% for person in person.get_spouse %}
+            {% include 'records/partial/relationship_of_person.html' %}
+        {% endfor %}
+
+        <div class="col-sm-3">
+            <div class="no-padding">
+                {% if user.is_authenticated %}
+                    <button class="btn btn-primary createRelation">가족 관계 등록</button> <br>
+                    <a class="btn btn-primary" href="{% url 'records:person_family' person.id %}"> 
+                        가족 전체 관계 보기
+                    </a>  
+                {% endif %}
+            </div>
+        </div>        
+    </div>
+</div>

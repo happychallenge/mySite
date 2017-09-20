@@ -12,7 +12,7 @@ class Person(models.Model):
     """ 기억할 인물에 대한 설명 """
     MALE = 'M'
     FEMALE = 'F'
-    TYPE = (
+    SEX = (
         (MALE, '남'),
         (FEMALE, '여'),
     )
@@ -28,6 +28,7 @@ class Person(models.Model):
     name = models.CharField(max_length=30)
     nick_name = models.CharField(max_length=30, verbose_name='별칭', null=True, blank=True)
     birth_year = models.IntegerField(null=True, verbose_name='출생년도', blank=True)
+    sex = models.CharField(max_length=1, choices=SEX, default=MALE)
     jobs = models.ManyToManyField(Job, blank=True)
     picture = models.ImageField(upload_to='person_picture/%Y/%m/', null=True, blank=True)
     url = models.URLField(null=True, blank=True)
@@ -73,11 +74,18 @@ class Person(models.Model):
         return [relation.other for relation in Relationship.objects.select_related("other").filter(person=self, relationship='spouse')]
 
     def get_children(self):
-        return [relation.person for relation in Relationship.objects.select_related("person").filter(other=self, relationship='parent')]
+        return [relation.person for relation in 
+            Relationship.objects.select_related("person").filter(other=self, relationship='parent').order_by('person__sex', 'person__birth_year')]
 
     def get_sibling(self):
-        father = [relation.other for relation in Relationship.objects.select_related("other").filter(person=self, relationship='parent', ctype='father')][0]
-        return [relation.person for relation in Relationship.objects.select_related("person").filter(other=father, relationship='parent')]
+        try:
+            father = [relation.other for relation in Relationship.objects.select_related("other").filter(person=self, relationship='parent', ctype='father')][0]
+        except Exception as e:
+            return None
+        if father:
+            return [relation.person for relation in Relationship.objects.select_related("person").filter(other=father, relationship='parent')]
+        else:
+            return None
 
 
 class Relationship(models.Model):
@@ -86,7 +94,9 @@ class Relationship(models.Model):
     relationship = models.CharField(max_length=10, 
         choices=(('spouse', 'spouse'),('parent', 'parent'),))
     ctype = models.CharField(max_length=10, 
-        choices=(('결혼', '결혼'),('이혼', '이혼'),('father', 'father'),('mother', 'mother'),))
+        choices=(('결혼', '결혼'),('이혼', '이혼'),('아버지', '아버지'),('어머니', '어머니'),('아들', '아들'),('딸', '딸'),))
+    created_user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
+    
     class Meta:
         unique_together = (('person', 'other'), ('other', 'person'), )
 

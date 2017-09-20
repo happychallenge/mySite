@@ -7,11 +7,14 @@ from . import views_reg
 urlpatterns = [
     url(r'^$', views.person_list, name='person_list'),
     url(r'^persondetail/(?P<person_id>\d+)/$', views.person_detail, name='person_detail'),
+    url(r'^personrelationship/(?P<person_id>\d+)/$', views.person_relationship, name='person_relationship'),
     url(r'^event_list/$', views.event_list, name='event_list'),
-    url(r'^eventdetail/(?P<event_id>\d+)/$', views.event_detail, name='event_detail'),
+    url(r'^personfamily/(?P<person_id>\d+)/$', views.person_family, name='person_family'),
+    url(r'^event_detail/(?P<event_id>\d+)/$', views.event_detail, name='event_detail'),
 
     url(r'^check_person/$', views_reg.check_person, name='check_person'),
     url(r'^add_person/$', views_reg.add_person, name='add_person'),
+    url(r'^edit_person/(?P<person_id>\d+)/$', views_reg.edit_person, name='edit_person'),
 
     url(r'^check_event/(?P<person_id>\d+)/$', views_reg.check_event, name='check_event'),
     url(r'^add_event/(?P<person_id>\d+)/$', views_reg.add_event, name='add_event'),
@@ -28,14 +31,9 @@ urlpatterns = [
 
     url(r'^tag/(?P<tag_name>\w+)/(?P<type>\w+)/$', views.tag, name='tag'),
     url(r'^top_search/$', views.top_search, name='top_search'),
-    # url(r'^add_news_result/$', views_reg.add_news_result, name='add_news_result'),
-    # url(r'^add_news_result/(?P<person>.+)/$', views_reg.add_news_result, name='add_news_result'),
-    # AJAX
-    # url(r'^ajax_check_news/$', views_reg.ajax_check_news, name='ajax_check_news'),
-    # url(r'^ajax_check_person/$', views_reg.ajax_check_person, name='ajax_check_person'),
-    # url(r'^ajax_check_event/$', views_reg.ajax_check_event, name='ajax_check_event'),
-    # url(r'^ajax_job_search/$', views_reg.ajax_job_search, name='ajax_job_search'),
-]
 
-# (?P<url>((https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w_\.-]*)*\/?))
-# (https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w_\.-]*)*\/?
+    url(r'^register_relation/(?P<person_id>\d+)/$', views.register_relation, name='register_relation'),
+    url(r'^search_persons/$', views.search_persons, name='search_persons'),
+
+    url(r'^aboutUS/$', views.aboutUS, name='aboutUS'),
+]

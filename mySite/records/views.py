@@ -1,12 +1,15 @@
 # records/views.py
-from django.shortcuts import render, get_object_or_404
+from django.contrib import messages
+from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
+from django.template.loader import render_to_string
 from django.http import JsonResponse
 
 
-from .models import Person, PersonEvent, Event, Tag
+from .models import Person, PersonEvent, Event, Tag, Relationship
+
 
 # Create your views here.
 
@@ -28,8 +31,9 @@ def _person_list(request, person_list):
                 'following': following, }
     return render(request, 'records/person_list.html', context)
 
+
 def person_list(request):
-    person_list = Person.objects.prefetch_related('tags', 'jobs').all()
+    person_list = Person.objects.prefetch_related('tags', 'jobs').filter(status='P')
     return _person_list(request, person_list)
 
 
@@ -44,6 +48,29 @@ def person_detail(request, person_id):
                 'following': following, }
     return render(request, 'records/person_detail.html', context)
 
+
+def person_relationship(request, person_id):
+    person = Person.objects.select_related('created_user').prefetch_related(
+            'tags', 'jobs', 'personevent_set__event', 'personevent_set__evidence_set__news', 
+            'user_like', 'following').get(id=person_id)
+    # personevent_list = PersonEvent.objects.select_related('event', 'person').filter(person=person).all()
+    popular_tags = Tag.get_person_popular_tags()
+    following = Person.get_persons_following()[:10]
+    context = { 'person': person, 'popular_tags': popular_tags, 
+                'following': following, }
+    return render(request, 'records/person_relationship.html', context)
+
+
+def person_family(request, person_id):
+    person = Person.objects.select_related('created_user').prefetch_related(
+            'tags', 'jobs', 'personevent_set__event', 'personevent_set__evidence_set__news', 
+            'user_like', 'following').get(id=person_id)
+    # personevent_list = PersonEvent.objects.select_related('event', 'person').filter(person=person).all()
+    popular_tags = Tag.get_person_popular_tags()
+    following = Person.get_persons_following()[:10]
+    context = { 'person': person, 'popular_tags': popular_tags, 
+                'following': following, }
+    return render(request, 'records/person_family.html', context)
 
 # Create your views here.
 def _event_list(request, event_list):
@@ -180,7 +207,6 @@ def tag(request, tag_name, type):
         event_list = tag.event_set.all() 
         return _event_list(request, event_list)
 
-
 ############################
 # Search
 ############################
@@ -196,3 +222,62 @@ def top_search(request):
             'event_list': event_list, 
             'popular_tags': popular_tags
         })
+
+############################
+# Register Relationship
+############################
+def register_relation(request, person_id):
+
+    me = Person.objects.get(id = person_id)
+    message = ""
+
+    if request.method == "POST":
+        parent_id = request.POST.get('parent_id')
+        spouse_id = request.POST.get('spouse_id')
+        children_id = request.POST.getlist('children_id')
+
+        if parent_id:
+            ptype = request.POST.get('ptype')
+            other = Person.objects.get(id = parent_id)
+            Relationship.objects.create(person=me, other=other, relationship='parent', ctype=ptype)
+            message += "{} 님이 부모님으로 추가되었습니다. <br>".format(other.name)
+
+        if spouse_id:
+            stype = request.POST.get('stype')
+            other = Person.objects.get(id = spouse_id)
+            Relationship.objects.create(person=me, other=other, relationship='spouse', ctype=stype)
+            Relationship.objects.create(person=other, other=me, relationship='spouse', ctype=stype)
+            message += "{} 님이 아내또는 남편으로 추가되었습니다. <br>".format(other.name)
+
+        if children_id:
+            for child in children_id:
+                other = Person.objects.get(id = child)
+                ctype = '아들' if other.sex == 'M' else '딸'
+                Relationship.objects.create(person=other, other=me, relationship='parent', ctype=ctype)
+                message += "{} 님이 아들 또는 딸로 추가되었습니다. <br>".format(other.name)
+
+        if parent_id or spouse_id or children_id:
+            messages.success(request, message)
+            return redirect('records:person_relationship', person_id)
+        else:
+            messages.success(request, "반드시 한개 이상의 관계는 입력을 해야 합니다.")
+            return redirect('records:person_relationship', person_id)
+
+############################
+# Search Person
+############################
+def search_persons(request):
+    search_query = request.GET.get('keyword')
+    if search_query:
+        person_list = Person.objects.filter(name__contains = search_query)
+    html = render_to_string('records/partial/search_persons.html', {
+            'person_list': person_list,
+        })
+    return JsonResponse(html, safe=False)
+
+
+############################
+# About US
+############################
+def aboutUS(request):
+    return render(request, 'aboutUS.html')

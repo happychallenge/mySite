@@ -34,14 +34,16 @@ def add_person(request):
         if form.is_valid():
             person = form.save()
             name = form.cleaned_data.get('name')
-            event = form.cleaned_data.get('event')
-            url = form.cleaned_data.get('url')
+            if not person.nick_name:
+                person.nick_name = name
+                    
+            person.created_user = request.user
+            person.save()
 
             # Jobs
             jobs = form.cleaned_data.get('jobs')
             if jobs:
                 person.jobs.set(jobs)
-            person.created_user = request.user
 
             # Tags
             tags = form.cleaned_data.get('tags')
@@ -51,14 +53,51 @@ def add_person(request):
                     tag = tag.strip()
                     tagged, created = Tag.objects.get_or_create(tag=tag)
                     tag_array.append(tagged)
-                person.tags.set(tag_array)
-
-            person.save()
+                    
+            tagged, created = Tag.objects.get_or_create(tag=name)
+            tag_array.append(tagged)
+            person.tags.set(tag_array)
+            
             messages.success(request, "{} 이 추가 되었습니다.".format(name))
             return redirect('records:check_event', person.id)
     else:
         person = request.GET.get('person')
         form = PersonForm(initial={'name':person})
+    return render(request, 'records/add_person.html', {'form':form})
+
+
+@login_required
+def edit_person(request, person_id):
+    person = get_object_or_404(Person, id=person_id)
+    if request.method == 'POST':
+        tag_array = []
+        form = PersonForm(request.POST, request.FILES, instance=person)
+        if form.is_valid():
+            person = form.save()
+            name = form.cleaned_data.get('name')
+
+            # Jobs
+            jobs = form.cleaned_data.get('jobs')
+            if jobs:
+                person.jobs.set(jobs)
+
+            person.created_user = request.user
+            person.save()
+            # Tags
+            tags = form.cleaned_data.get('tags')
+            if tags:
+                tag_list = tags.split(',')
+                for tag in tag_list:
+                    tag = tag.strip()
+                    tagged, created = Tag.objects.get_or_create(tag=tag)
+                    tag_array.append(tagged)
+                    
+            person.tags.set(tag_array)
+            
+            messages.success(request, "{} 이 수정 되었습니다.".format(name))
+            return redirect('records:check_event', person.id)
+    else:
+        form = PersonForm(instance=person)
     return render(request, 'records/add_person.html', {'form':form})
 
 

@@ -12,14 +12,15 @@ class PersonForm(forms.ModelForm):
     jobs = forms.ModelMultipleChoiceField(queryset=Job.objects.all(), 
             widget=forms.CheckboxSelectMultiple)
     tags = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Tag을 입력해 주세요.'}))
-    x = forms.FloatField(widget=forms.HiddenInput())
-    y = forms.FloatField(widget=forms.HiddenInput())
-    width = forms.FloatField(widget=forms.HiddenInput())
-    height = forms.FloatField(widget=forms.HiddenInput())
+    x = forms.FloatField(widget=forms.HiddenInput(),required=False)
+    y = forms.FloatField(widget=forms.HiddenInput(),required=False)
+    width = forms.FloatField(widget=forms.HiddenInput(),required=False)
+    height = forms.FloatField(widget=forms.HiddenInput(),required=False)
+    picture = forms.FileField(required=False)
 
     class Meta:
         model = Person
-        fields = ['name', 'nick_name', 'birth_year', 'jobs', 'picture', 'url', 'x', 'y', 'width', 'height', ]
+        fields = ['name', 'birth_year', 'jobs', 'picture', 'url', 'x', 'y', 'width', 'height', ]
         widgets = {
             'picture': forms.FileInput(attrs={
                 'accept': 'image/*'  # this is not an actual validation! don't rely on that!

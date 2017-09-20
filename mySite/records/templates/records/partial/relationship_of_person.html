@@ -1,0 +1,43 @@
+{% load static %}
+<div class="col-sm-3">
+    <div class="no-padding">
+        <a href="{% url 'records:person_detail' person.id %}">
+            <img alt="image" width="100px" class="img-responsive" src="{% if person.picture %}{{ person.picture.url }}
+        {% else %}{% static 'images/nouser.png' %}{% endif %}">
+        </a>
+    </div>    
+    <div class="ibox-content no-padding profile-content">
+
+        {# 해당 Person 본인 정보 #}
+        <div class="media-body ">
+            <a href="{% url 'records:person_detail' person.id %}">
+                <h3><strong>{{ person.name }}</strong></h3>
+            </a>
+            {% if checkbox %}
+                <input type="checkbox" checked value="{{person.id}}" name="person" class="checkbox checkbox-primary pull-right">
+            {% endif %}
+            <p><i class="fa fa-calendar"></i> Birth Year : {{ person.birth_year }}</p>
+            <p><i class="fa fa-flag"></i> Jobs :
+                {{person.jobs.all|join:", "}}
+            </p>
+            {% if  person.url %}
+            <a href="{{ person.url }}" target="remember">
+                <p><i class="fa fa-id-badge"></i> <b> 상세 내용 : 위키 또는 나무 </b></p>
+            </a>
+            {% endif %}
+            <p><i class="fa fa-pencil"></i> Tags :
+                {{person.tags.all|join:", "}}
+            </p>
+        </div>
+    </div>
+
+    {# 자식들 #}
+    {% if person.get_children and family %}
+        <div class="ibox-content no-padding profile-content">
+        {% for parent in person.get_children %}
+            {% include 'records/partial/relationship.html' with relationship='자식' %}
+        {% endfor %}
+        </div>
+    {% endif %}
+
+</div>

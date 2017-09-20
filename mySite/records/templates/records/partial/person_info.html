@@ -8,16 +8,22 @@
                     <i class="fa fa-wrench"></i>
                 </a>
                 <ul class="dropdown-menu dropdown-user">
-                    <li><a class='following' href="">Following</a></li> 
+                    <li><a class='following' href="">Following</a></li>
+                {% if user.is_staff %}
+                    <li><a class='edit' href="{% url 'records:edit_person' person.id %}">정보 수정</a></li> 
+                {% endif %}
                 </ul> 
             </div>
         {% endif %}
     </div>
     <div class="ibox-content">
-        <div class="ibox-content no-padding border-left-right">
-            <img alt="image" class="img-responsive" src="{% if person.picture %}{{ person.picture.url }}{% else %}{% static 'images/nouser.png' %}{% endif %}">
+        <div class="no-padding">
+            <img alt="image" class="img-responsive" src="{% if person.picture %}{{ person.picture.url }}
+            {% else %}{% static 'images/nouser.png' %}{% endif %}">
         </div>    
         <div class="ibox-content no-padding profile-content">
+
+            {# 해당 Person 본인 정보 #}
             <div class="media-body ">
                 <h3><strong>{{ person.name }}</strong></h3>
                 {% if checkbox %}
@@ -36,6 +42,7 @@
                     {{person.tags.all|join:", "}}
                 </p>
             </div>
+
         {% with total_likes=person.user_like.count total_following=person.following.count users_like=person.user_like.all %}
             <div class="btn-group"> 
                 <button class="btn btn-outline btn-primary btn-xs btnPersonLike">
@@ -46,9 +53,42 @@
                 <button class="btn btn-outline btn-primary btn-xs">
                     <span class="count">following (<span class="following"> {{total_following}} </span>)</span>
                 </button>
+                <a href="{% url 'records:person_relationship' person.id %}" class="btn btn-primary btn-xs"> 
+                    <i class="fa fa-share"></i>Family
+                </a>
             </div>
         {% endwith %}
 
         </div>
+
+    {# SPOUSE 남편/아내 #}
+    {% if person.get_spouse %}
+        <div class="ibox-content no-padding profile-content">
+        {% for parent in person.get_spouse %}
+            {% include 'records/partial/relationship.html' with relationship='남편/아내' %}
+        {% endfor %}
+        </div>
+    {% endif %}
+
+    {# PARENT #}
+    {% if person.get_parent %}
+        <div class="ibox-content no-padding profile-content">
+
+            {% for parent in person.get_parent %}
+                {# 아버지/어머니 #}
+                {% include 'records/partial/relationship.html' with relationship='부모' %} 
+            {% endfor %}
+                        
+        </div>
+    {% endif %}
+
+    {# 자식들 #}
+    {% if person.get_children %}
+        <div class="ibox-content no-padding profile-content">
+        {% for parent in person.get_children %}
+            {% include 'records/partial/relationship.html' with relationship='자식' %}
+        {% endfor %}
+        </div>
+    {% endif %}
     </div>
 </div>

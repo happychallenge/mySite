@@ -65,38 +65,13 @@
                     <li><a href="graph_sparkline.html">Sparkline Charts</a></li>
                 </ul>
             </li>
-            
-            <li>
-                <a href="#"><i class="fa fa-sitemap"></i> <span class="nav-label">Menu Levels </span><span class="fa arrow"></span></a>
-                <ul class="nav nav-second-level collapse">
-                    <li>
-                        <a href="#">Third Level <span class="fa arrow"></span></a>
-                        <ul class="nav nav-third-level">
-                            <li>
-                                <a href="#">Third Level Item</a>
-                            </li>
-                            <li>
-                                <a href="#">Third Level Item</a>
-                            </li>
-                            <li>
-                                <a href="#">Third Level Item</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li><a href="#">Second Level Item</a></li>
-                    <li>
-                        <a href="#">Second Level Item</a></li>
-                    <li>
-                        <a href="#">Second Level Item</a></li>
-                </ul>
-            </li>
 
             <li class="landing_link">
-                <a data-toggle="modal" href="#etiquetteBox"><i class="fa fa-database"></i> <span class="nav-label">사이트 이용시 주의사항</span></a>
+                <a href="{% url 'records:aboutUS' %}"><i class="fa fa-database"></i> <span class="nav-label">사이트 이용시 주의사항</span></a>
             </li>
             <li class="landing_link">
-                <a href="javascript:void(0);" onclick="viewAboutUS();"><i class="fa fa-database"></i> <span class="nav-label">About us</span></a>
-            </li>
+                <a href="{% url 'records:aboutUS' %}"><i class="fa fa-database"></i> <span class="nav-label">About us</span></a>
+            </li> 
         </ul>
     </div>
 </nav>

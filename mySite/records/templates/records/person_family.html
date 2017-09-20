@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+{% load i18n static %}
+
+{% block header-index %}
+    <h2>기억을 통해 실수를 반복하지 맙시다.</h2>
+    <a href="{% url 'records:check_person' %}"> 
+            <button type='button' class='btn btn-primary pull-right'>사람/시건/뉴스 등록</button>
+    </a>
+    <ol class="breadcrumb">
+        <li>
+            <a href="{% url 'home' %}"> <i class="fa fa-home"></i> Home </a> 
+        </li>
+        <li>
+            <a>인물</a>
+        </li>
+        <li class="active">
+            <strong>가족 전체</strong>
+        </li>
+    </ol>
+{% endblock header-index %}
+
+
+{% block content %}
+
+    <div class="wrapper wrapper-content">
+        <div class="row animated fadeInRight">
+    
+            {# 001. 본인/아내/남 #}
+            <div class="col-md-12">
+                {% include 'records/partial/person_info_for_menspouse.html' with relationship='본인 & 아내 또는 남편' person=person %}
+            </div>
+
+            {# 002. 자식들 #}
+            <div class="col-md-12">
+                {% if person.get_children %}
+                    {% include 'records/partial/person_info_for_relationship.html' with relationship='자식들' persons=person.get_children family=True %}
+                {% endif %}  
+            </div>
+
+        </div> {# class="row animated fadeInRight" #}
+    </div>
+
+{% endblock content %}
+
+
+{% block right_side %}
+    {% include 'right_side.html' with type='P' %}
+{% endblock right_side %}
+
+
+{% block javascript %}
+{# <link rel="stylesheet" href="{% static 'css/persons.css' %}">  #}
+<link href="{% static 'css/plugins/iCheck/custom.css' %}" rel="stylesheet">
+<link href="{% static 'css/persons.css' %}" rel="stylesheet">
+
+<script>
+$(function(){
+
+    // PARENT
+    $("#id_parent").keyup(function(){
+        var search = $(this).val();
+
+        $.ajax({
+            url: "{% url 'records:search_persons' %}", 
+            data: {
+                'keyword': search,
+            },
+            dataType: 'json',
+            success: function(data){
+                $("#parent_results").show();
+                $("#parent_results").html(data);
+            }
+        });
+        return false;
+    });
+    
+    $("#parent_results").on('click', 'div.child', function(){
+        var parent_id = this.id.split(':')[0];
+        var parent_name = this.id.split(':')[1];
+
+        $("#id_parent").val(parent_name);
+        $('<input>').attr({
+            type: 'text',
+            id: 'id_parent_name',
+            value: parent_name
+        }).appendTo('#parent_name');
+
+        $('<input>').attr({
+            type: 'hidden',
+            id: 'id_parent_id',
+            name: 'parent_id',
+            value: parent_id
+        }).appendTo('#parent_id');
+
+        $("#parent_results").hide();
+    });
+
+    // SPOUSE
+    $("#id_spouse").keyup(function(){
+        var search = $(this).val();
+
+        $.ajax({
+            url: "{% url 'records:search_persons' %}", 
+            data: {
+                'keyword': search,
+            },
+            dataType: 'json',
+            success: function(data){
+                $("#spouse_results").show();
+                $("#spouse_results").html(data);
+            }
+        });
+        return false;
+    });
+    
+    $("#spouse_results").on('click', 'div.child', function(){
+        var spouse_id = this.id.split(':')[0];
+        var spouse_name = this.id.split(':')[1];
+
+        $("#id_spouse").val(spouse_name);
+        $('<input>').attr({
+            type: 'text',
+            id: 'id_spouse_name',
+            value: spouse_name
+        }).appendTo('#spouse_name');
+
+        $('<input>').attr({
+            type: 'hidden',
+            id: 'id_spouse_id',
+            name: 'spouse_id',
+            value: spouse_id
+        }).appendTo('#spouse_id');
+
+        $("#spouse_results").hide();
+    });
+
+    // CHILDREN
+    $("#id_child").keyup(function(){
+        var search = $(this).val();
+
+        $.ajax({
+            url: "{% url 'records:search_persons' %}", 
+            data: {
+                'keyword': search,
+            },
+            dataType: 'json',
+            success: function(data){
+                $("#child_results").show();
+                $("#child_results").html(data);
+            }
+        });
+        return false;
+    });
+    
+    $("#child_results").on('click', 'div.child', function(){
+        var child_id = this.id.split(':')[0];
+        var child_name = this.id.split(':')[1];
+
+        $("#id_child").val(child_name);
+        $('<input>').attr({
+            type: 'text',
+            id: 'id_child_name',
+            value: child_name
+        }).appendTo('#child_name');
+
+        $('<input>').attr({
+            type: 'hidden',
+            id: 'id_child_id',
+            name: 'child_id',
+            value: child_id
+        }).appendTo('#child_id');
+
+        $("#child_results").hide();
+    });
+
+    // Modal Window 뜨위기
+    $(".createRelation").click(function(){
+        $("#modal-relation").modal("show");
+    });
+
+});
+</script>
+{% endblock javascript %}

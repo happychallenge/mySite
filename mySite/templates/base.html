@@ -37,7 +37,7 @@
                 </nav>
             </div>
 
-        <!-- Main Title -->
+            <!-- Main Title -->
             <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-md-12">
                 {% block  header-index %}
@@ -46,14 +46,15 @@
                 </div> <!-- col-md-12 -->
             </div>
 
-        <!-- Main Content -->
+            <!-- BODY Content -->
             <div class="wrapper wrapper-content animated fadeInRight">
                 <div class="row animated fadeInDown">
-                    <div class="col-md-10">
                     
+                    <!-- MAIN  -->
+                    <div class="col-md-10">
                     {% if messages %}
                         {% for message in messages %}
-                            <div class="alert {{message.tags}} alert-dismissable" role="alert">
+                            <div class="alert alert-{{message.tags}} alert-dismissable" role="alert">
                                 <button aria-hidden="true" data-dismiss="alert" class="close" type="button"><span aria-hidden="true">&times;</span>
                                 </button>
                                 {{ message }}
@@ -61,22 +62,23 @@
                         {% endfor %}
                     {% endif %}
                     
+                    {% block content %}
 
-                {% block content %}
-
-                {% endblock content %}
-                    </div>
+                    {% endblock content %}
+                    </div> 
                     
-                <!--  TAG -->
+                    <!--  RIGHT SIDE -->
                     <div class="col-md-2">
-                {% block right_side %}
-                    {% include 'right_side.html' %}
-                {% endblock right_side %}
+                    {% block right_side %}
+                        {% include 'right_side.html' %}
+                    {% endblock right_side %}
                     </div>
                 </div>
             </div>
-            <div class="wrapper wrapper-content animated fadeInRight">
-                <div class="row animated fadeInDown">
+            
+            <!-- FOOTER -->
+            <div class="footer">
+                <div class="pull-left">
                     <div class="col-md-12">
                     {% include 'footer.html' %}
                     </div>
@@ -93,7 +95,18 @@
     <script src="{% static 'js/inspinia.js' %}"></script>
     <script src="{% static 'js/plugins/pace/pace.min.js' %}"></script>
   
-
+    <style>
+      .top_search {
+        font-size: 1.1em;
+      }
+      .top_search input {
+        width: 400px;
+        border: 1px solid red;
+      }
+      .top_search input:focus {
+        border-color: #66b1ee;
+      }
+    </style>
 
     <!-- Custom and plugin javascript -->
     {% block javascript %}        

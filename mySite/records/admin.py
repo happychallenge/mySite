@@ -1,13 +1,23 @@
 # records/admin.py
 from django.contrib import admin
-from .models import Person, Tag, Event, PersonEvent
+from .models import Person, Tag, Event, PersonEvent, Relationship
 from .models import News, Evaluation, Evidence
 # Register your models here.
 @admin.register(Person)
 class PersonAdmin(admin.ModelAdmin):
     class Meta:
         model = Person
-    list_display = ['name', 'nick_name', 'birth_year']
+    list_display = ['id', 'name', 'nick_name', 'birth_year', 'sex', 'picture', 'status']
+    list_editable = ['sex', 'nick_name', 'birth_year', 'status']
+    search_fields = ['name']
+
+
+@admin.register(Relationship)
+class RelationshipAdmin(admin.ModelAdmin):
+    class Meta:
+        model = Relationship
+    list_display = ['person', 'other', 'relationship', 'ctype']
+
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
