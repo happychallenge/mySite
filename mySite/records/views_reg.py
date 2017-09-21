@@ -122,7 +122,7 @@ def person_event_matching(request, person_id):
         person = get_object_or_404(Person, id=person_id)
         event = get_object_or_404(Event, id=event_id)
 
-        PersonEvent.objects.create(person=person, event=event, created_user=request.user)
+        PersonEvent.objects.get_or_create(person=person, event=event, created_user=request.user)
        
         return redirect('records:person_detail', person.id)
     else:
@@ -152,7 +152,7 @@ def add_event(request, person_id):
 
             person = get_object_or_404(Person, id=person_id)
 
-            personevent = PersonEvent.objects.create(
+            personevent = PersonEvent.objects.get_or_create(
                     person=person, event=event, created_user=request.user)
 
         return redirect('records:check_evidence', personevent.id)
@@ -180,7 +180,7 @@ def check_evidence(request, personevent_id):
                 news_info = get_news(url)
                 media = get_object_or_404(Media, short=news_info['media'])
                 content = news_info['content'][:400] + ' ......'
-                news = News.objects.create(
+                news = News.objects.get_or_create(
                             url=url, 
                             media=media, 
                             title=news_info['title'], 
@@ -214,10 +214,31 @@ def add_evidence(request):
         personevent = PersonEvent.objects.select_related('person').get(id=personevent_id)
         news = get_object_or_404(News, id=news_id)
 
-        Evidence.objects.create(personevent=personevent, news=news, created_user=request.user)
+        Evidence.objects.get_or_create(personevent=personevent, news=news, created_user=request.user)
         messages.success(request, "{} 이 {} 사건에 뉴스를 추가 하었습니다.".format(
                     personevent.person.name, personevent.event.name))
 
         return redirect('records:person_detail', personevent.person.id)
 
 
+############################
+# Register Relationship
+############################
+def evidence_add_person(request, news_id, event_id):
+    news = get_object_or_404(News, id=news_id)
+    event = get_object_or_404(Event, id=event_id)
+
+    if request.method == "POST":
+        persons_id = request.POST.getlist('persons_id')
+
+        if persons_id:
+            for person_id in persons_id:
+                person = get_object_or_404(Person, id=person_id)
+                obj, created = PersonEvent.objects.get_or_create(person=person, event=event, created_user=request.user)
+                Evidence.objects.get_or_create(personevent=obj, news=news, created_user=request.user)
+
+                messages.success(request, "{} 이 {} 뉴스에 추가 되었습니다.".format(
+                    person.name, news.title))
+
+    return redirect('records:person_relationship', person_id)
+        

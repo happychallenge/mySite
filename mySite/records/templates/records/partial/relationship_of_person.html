@@ -13,10 +13,11 @@
             <a href="{% url 'records:person_detail' person.id %}">
                 <h3><strong>{{ person.name }}</strong></h3>
             </a>
+            <p><i class="fa fa-flag"></i> {{person.nick_name}}</p>
             {% if checkbox %}
                 <input type="checkbox" checked value="{{person.id}}" name="person" class="checkbox checkbox-primary pull-right">
             {% endif %}
-            <p><i class="fa fa-calendar"></i> Birth Year : {{ person.birth_year }}</p>
+            <p><i class="fa fa-calendar"></i> {{ person.birth_year }} 년 </p>
             <p><i class="fa fa-flag"></i> Jobs :
                 {{person.jobs.all|join:", "}}
             </p>
@@ -35,7 +36,13 @@
     {% if person.get_children and family %}
         <div class="ibox-content no-padding profile-content">
         {% for parent in person.get_children %}
-            {% include 'records/partial/relationship.html' with relationship='자식' %}
+            {% include 'records/partial/relationship.html' with relationship='손자' %}
+
+            {% for parent in parent.get_children %}
+                {% if forloop.first %}
+                    {% include 'records/partial/relationship.html' with relationship='증손자' %}
+                {% endif %}
+            {% endfor %}
         {% endfor %}
         </div>
     {% endif %}

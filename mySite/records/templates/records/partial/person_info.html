@@ -24,7 +24,7 @@
         <div class="ibox-content no-padding profile-content">
 
             {# 해당 Person 본인 정보 #}
-            <div class="media-body ">
+            <div class="media-body no-padding">
                 <h3><strong>{{ person.name }}</strong></h3>
                 {% if checkbox %}
                     <input type="checkbox" checked value="{{person.id}}" name="person" class="checkbox checkbox-primary pull-right">
@@ -73,12 +73,10 @@
     {# PARENT #}
     {% if person.get_parent %}
         <div class="ibox-content no-padding profile-content">
-
             {% for parent in person.get_parent %}
                 {# 아버지/어머니 #}
                 {% include 'records/partial/relationship.html' with relationship='부모' %} 
             {% endfor %}
-                        
         </div>
     {% endif %}
 

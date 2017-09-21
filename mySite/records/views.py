@@ -7,9 +7,7 @@ from django.views.decorators.http import require_http_methods
 from django.template.loader import render_to_string
 from django.http import JsonResponse
 
-
 from .models import Person, PersonEvent, Event, Tag, Relationship
-
 
 # Create your views here.
 

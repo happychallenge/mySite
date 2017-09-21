@@ -22,6 +22,8 @@ urlpatterns = [
 
     url(r'^check_evidence/(?P<personevent_id>\d+)/$', views_reg.check_evidence, name='check_evidence'),
     url(r'^add_evidence/$', views_reg.add_evidence, name='add_evidence'),
+# 9월 21일 추가함
+    url(r'^evidence_add_person/(?P<news_id>\d+)/(?P<event_id>\d+)/$', views_reg.evidence_add_person, name='evidence_add_person'),
 
     url(r'^ajax_person_like/(?P<person_id>\d+)/$', views.ajax_person_like, name='ajax_person_like'),
     url(r'^ajax_person_following/(?P<person_id>\d+)/$', views.ajax_person_following, name='ajax_person_following'),

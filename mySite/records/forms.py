@@ -20,7 +20,7 @@ class PersonForm(forms.ModelForm):
 
     class Meta:
         model = Person
-        fields = ['name', 'birth_year', 'jobs', 'picture', 'url', 'x', 'y', 'width', 'height', ]
+        fields = ['name', 'nick_name', 'birth_year', 'jobs', 'picture', 'url', 'x', 'y', 'width', 'height', ]
         widgets = {
             'picture': forms.FileInput(attrs={
                 'accept': 'image/*'  # this is not an actual validation! don't rely on that!
@@ -30,6 +30,9 @@ class PersonForm(forms.ModelForm):
     def save(self):
         person = super(PersonForm, self).save()
 
+        if not person.picture:
+            return person 
+            
         x = self.cleaned_data.get('x')
         y = self.cleaned_data.get('y')
         width = self.cleaned_data.get('width')

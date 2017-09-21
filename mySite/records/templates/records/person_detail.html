@@ -22,8 +22,6 @@
 
 {% block content %}
 
-{% with person=person  %}
-    
     <div class="wrapper wrapper-content">
         <div class="row animated fadeInRight">
     
@@ -55,7 +53,7 @@
                     {# EVIDENCE INFO #}
                     <div class="ibox evidence_list">
                     {% for evidence in personevent.evidence_set.all %}
-                        {% include 'records/partial/evidence_info.html' with comments=evidence.comments.all %}
+                        {% include 'records/partial/evidence_info.html' with event=personevent.event.id %}
                     {% endfor %} 
                         {# 추가 증거 Button #}
                         <div class="feed-element">
@@ -95,7 +93,59 @@
             </div> {# class="col-md-8" #}
         </div> {# class="row animated fadeInRight" #}
     </div>
-{% endwith %}
+
+    <!-- MODAL TO EVIDENCE ADD PERSON -->
+    <div class="modal fade" id="modal-addperson">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="" method="POST" id="id_form_addperson"> 
+                <!-- HEADER -->    
+                    <div class="modal-header">
+                        <button class="close" type='button' data-dismiss='modal' aria-label='Close'>
+                            <span aria-hidden='true'>&times;</span>
+                        </button>
+                        <h4 class="modal-title"> 사건 관련자 등록 </h4>
+                    </div>
+
+                    <!-- BODY -->
+                    <div class="modal-body">
+                    
+                        {% csrf_token %}
+                        <!-- EVIDENCE ADD PERSON -->
+                        <div class="row">
+                            <div class='center'>
+                                <p class="text-success"> 관련자를 반복해서 입력할 수 있습니다. </p>
+                            </div>
+                        </div>
+                        <div class="row"> <!-- ADD PERSON -->
+                            <div class="col-xs-4 search">
+                                <input type="text" class="form-control" id="id_person" style="width:200px">
+                                <div class="results" id="person_results">
+                                  
+                                </div>
+                            </div>
+                            <div class="col-xs-4 made-input">
+                                <div class="col-xs-4" id="persons_name">
+                                    
+                                </div>
+                                <div class="col-xs-2" id="persons_id">
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display:block;width:100%;height:100px;"></div>
+                    
+                    </div>
+
+                    <!-- FOOTER -->
+                    <div class="modal-footer">
+                        <button type='button' class="btn btn-default" data-dismiss='modal'>Cancel</button>
+                        <button type='submit' class="btn btn-primary btn-addperson">Add Person</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>    
 {% endblock content %}
 
 
@@ -105,6 +155,8 @@
 
 
 {% block javascript %}
+<link href="{% static 'css/persons.css' %}" rel="stylesheet">
+
 <script type='text/javascript'>
 
     function getCookie(name) {
@@ -219,16 +271,52 @@
         } 
     });
 
-    // $("button.btnComment").on("click", function(){
-    //     var form = $(this);
-    //     $.ajax({
-    //         url : form.attr("action"), 
-    //         type: form.attr("method"),
-    //         data: form.serialize(),
-    //         success: function(data){
-    //             $("#commentAdd").append(data.html);
-    //         }
-    //     });
-    // });
+    // Modal Window 뜨위기
+    $(".add-person").click(function(){
+        var action = $(this).attr('data-url');
+        $("#modal-addperson").modal("show");
+        $("#id_form_addperson").attr("action", action);
+    });
+
+    // PERSON
+    $("#id_person").keyup(function(){
+        var search = $(this).val();
+
+        $.ajax({
+            url: "{% url 'records:search_persons' %}", 
+            data: {
+                'keyword': search,
+            },
+            dataType: 'json',
+            success: function(data){
+                $("#person_results").show();
+                $("#person_results").html(data);
+            }
+        });
+        return false;
+    });
+    
+    $("#person_results").on('click', 'div.child', function(){
+        var person_id = this.id.split(':')[0];
+        var person_name = this.id.split(':')[1];
+
+        $("#id_person").val("").focus();
+        $('<input>').attr({
+            type: 'text',
+            id: 'id_person_name',
+            value: person_name
+        }).appendTo('#persons_name');
+
+        $('<input>').attr({
+            type: 'checkbox',
+            id: 'id_person_id',
+            name: 'persons_id',
+            value: person_id,
+            checked: 'checked'
+        }).appendTo('#persons_id');
+
+        $("#person_results").hide();
+    });
+
 </script>
 {% endblock javascript %}

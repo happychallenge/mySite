@@ -25,12 +25,14 @@
             <small style="color:#337ab7;"> 발행일 : {{evidence.news.published_at|date:"Y/m/d" }} </small> 
         </div>
         <div> 
-            <a href="#" class="comment">
-                <button class='btn btn-white btn-xs'>
+            <button class='btn btn-primary btn-xs comment'>
                 <i class="fa fa-pencil"></i> Comment
                 (<span class="comment-count">{{ evidence.comments.count }}</span>)
-                </button>
-            </a>
+            </button>
+
+            <button class='btn btn-primary btn-xs pull-right add-person' data-url="{% url 'records:evidence_add_person' evidence.news.id event %}"> 
+                <i class="fa fa-user"></i> 관련자 추가
+            </button>
         </div>
     </div>
     

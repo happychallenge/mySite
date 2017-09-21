@@ -22,7 +22,7 @@ def get_contents_from_huffingtonpost(url):
 
         # script = re.compile(r'<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>')
         # html = script.sub('', html)
-        soup = BeautifulSoup(html, 'html.parser')
+        soup = BeautifulSoup(html, 'lxml')
     
         result['title'] = soup.findAll(attrs={"property":"og:title"})[0]['content']
         content = soup.find('div', {'id':'mainentrycontent'}).get_text()
@@ -37,6 +37,29 @@ def get_contents_from_huffingtonpost(url):
 # print(get_contents_from_huffingtonpost('http://www.huffingtonpost.kr/2017/07/29/story_n_17621212.html'))
 
 
+# PPSS
+def get_contents_from_ppss(url):
+    result = {}
+
+    # html = requests.get(url).text
+    try:
+        html = requests.get(url).text
+        soup = BeautifulSoup(html, 'lxml')
+    
+        result['title'] = soup.find('title').get_text()
+        content = soup.find('div', {'itemprop':'articleBody'}).get_text()
+        result['content'] = content
+
+        p_time = soup.find('time', attrs={'class': 'entry-time'})
+        result['published_at'] = p_time['datetime'][:10]
+
+    except AttributeError as e:
+        print(e)
+    
+    return result
+
+# print(get_contents_from_ppss('http://ppss.kr/archives/34222'))
+
 
 # Insight
 def get_contents_from_insight(url):
@@ -45,7 +68,7 @@ def get_contents_from_insight(url):
     html = requests.get(url).text
     script = re.compile(r'<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>')
     html = script.sub('', html)
-    soup = BeautifulSoup(html, 'html.parser')
+    soup = BeautifulSoup(html, 'lxml')
     
     try:
         result['title'] = soup.findAll(attrs={"property":"og:title"})[0]['content']
@@ -68,7 +91,7 @@ def get_contents_from_gdnews(url):
     html = requests.get(url).text
     script = re.compile(r'<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>')
     html = script.sub('', html)
-    soup = BeautifulSoup(html, 'html.parser')
+    soup = BeautifulSoup(html, 'lxml')
     
     try:
         result['title'] = soup.findAll(attrs={"property":"og:title"})[0]['content']
@@ -92,7 +115,7 @@ def get_contents_from_naver(url):
     html = requests.get(url).text
     script = re.compile(r'<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>')
     html = script.sub('', html)
-    soup = BeautifulSoup(html, 'html.parser')
+    soup = BeautifulSoup(html, 'lxml')
         
     result['title'] = soup.find('h3', id='articleTitle' ).get_text()
     content = soup.find('div', id='articleBodyContents').get_text()
@@ -110,7 +133,7 @@ def get_contents_from_peoplepower21(url):
     result = {}
 
     html = requests.get(url).text
-    soup = BeautifulSoup(html, 'html.parser')
+    soup = BeautifulSoup(html, 'lxml')
     
     try:
         result['title'] = soup.findAll(attrs={"property":"og:title"})[0]['content']
@@ -132,7 +155,7 @@ def get_contents_from_yonhapnews(url):
     html = response.content.decode('utf-8')
     script = re.compile(r'<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>')
     html = script.sub('', html)
-    soup = BeautifulSoup(html, 'html.parser')
+    soup = BeautifulSoup(html, 'lxml')
         
     result['title'] = soup.find('h1', {'class':'tit-article'} ).get_text()
     content = soup.find('div', { 'class':'article'}).get_text()
@@ -150,7 +173,7 @@ def get_contents_from_daum(url):
     result = {}
 
     html = requests.get(url).text
-    soup = BeautifulSoup(html, 'html.parser')
+    soup = BeautifulSoup(html, 'lxml')
         
     result['title'] = soup.find('h3', {'class':'tit_view'} ).get_text()
     content = soup.find('div', { 'class':'article_view'}).get_text()
@@ -168,7 +191,7 @@ def get_contents_from_joins(url):
     result = {}
 
     html = requests.get(url).text
-    soup = BeautifulSoup(html, 'html.parser')
+    soup = BeautifulSoup(html, 'lxml')
     result['title'] = soup.find('h1', id='article_title' ).get_text()
     content = soup.find('div', id='article_body').get_text()
     
@@ -188,7 +211,7 @@ def get_contents_from_donga(url):
     html = requests.get(url).text
     script = re.compile(r'<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>')
     html = script.sub('', html)
-    soup = BeautifulSoup(html, 'html.parser')
+    soup = BeautifulSoup(html, 'lxml')
     
     try:
         result['title'] = soup.find('title').get_text()
@@ -210,7 +233,7 @@ def get_contents_from_sbs(url):
     result = {}
 
     html = requests.get(url).text
-    soup = BeautifulSoup(html, 'html.parser')
+    soup = BeautifulSoup(html, 'lxml')
     
     try:
         result['title'] = soup.find('h3', {'id':'vmNewsTitle'}).get_text()
@@ -234,7 +257,7 @@ def get_contents_from_hani(url):
 
     response = requests.get(url)
     html = response.content.decode('utf-8')
-    soup = BeautifulSoup(html, 'html.parser')
+    soup = BeautifulSoup(html, 'lxml')
     
     try:
         result['title'] = soup.find('span', {'class':'title'}).get_text()
@@ -257,7 +280,7 @@ def get_contents_from_chosun(url):
 
     response = requests.get(url)
     html = response.content.decode('cp949')    
-    soup = BeautifulSoup(html, 'html.parser')
+    soup = BeautifulSoup(html, 'lxml')
     
     try:
         result['title'] = soup.find('h1', {'id':'news_title_text_id'}).get_text()
@@ -282,7 +305,7 @@ def get_contents_from_khan(url):
     html = response.content.decode('cp949')
     script = re.compile(r'<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>')
     html = script.sub('', html)
-    soup = BeautifulSoup(html, 'html.parser')
+    soup = BeautifulSoup(html, 'lxml')
     
     try:
         result['title'] = soup.find('h1', {'id':'article_title'}).get_text()
@@ -297,13 +320,13 @@ def get_contents_from_khan(url):
     
     return result
 
-# print(get_contents_from_khan('http://news.khan.co.kr/kh_news/khan_art_view.html?artid=201705212228015&code=940301'))
+# print(get_contents_from_khan('http://news.khan.co.kr/kh_news/khan_art_view.html?artid=200503071727151&code=210000'))
 
 # KoreaTimes
 # def get_contents_from_koreatimes(url):
 #     result = {}
 #     html = requests.get(url).text
-#     soup = BeautifulSoup(html, 'html.parser')
+#     soup = BeautifulSoup(html, 'lxml')
     
 #     try:
 #         result['title'] = soup.find('h1').get_text()
@@ -325,7 +348,7 @@ def get_contents_from_segye(url):
     result = {}
 
     html = requests.get(url).text
-    soup = BeautifulSoup(html, 'html.parser')
+    soup = BeautifulSoup(html, 'lxml')
     
     try:
         result['title'] = soup.find('h1', {'class': 'headline'}).get_text()
@@ -349,7 +372,7 @@ def get_contents_from_mk(url):
     mbn = True
     if mbn :
         html = requests.get(url).text
-        soup = BeautifulSoup(html, 'html.parser')
+        soup = BeautifulSoup(html, 'lxml')
         
         try:
             result['title'] = soup.find('p', {'class': 'tit'}).get_text()
@@ -360,7 +383,7 @@ def get_contents_from_mk(url):
     else:
         response = requests.get(url)
         html = response.content.decode('cp949')
-        soup = BeautifulSoup(html, 'html.parser')
+        soup = BeautifulSoup(html, 'lxml')
         
         try:
             result['title'] = soup.find('p', {'class': 'tit'}).get_text()
@@ -379,7 +402,7 @@ def get_contents_from_heraldcorp(url):
     result = {}
 
     html = requests.get(url).text
-    soup = BeautifulSoup(html, 'html.parser')
+    soup = BeautifulSoup(html, 'lxml')
     
     try:
         result['title'] = soup.find('h1').get_text()
@@ -399,7 +422,7 @@ def get_contents_from_pressian(url):
     result = {}
 
     html = requests.get(url).text
-    soup = BeautifulSoup(html, 'html.parser')
+    soup = BeautifulSoup(html, 'lxml')
     
     try:
         result['title'] = soup.find('div', {'class':'title'}).get_text()
@@ -420,7 +443,7 @@ def get_contents_from_hankookilbo(url):
     result = {}
 
     html = requests.get(url).text
-    soup = BeautifulSoup(html, 'html.parser')
+    soup = BeautifulSoup(html, 'lxml')
     
     try:
         result['title'] = soup.findAll(attrs={"name":"title"})[0]['content']
@@ -441,7 +464,7 @@ def get_contents_from_nocutnews(url):
     result = {}
 
     html = requests.get(url).text
-    soup = BeautifulSoup(html, 'html.parser')
+    soup = BeautifulSoup(html, 'lxml')
     
     try:
         result['title'] = soup.findAll(attrs={"name":"og:title"})[0]['content']
@@ -461,7 +484,7 @@ def get_contents_from_newsis(url):
     result = {}
 
     html = requests.get(url).text
-    soup = BeautifulSoup(html, 'html.parser')
+    soup = BeautifulSoup(html, 'lxml')
     
     try:
         result['title'] = soup.findAll(attrs={"property":"og:title"})[0]['content']
@@ -482,7 +505,7 @@ def get_contents_from_wowtv(url):
 
     response = requests.get(url)
     html = response.content.decode('cp949')
-    soup = BeautifulSoup(html, 'html.parser')
+    soup = BeautifulSoup(html, 'lxml')
     
     try:
         result['title'] = soup.find('title').get_text()
@@ -503,7 +526,7 @@ def get_contents_from_munhwa(url):
     result = {}
     response = requests.get(url)
     html = response.content.decode('cp949')
-    soup = BeautifulSoup(html, 'html.parser')
+    soup = BeautifulSoup(html, 'lxml')
     
     try:
         result['title'] = soup.find('title').get_text()
@@ -526,7 +549,7 @@ def get_contents_from_mt(url):
     result = {}
     response = requests.get(url)
     html = response.content.decode('cp949')
-    soup = BeautifulSoup(html, 'html.parser')
+    soup = BeautifulSoup(html, 'lxml')
     
     try:
         result['title'] = soup.findAll(attrs={"property":"og:title"})[0]['content']
@@ -546,7 +569,7 @@ def get_contents_from_mt(url):
 def get_contents_from_fnnews(url):
     result = {}
     html = requests.get(url).text
-    soup = BeautifulSoup(html, 'html.parser')
+    soup = BeautifulSoup(html, 'lxml')
     
     try:
         result['title'] = soup.findAll(attrs={"property":"og:title"})[0]['content']
@@ -566,7 +589,7 @@ def get_contents_from_fnnews(url):
 def get_contents_from_kbs(url):
     result = {}
     html = requests.get(url).text
-    soup = BeautifulSoup(html, 'html.parser')
+    soup = BeautifulSoup(html, 'lxml')
     
     try:
         result['title'] = soup.findAll(attrs={"name":"title"})[0]['content']
@@ -586,7 +609,7 @@ def get_contents_from_kbs(url):
 def get_contents_from_sedaily(url):
     result = {}
     html = requests.get(url).text
-    soup = BeautifulSoup(html, 'html.parser')
+    soup = BeautifulSoup(html, 'lxml')
     
     try:
         result['title'] = soup.find('title').get_text()
@@ -606,7 +629,7 @@ def get_contents_from_kmib(url):
     result = {}
     response = requests.get(url)
     html = response.content.decode('cp949')
-    soup = BeautifulSoup(html, 'html.parser')
+    soup = BeautifulSoup(html, 'lxml')
     
     try:
         result['title'] = soup.find(attrs={"name":"title"})['content']
@@ -626,7 +649,7 @@ def get_contents_from_kmib(url):
 def get_contents_from_kheraldm(url):
     result = {}
     html = requests.get(url).text
-    soup = BeautifulSoup(html, 'html.parser')
+    soup = BeautifulSoup(html, 'lxml')
     
     try:
         result['title'] = soup.find('title').get_text()
@@ -647,7 +670,7 @@ def get_contents_from_dt(url):
     result = {}
     response = requests.get(url)
     html = response.content.decode('cp949')
-    soup = BeautifulSoup(html, 'html.parser')
+    soup = BeautifulSoup(html, 'lxml')
     
     try:
         result['title'] = soup.find('title').get_text()
@@ -666,7 +689,7 @@ def get_contents_from_mediatoday(url):
     result = {}
     response = requests.get(url)
     html = response.content.decode('utf-8')
-    soup = BeautifulSoup(html, 'html.parser')
+    soup = BeautifulSoup(html, 'lxml')
     
     try:
         result['title'] = soup.find('title').get_text()
@@ -688,7 +711,7 @@ def get_contents_from_hankyung(url):
     result = {}
     response = requests.get(url)
     html = response.content.decode('utf-8')
-    soup = BeautifulSoup(html, 'html.parser')
+    soup = BeautifulSoup(html, 'lxml')
     
     try:
         result['title'] = soup.findAll(attrs={"name":"title"})[0]['content']
@@ -708,7 +731,7 @@ def get_contents_from_bloter(url):
     result = {}
     response = requests.get(url)
     html = response.content.decode('utf-8')
-    soup = BeautifulSoup(html, 'html.parser')
+    soup = BeautifulSoup(html, 'lxml')
     
     try:
         result['title'] = soup.find('title').get_text()
@@ -731,7 +754,7 @@ def get_contents_from_seoul(url):
     html = response.content.decode('cp949')
     script = re.compile(r'<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>')
     html = script.sub('', html)
-    soup = BeautifulSoup(html, 'html.parser')
+    soup = BeautifulSoup(html, 'lxml')
     
     try:
         result['title'] = soup.find('title').get_text()
@@ -753,7 +776,7 @@ def get_contents_from_ohmynews(url):
     html = response.content.decode('utf-8')
     script = re.compile(r'<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>')
     html = script.sub('', html)
-    soup = BeautifulSoup(html, 'html.parser')
+    soup = BeautifulSoup(html, 'lxml')
     
     try:
         result['title'] = soup.find('title').get_text()
@@ -774,7 +797,7 @@ def get_contents_from_ytn(url):
     result = {}
     response = requests.get(url)
     html = response.content.decode('utf-8')
-    soup = BeautifulSoup(html, 'html.parser')
+    soup = BeautifulSoup(html, 'lxml')
     
     try:
         result['title'] = soup.find('title').get_text()
@@ -794,7 +817,7 @@ def get_contents_from_etnews(url):
     result = {}
     response = requests.get(url)
     html = response.content.decode('utf-8')
-    soup = BeautifulSoup(html, 'html.parser')
+    soup = BeautifulSoup(html, 'lxml')
     
     try:
         result['title'] = soup.find('title').get_text()
@@ -815,7 +838,7 @@ def get_contents_from_inews24(url):
     result = {}
     response = requests.get(url)
     html = response.content.decode('cp949')
-    soup = BeautifulSoup(html, 'html.parser')
+    soup = BeautifulSoup(html, 'lxml')
     
     try:
         result['title'] = soup.find('title').get_text()
@@ -837,7 +860,7 @@ def get_contents_from_asiae(url):
     result = {}
     response = requests.get(url)
     html = response.content.decode('cp949')
-    soup = BeautifulSoup(html, 'html.parser')
+    soup = BeautifulSoup(html, 'lxml')
     
     try:
         result['title'] = soup.find('title').get_text()
@@ -859,7 +882,7 @@ def get_contents_from_vop(url):
     html = response.content.decode('utf-8')
     script = re.compile(r'<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>')
     html = script.sub('', html)
-    soup = BeautifulSoup(html, 'html.parser')
+    soup = BeautifulSoup(html, 'lxml')
     
     try:
         result['title'] = soup.find('title').get_text()
@@ -882,7 +905,7 @@ def get_contents_from_imbc(url):
     html = response.content.decode('utf-8')
     script = re.compile(r'<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>')
     html = script.sub('', html)
-    soup = BeautifulSoup(html, 'html.parser')
+    soup = BeautifulSoup(html, 'lxml')
     
     try:
         result['title'] = soup.find('title').get_text()
@@ -905,7 +928,7 @@ def get_contents_from_sisain(url):
     html = response.content.decode('utf-8')
     script = re.compile(r'<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>')
     html = script.sub('', html)
-    soup = BeautifulSoup(html, 'html.parser')
+    soup = BeautifulSoup(html, 'lxml')
     
     try:
         result['title'] = soup.find('title').get_text()
@@ -928,7 +951,7 @@ def get_contents_from_ilyo(url):
     html = response.content.decode('utf-8')
     # script = re.compile(r'<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>')
     # html = script.sub('', html)
-    soup = BeautifulSoup(html, 'html.parser')
+    soup = BeautifulSoup(html, 'lxml')
     
     try:
         result['title'] = soup.find('title').get_text()
@@ -952,7 +975,7 @@ def get_contents_from_naeil(url):
     html = response.content.decode('utf-8')
     # script = re.compile(r'<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>')
     # html = script.sub('', html)
-    soup = BeautifulSoup(html, 'html.parser')
+    soup = BeautifulSoup(html, 'lxml')
     
     try:
         result['title'] = soup.findAll(attrs={"property":"title"})[0]['content']
@@ -976,7 +999,7 @@ def get_contents_from_ddanzi(url):
     html = response.content.decode('utf-8')
     # script = re.compile(r'<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>')
     # html = script.sub('', html)
-    soup = BeautifulSoup(html, 'html.parser')
+    soup = BeautifulSoup(html, 'lxml')
     
     try:
         result['title'] = soup.find('title').get_text()
@@ -998,7 +1021,7 @@ def get_contents_from_tf(url):
     html = response.content.decode('utf-8')
     # script = re.compile(r'<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>')
     # html = script.sub('', html)
-    soup = BeautifulSoup(html, 'html.parser')
+    soup = BeautifulSoup(html, 'lxml')
     
     try:
         result['title'] = soup.find('title').get_text()
@@ -1022,7 +1045,7 @@ def get_contents_from_asiatoday(url):
     html = response.content.decode('utf-8')
     # script = re.compile(r'<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>')
     # html = script.sub('', html)
-    soup = BeautifulSoup(html, 'html.parser')
+    soup = BeautifulSoup(html, 'lxml')
     
     try:
         result['title'] = soup.find('title').get_text()
@@ -1046,7 +1069,7 @@ def get_contents_from_lawtimes(url):
     html = response.content.decode('utf-8')
     # script = re.compile(r'<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>')
     # html = script.sub('', html)
-    soup = BeautifulSoup(html, 'html.parser')
+    soup = BeautifulSoup(html, 'lxml')
     
     try:
         result['title'] = soup.find('title').get_text()
@@ -1071,7 +1094,7 @@ def get_contents_from_redian(url):
     html = response.content.decode('utf-8')
     # script = re.compile(r'<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>')
     # html = script.sub('', html)
-    soup = BeautifulSoup(html, 'html.parser')
+    soup = BeautifulSoup(html, 'lxml')
     
     try:
         result['title'] = soup.find('title').get_text()
@@ -1096,7 +1119,7 @@ def get_contents_from_mediaus(url):
     html = response.content.decode('cp949')
     # script = re.compile(r'<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>')
     # html = script.sub('', html)
-    soup = BeautifulSoup(html, 'html.parser')
+    soup = BeautifulSoup(html, 'lxml')
     
     try:
         result['title'] = soup.find('title').get_text()

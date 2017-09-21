@@ -31,7 +31,7 @@
             </div>
 
             {# 002. 자식들 #}
-            <div class="col-md-12">
+            <div >
                 {% if person.get_children %}
                     {% include 'records/partial/person_info_for_relationship.html' with relationship='자식들' persons=person.get_children family=True %}
                 {% endif %}  
