@@ -107,16 +107,19 @@ def event_detail(request, event_id):
 @require_http_methods(["POST"])
 def ajax_person_like(request, person_id):
     data = dict()
+    user = request.user
     # person_id = request.POST.get('personid')
     person = get_object_or_404(Person, id=person_id)
     user_list = person.user_like.all()
     
-    if request.user in user_list :
-        person.user_like.remove(request.user)
+    if user in user_list :
+        person.user_like.remove(user)
         data['like'] = 'like'
+        user.profile.notify_person_unliked(person)
     else:
-        person.user_like.add(request.user)
+        person.user_like.add(user)
         data['like'] = 'unlike'
+        user.profile.notify_person_liked(person)
 
     data['status'] = True
     data['total_likes'] = person.total_likes
@@ -128,18 +131,21 @@ def ajax_person_like(request, person_id):
 @require_http_methods(["POST"])
 def ajax_person_following(request, person_id):
     data = dict()
-    
+    user = request.user
+
     person = get_object_or_404(Person, id=person_id)
     user_list = person.following.all()
     
-    if request.user in user_list :
-        person.following.remove(request.user)
+    if user in user_list :
+        person.following.remove(user)
         data['follow'] = 'following'
         data['message'] = '{} 님 지켜 보기을 취소하셨습니다.'.format(person.name)
+        user.profile.notify_person_unfollowing(person)
     else:
-        person.following.add(request.user)
+        person.following.add(user)
         data['follow'] = 'unfollowing'
         data['message'] = '{} 님 지켜 보기를 신청하셨습니다.'.format(person.name)
+        user.profile.notify_person_following(person)
 
     data['status'] = True
     data['total_following'] = person.total_following
@@ -193,6 +199,7 @@ def ajax_event_following(request, event_id):
 
     return JsonResponse(data)    
 
+
 ############################
 # Tag
 ############################
@@ -205,21 +212,6 @@ def tag(request, tag_name, type):
         event_list = tag.event_set.all() 
         return _event_list(request, event_list)
 
-############################
-# Search
-############################
-def top_search(request):
-    keyword = request.GET.get('top_search')
-    person_list = Person.objects.filter(name__contains=keyword)
-    popular_tags = Tag.get_person_popular_tags()
-
-    event_list = Event.objects.filter(name__contains=keyword)
-
-    return render(request, 'records/search_result.html', {
-            'person_list': person_list, 
-            'event_list': event_list, 
-            'popular_tags': popular_tags
-        })
 
 ############################
 # Register Relationship
@@ -261,6 +253,7 @@ def register_relation(request, person_id):
             messages.success(request, "반드시 한개 이상의 관계는 입력을 해야 합니다.")
             return redirect('records:person_relationship', person_id)
 
+
 ############################
 # Search Person
 ############################
@@ -269,6 +262,21 @@ def search_persons(request):
     if search_query:
         person_list = Person.objects.filter(name__contains = search_query)
     html = render_to_string('records/partial/search_persons.html', {
+            'person_list': person_list,
+        })
+    return JsonResponse(html, safe=False)
+
+
+############################
+# TOP Search
+############################
+def top_search(request):
+    html = ""
+    search_query = request.GET.get('keyword')
+    if search_query:
+        person_list = Person.objects.filter(name__contains = search_query)
+    
+        html = render_to_string('records/partial/top_search.html', {
             'person_list': person_list,
         })
     return JsonResponse(html, safe=False)

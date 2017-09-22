@@ -48,7 +48,7 @@
                                 <li><a href="#">Following</a></li>
                             </ul>
                         </div>
-                    </div>
+                    </div> <!-- ibox-title -->
 
                     {# EVIDENCE INFO #}
                     <div class="ibox evidence_list">
@@ -62,7 +62,7 @@
                                     추가 증거 등록
                             </a>
                         </div>
-                    </div> <!-- ibox-content -->
+                    </div> <!-- ibox evidence_list -->
                     
                     {# 새로운 사건에 등록 Button #}
                     <div class="ibox-content">
@@ -74,7 +74,7 @@
                                 </a>
                             </div>
                         </div>
-                    </div>
+                    </div> <!-- ibox-content -->
                 </div>
 
             {% empty %} {# for personevent in person.personevent_set.all #}
@@ -184,15 +184,14 @@
             dataType : 'json',
             success: function(data){
                 if(data.status) {
-                    $('button.btnPersonLike').html(data.like == 'like' ? '<i class="fa fa-thumbs-up"></i>Like<span class="count"> <span class="total">  </span> 명</span>':'<i class="fa fa-thumbs-down"></i>UnLike<span class="count"> <span class="total"> </span> 명</span>');
-                    $('span.count .total').text(data.total_likes);
+                    $('button.btnPersonLike').html(data.like == 'like' ? '<i class="fa fa-thumbs-up"></i>Like<span class="count">(<span class="likes">  </span>)</span>':'<i class="fa fa-thumbs-down"></i>UnLike<span class="count">(<span class="likes"> </span>)</span>');
+                    $('span.count .likes').text(data.total_likes);
                 }
             }
         });
     });
 
-    $("a.following").click(function(e){
-        e.preventDefault();
+    $("button.btnPersonFollowing").click(function(){
         $.ajax({
             url : "{% url 'records:ajax_person_following' person.id %}", 
             type: "POST",
@@ -200,8 +199,8 @@
             dataType : 'json',
             success: function(data){
                 if(data.status) {
-                    $('a.following').html(data.follow);
-                    $('span.count .following').text(data.total_following);
+                    $('button.btnPersonFollowing').html(data.follow == 'following' ? '<i class="fa fa-thumbs-up"></i>Follow<span class="count">(<span class="follow">  </span>)</span>':'<i class="fa fa-thumbs-down"></i>UnFollow<span class="count">(<span class="follow"> </span>)</span>');
+                    $('span.count .follow').text(data.total_following);
                     alert(data.message);
                 }
             }

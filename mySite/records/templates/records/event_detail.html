@@ -85,7 +85,7 @@
             dataType : 'json',
             success: function(data){
                 if(data.status) {
-                    $('.btnEventLike').html(data.like == 'like' ? '<i class="fa fa-thumbs-up"></i>Like<span class="count"> <span class="total">  </span> 명</span>':'<i class="fa fa-thumbs-down"></i>UnLike<span class="count"> <span class="total"> </span> 명</span>');
+                    $('.btnEventLike').html(data.like == 'like' ? '<i class="fa fa-thumbs-up"></i>Like<span class="count">(<span class="total">  </span>)</span>':'<i class="fa fa-thumbs-down"></i>UnLike<span class="count">(<span class="total"></span>)</span>');
                     $('span.count .total').text(data.total_likes);
                     alert(data.message);
                 }

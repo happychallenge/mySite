@@ -1,14 +1,18 @@
 {% load static %}
+<!-- 개인 정보 -->
 <div class="ibox float-e-margins">
     <div class="ibox-title">
         <h5>인물 상세정보</h5>
         {% if not checkbox %}
             <div class="ibox-tools">
+                <a class="collapse-link">
+                    <i class="fa fa-chevron-up"></i>
+                </a>
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                     <i class="fa fa-wrench"></i>
                 </a>
                 <ul class="dropdown-menu dropdown-user">
-                    <li><a class='following' href="">Following</a></li>
+                   <!-- <li><a class='following' href="">Following</a></li> -->
                 {% if user.is_staff %}
                     <li><a class='edit' href="{% url 'records:edit_person' person.id %}">정보 수정</a></li> 
                 {% endif %}
@@ -29,7 +33,7 @@
                 {% if checkbox %}
                     <input type="checkbox" checked value="{{person.id}}" name="person" class="checkbox checkbox-primary pull-right">
                 {% endif %}
-                <p><i class="fa fa-calendar"></i> Birth Year : {{ person.birth_year }}</p>
+                <p><i class="fa fa-calendar"></i> {{ person.birth_year }} 년</p>
                 <p><i class="fa fa-flag"></i> Jobs :
                     {{person.jobs.all|join:", "}}
                 </p>
@@ -44,15 +48,15 @@
             </div>
 
         {% with total_likes=person.user_like.count total_following=person.following.count users_like=person.user_like.all %}
-            <div class="btn-group"> 
+            <div class="actions"> 
                 <button class="btn btn-outline btn-primary btn-xs btnPersonLike">
                     <i class="fa fa-thumbs-up"></i> {% if request.user not in users_like %}Like{% else %}UnLike{% endif %}
-                    <span class="count">(<span class="total"> {{total_likes}} </span>)</span>
+                    <span class="count">(<span class="likes"> {{total_likes}} </span>)</span>
                 </button>
-                <button class="btn btn-primary btn-xs"><i class="fa fa-share"></i> Share</button>
-                <button class="btn btn-outline btn-primary btn-xs">
-                    <span class="count">following (<span class="following"> {{total_following}} </span>)</span>
+                <button class="btn btn-primary btn-xs btnPersonFollowing">
+                    <span class="count">Following (<span class="follow"> {{total_following}} </span>)</span>
                 </button>
+                <button class="btn btn-outline btn-primary btn-xs"><i class="fa fa-share"></i> Share</button>
                 <a href="{% url 'records:person_relationship' person.id %}" class="btn btn-primary btn-xs"> 
                     <i class="fa fa-share"></i>Family
                 </a>
@@ -60,7 +64,56 @@
         {% endwith %}
 
         </div>
+    </div>
+</div>
 
+<!-- 별명 짓기 -->
+<div class="ibox float-e-margins">
+    <div class="ibox-title">
+        <h5>{{ person.name }}에게 어울리는 호칭은?</h5>
+        <div class="ibox-tools">
+            <a class="collapse-link">
+                <i class="fa fa-chevron-up"></i>
+            </a>
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                <i class="fa fa-wrench"></i>
+            </a>
+        </div>
+    </div>
+    <div class="ibox-content">
+        <ul class="todo-list m-t small-list">
+            <li>
+                <div class="actions pull-right">
+                    <button class="btn btn-white btn-circle btn-md" type="button">
+                        <i class="fa fa-frown-o fa-3"></i></button>
+                    <button class="btn btn-danger btn-circle btn-outline btn-md" type="button">
+                        <i class="fa fa-heart fa-2"></i></button>
+                </div>
+                <div class="m-n p-h-sm">
+                    <span>노블리스 오블리제의 최고봉 
+                        <span class="badge">1</span> 
+                        <span class="badge badge-danger">100</span> 
+                    </span>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<!-- 가족 관계 -->
+<div class="ibox float-e-margins">
+    <div class="ibox-title">
+        <h5>가족 관계</h5>
+        <div class="ibox-tools">
+            <a class="collapse-link">
+                <i class="fa fa-chevron-up"></i>
+            </a>
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                <i class="fa fa-wrench"></i>
+            </a>
+        </div>
+    </div>
+    <div class="ibox-content">
     {# SPOUSE 남편/아내 #}
     {% if person.get_spouse %}
         <div class="ibox-content no-padding profile-content">
@@ -83,9 +136,11 @@
     {# 자식들 #}
     {% if person.get_children %}
         <div class="ibox-content no-padding profile-content">
+            <div class="row">
         {% for parent in person.get_children %}
             {% include 'records/partial/relationship.html' with relationship='자식' %}
         {% endfor %}
+            </div>
         </div>
     {% endif %}
     </div>

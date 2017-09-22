@@ -25,8 +25,11 @@ def signup(request):
             password = form.cleaned_data.get('password')
             User.objects.create_user(username=username, first_name=first_name, 
                             password=password, email=email)
+            
             user = authenticate(username=username, password=password)
             login(request, user)
+            
+            Profile.objects.create(user=request.user)
             # welcome_post = '{0} has joined the network.'.format(user.username)
             # feed = Feed(user=user, post=welcome_post)
             #feed.save()

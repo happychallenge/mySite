@@ -49,7 +49,7 @@ class SignUpForm(forms.ModelForm):
     first_name = forms.CharField(
         widget=forms.TextInput(attrs={'class': 'form-control'}),
         required=False,
-        label="Nick Name",
+        label="Name",
         max_length=75)
     password = forms.CharField(
         widget=forms.PasswordInput(attrs={'class': 'form-control'}))
@@ -65,7 +65,6 @@ class SignUpForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(SignUpForm, self).__init__(*args, **kwargs)
-
         self.fields['email'].validators.append(UniqueEmailValidator)
         self.fields['email'].validators.append(SignupDomainValidator)
         self.fields['password'].validators.append(validate_password_strength)

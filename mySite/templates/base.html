@@ -11,6 +11,8 @@
     <link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/animate.css' %}" rel="stylesheet">
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <link href="{% static 'css/topsearch.css' %}" rel="stylesheet">
+
 </head>  
 
 <body>
@@ -30,9 +32,31 @@
                 <!--  Top Search -->
                     <ul class="nav navbar-top-links navbar-right">
                         <li>
-                            <span class="m-r-sm text-muted welcome-message"> <h4> "I Remember Your Past." 에 오신 것을 환영합니다. </h4> </span>
+                            <span class="m-r-sm text-muted welcome-message">  "I Remember Your Past." 에 오신 것을 환영합니다. </span>
                         </li>
+                        
+                    {% if user.is_authenticated %}
+                        <li class="dropdown" id="noti">
+                            <a class="dropdown-toggle count-info" data-toggle="popover" id="notifications">
+                                <i class="fa fa-bell"></i>
+                                    <span class="label label-warning noti_count"> <span class="count">0</span></span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-messages noti-content">
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="{% url 'logout' %}">
+                                <i class="fa fa-sign-out"></i> Log out
+                            </a>
+                        </li>
+                    {% else %}
+                        <li>
+                            <a href="{% url 'login' %}"> 
+                                <i class="fa fa-sign-in"></i>로그인 
+                            </a>
 
+                        </li>
+                    {% endif %}
                     </ul>
                 </nav>
             </div>
@@ -47,7 +71,7 @@
             </div>
 
             <!-- BODY Content -->
-            <div class="wrapper wrapper-content animated fadeInRight">
+            <div class="wrapper wrapper-content animated fadeIn">
                 <div class="row animated fadeInDown">
                     
                     <!-- MAIN  -->
@@ -76,6 +100,8 @@
                 </div>
             </div>
             
+            <div class="wrapper wrapper-content animated fadeIn blank">
+            </div>
             <!-- FOOTER -->
             <div class="footer">
                 {% include 'footer.html' %}
@@ -90,19 +116,7 @@
     <script src="{% static 'js/plugins/slimscroll/jquery.slimscroll.min.js' %}"></script>
     <script src="{% static 'js/inspinia.js' %}"></script>
     <script src="{% static 'js/plugins/pace/pace.min.js' %}"></script>
-  
-    <style>
-      .top_search {
-        font-size: 1.1em;
-      }
-      .top_search input {
-        width: 400px;
-        border: 1px solid red;
-      }
-      .top_search input:focus {
-        border-color: #66b1ee;
-      }
-    </style>
+    <script src="{% static 'js/topmenu.js' %}"></script>
 
     <!-- Custom and plugin javascript -->
     {% block javascript %}        

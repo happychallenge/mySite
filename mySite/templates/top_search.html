@@ -1,8 +1,11 @@
 <div class="navbar-header">
     <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
-    <form role="search" class="navbar-form-custom" action="{% url 'records:top_search' %}" name='searchForm' id="id_top_search" onsubmit="return insertSearch();">
+    <form role="search" class="navbar-form-custom">
         <div class="form-group top_search">
-            <input type="text" placeholder="검색하고자 하는 단어를 입력하세요...." class="form-control" name="top_search" id="top-search">
+            <input type="text" placeholder="검색하고자 하는 단어를 입력하세요...." class="form-control" name="top_search" id="top_search" style="width:300px">
+            <div class="top_results" id="top_results">
+              
+            </div>
         </div> 
     </form>
 </div>

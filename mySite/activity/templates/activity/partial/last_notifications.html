@@ -1,0 +1,27 @@
+{% load static %}
+
+{% for noti in notifications %}
+    <li>
+        <div class="dropdown-messages-box">
+            <a href="" class="pull-left">
+                <img alt="image" class="img-circle no-padding" src="{% if noti.from_user.profile.picture %} {{ noti.from_user.profile.picture.url }}{% else %} {% static 'images/nouser.png' %}{% endif %}" width="150">
+            </a>
+            <div class="media-body">
+            {% if noti.notification_type == 'PL' %}
+                <strong>{{ noti.from_user.first_name }}</strong>님이  <strong>{{ noti.person.name }}</strong>를 좋아합니다. 
+            {% elif noti.notification_type == 'PC' %}
+                <strong>{{ noti.from_user.first_name }}</strong>님이 <strong>{{ noti.person.name }}</strong>님에 글을 남겼습니다. 
+            {% elif noti.notification_type == 'PF' %}
+                <strong>{{ noti.from_user.first_name }}</strong>님이 <strong>{{ noti.person.name }}</strong>님을 Following을 하였습니다.
+            {% endif %}
+                <br><small> {{ noti.created_date }}</small>
+            </div>
+        </div>
+    </li>
+    {% if not forloop.last %}
+    <li class="divider"></li>
+    {% endif %}
+{% empty %}
+0
+{% endfor %}    
+

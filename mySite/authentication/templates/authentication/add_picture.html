@@ -1,34 +1,29 @@
 {% extends 'base.html' %}
 {% load i18n static %}
 
-{% block main_title %}
-    <div class="row wrapper border-bottom white-bg page-heading">
-        <div class="col-lg-8">
-            <h2>이분들을 기억하는 것이 역사입니다.</h2>
-            <ol class="breadcrumb">
-                <li>
-                    <a href="index.html">Home</a>
-                </li>
-                <li>
-                    기록 
-                </li>
-                <li class="active">
-                    <strong>Perosnal > Profile > 사진 변경 </strong>
-                </li>
-            </ol>
-        </div>
-    </div>
-{% endblock main_title %}
+{% block header-index %}
+    <h2>역사를 잊은 민족에게 미래는 없다.</h2>
+    <ol class="breadcrumb">
+        <li>
+            <a href="index.html">Home</a>
+        </li>
+        <li>
+            기록 
+        </li>
+        <li class="active">
+            <strong>Perosnal > Profile > 개인 정보 </strong>
+        </li>
+    </ol>
+{% endblock header-index %}
 
 
 {% block content %}
-
 <div class="row">
     <div class="col-lg-12">
         <div class="ibox float-e-margins">
             {# FORM TITLE #}
             <div class="ibox-title">
-                <h5> Profile 변경 <small> 모든 곳에서 Profile 이 사용되니 꼭 등록을 해 주세요.</small></h5>
+                <h5> Profile 변경 <small> 모든 곳에서 Profile 사진이 사용되니 꼭 등록을 해 주세요.</small></h5>
                 <div class="ibox-tools">
                     <a class="collapse-link">
                         <i class="fa fa-chevron-up"></i>
@@ -42,14 +37,13 @@
             <div class="ibox-content">
                 {# FORM START #}
                 <h3 style="margin-top: 0">{% trans 'Profile Picture' %}  </h3>
-                <img src="{% if user.profile.picture.url %} {{ user.profile.picture.url }} {% else %} {% static 'images/nouser.png' %}{% endif %}" 
+                <img src="{% if user.profile.picture %} {{ user.profile.picture.url }} {% else %} {% static 'images/nouser.png' %}{% endif %}" 
                     style="border-radius: 5px; margin-bottom: 1em;" width="150" id='image_existed'>
 
                 <p>사진을 변경하시려면 파일을 선택해 주시기 바랍니다.</p>
                 <form method="POST" enctype='multipart/form-data' class="form-horizontal" id="formUpload">
                     {% csrf_token %}
                     {{ form }}
-
                     <div class="form-group">
                         <div class="col-sm-4">
                             

@@ -16,8 +16,9 @@ def comment(request):
         eid = request.POST.get('evidence')
 
         if form.is_valid():
+            user = request.user
             comment = form.save(commit=False)
-            comment.created_user = request.user
+            comment.created_user = user
             comment.save()
 
         comment_list = Comment.objects.filter(evidence__id = eid)

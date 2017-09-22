@@ -1,0 +1,22 @@
+{% load static %}
+
+{% for person in person_list %}
+    <div>
+        <a href="{% url 'records:person_detail' person.id %}"> 
+            <div class="row">
+                <div style="float:left;padding:0px 20px;">
+                    <img alt="image" width="80px" class="img-circle img-responsive" src="{% if person.picture %}{{ person.picture.url }}{% else %}{% static 'images/nouser.png' %}{% endif %}">
+                </div>
+                <div style="float:left;">
+                    <span>이름: {{ person.name }}</span> <br />
+                    <span>별칭: {{ person.nick_name }}</span> <br />
+                    <span>출생년도: {{ person.birth_year }} 년</span> <br>
+                    <span>{{ person.tags.all|join:", "}} </span> <br>
+                </div>
+            </div>
+        </a>
+        {% if not forloop.last %}
+        <hr>
+        {% endif %}
+    </div>
+{% endfor %}

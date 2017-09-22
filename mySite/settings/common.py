@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'mySite.records',
     'mySite.comments',
     'mySite.mistake',
+    'mySite.activity',
 ]
 
 MIDDLEWARE = [

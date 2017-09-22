@@ -1,0 +1,45 @@
+<style>
+  .top_search{
+    position: relative;
+    margin: 10px;
+  }
+
+  .top_search input{
+    height: 40px;
+    width: 100px;
+    font-size: 1.1em;
+    color: #555860;
+    padding: 0 12px 0 25px;
+    background: white url("http://cssdeck.com/uploads/media/items/5/5JuDgOa.png") 10px 8px no-repeat;
+    background-position: 5% 50%;
+    border-radius: 5px;
+  }
+
+  .top_search input:focus{
+    /*outline: none;*/
+    border-color: #66b1ee;
+  }
+
+  /*.top_search input:focus + .results { display: block }*/
+
+  .top_search .top_results {
+    display: none;
+    width: 300px;
+    position: absolute;
+    top: 40px;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    padding: 10px;
+    margin: 10px;
+    border: 1px solid #cbcfe2;
+    border-radius: 5px;
+    background-color: #fdfdfd;
+    background-image: linear-gradient(top, #fdfdfd, #eceef4);
+  }
+  
+  .blank {
+      height: 100px;
+      visibility: hidden;
+  }
+</style>

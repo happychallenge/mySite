@@ -18,7 +18,15 @@
 
         <!-- Right Content --> 
         <div id="page-wrapper" class="gray-bg">
-            
+            <div class="row border-bottom">
+                <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
+                    <ul class="nav navbar-top-links navbar-right">
+                        <li>
+                            <span class="m-r-sm text-muted welcome-message"> <h4> "I Remember Your Past." 에 오신 것을 환영합니다. </h4> </span>
+                        </li>
+
+                    </ul>
+                </nav>
         <!-- Main Title -->
             {% block main_title %}
                 
@@ -29,7 +37,9 @@
 
             {% endblock content %}
 
-            {% include 'footer.html' %}
+            <div class="footer">
+                {% include 'footer.html' %}
+            </div>
 
         </div>
     </div>

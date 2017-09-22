@@ -30,6 +30,7 @@ urlpatterns = [
     url(r'^authentication/', include('mySite.authentication.urls', namespace='authentication')),
     url(r'^mistake/', include('mySite.mistake.urls', namespace='mistake')),
     url(r'^comments/', include('mySite.comments.urls', namespace='comments')),
+    url(r'^activity/', include('mySite.activity.urls', namespace='activity')),
 
     url(r'^accounts/', include('allauth.urls')),
     # url(r'^evidence/', include('evidence.urls', namespace='evidence')),
