@@ -31,7 +31,7 @@
                     {# 뉴스 URL #}
                     <div class="ibox-content">
                         {# FORM START #}
-                        <form method="POST" action="{% url 'records:check_evidence' personevent %}" class="form-horizontal">
+                        <form method="POST" action="{% url 'records:check_evidence' personevent.id %}" class="form-horizontal">
                             {% csrf_token %}
                             <div class="input-group">
                                 <input type="text" name='url' class="form-control"> 
@@ -52,19 +52,16 @@
                         <h5> 뉴스 내용 </h5>
                     </div>
                     <div class="ibox-content">
-                        <div>
-                            <div class="feed-activity-list">
-                                <div class="feed-element">
-                                    <div class="media-body">
-                                        <small class="pull-right"> {{ news.created_at }} </small>
-                                        <strong> {{ news.media }} </strong> posted <strong>{{news.title}}</strong>  <br>
-                                        <div class="well">
-                                            {{ news.content | linebreaks }} <br>
-                                            <small> published at : {{ news.published_at }} </small>
-                                        </div>
+                        <div class="feed-activity-list">
+                            <div class="feed-element">
+                                <div class="media-body">
+                                    <small class="pull-right"> {{ news.created_at }} </small>
+                                    <strong> {{ news.media }} </strong> posted <strong>{{news.title}}</strong>  <br>
+                                    <div class="well">
+                                        {{ news.content | linebreaks }} <br>
+                                        <small> published at : {{ news.published_at }} </small>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -77,12 +74,12 @@
         <div class="row animated fadeInRight">
             <div class='col-md-4'>
                 <h3>등록하고자 하는 사람</h3>
-                {% include 'records/partial/person_info.html' %}
+                {% include 'records/partial/person_info.html' with person=personevent.person %}
             </div>
 
             <div class='col-md-8'>
                 <h3>등록하자고 하는 이벤트 </h3>
-                {% include 'records/partial/event_info.html' %}
+                {% include 'records/partial/event_info.html' with event=personevent.event %}
             </div>
         </div>
     </div>
@@ -92,7 +89,7 @@
             <form action="{% url 'records:add_evidence' %}" method="POST"> 
                 {% csrf_token %}
                 {{form}}
-                <button type="submit" class="btn btn-primary btn-rounded btn-block"> 해당 기사를 {{person.name}} 의 {{event.name}}  등록하겠습니다.</button>
+                <button type="submit" class="btn btn-primary btn-rounded btn-block"> 해당 기사를 {{personevent.person.name}} 의 {{personevent.event.name}}  등록하겠습니다.</button>
             </form>
         </div>
     </div>

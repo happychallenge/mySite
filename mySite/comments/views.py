@@ -9,7 +9,6 @@ from .models import Comment
 from .forms import CommentForm
 # Create your views here.
 
-@login_required
 def comment(request):
     if request.method == 'POST':
         form = CommentForm(request.POST)

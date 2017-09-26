@@ -1,12 +1,16 @@
 # records/models.py
+import csv
 from django.db import models
 from django.db.models import Count
 from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
 
 from mySite.master.models import Job, Region, EventCategory, Media
+from mySite.nickname.models import Nickname
 
 # Create your models here.
+
+
 class Person(models.Model):
     """docstring for Person"""
     """ 기억할 인물에 대한 설명 """
@@ -40,6 +44,9 @@ class Person(models.Model):
     following = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='person_follow', blank=True)
     created_date = models.DateTimeField(auto_now_add=True,null=True, blank=True)
 
+    class Meta:
+        ordering = ['name',]
+
     def __str__(self):
         return self.name
 
@@ -53,9 +60,9 @@ class Person(models.Model):
         tag_list = tags.split(',')
         for tag in tag_list:
             if tag:
-                tag, *_ = tag.split(',')
-                t, created = Tag.objects.get_or_create(tag=tag.lower(),
-                                    person=self)
+                obj, created = Tag.objects.get_or_create(tag=tag.lower())
+                self.tags.add(obj)
+                
     def get_tags(self):
         return Tag.objects.filter(person=self)
 
@@ -79,13 +86,55 @@ class Person(models.Model):
 
     def get_sibling(self):
         try:
-            father = [relation.other for relation in Relationship.objects.select_related("other").filter(person=self, relationship='parent', ctype='father')][0]
+            father = [relation.other for relation in Relationship.objects.select_related("other").filter(
+                person=self, relationship='parent', ctype='아버지')][0]
         except Exception as e:
             return None
         if father:
-            return [relation.person for relation in Relationship.objects.select_related("person").filter(other=father, relationship='parent')]
+            return [relation.person for relation in Relationship.objects.select_related("person").filter(
+                other=father, relationship='parent').order_by('person__sex', 'person__birth_year')]
         else:
             return None
+
+    # Get Nickname
+    def get_nicknames(self):
+        return PersonNick.objects.filter(person=self).annotate(
+                num_userlike=Count('user_like')).order_by('-num_userlike')[:4]
+
+    def get_total_nick(self):
+        return PersonNick.objects.filter(person=self).annotate(
+                num_userlike=Count('user_like')).count()
+
+def read_person_data():
+    
+    job_array = []
+    with open('/Users/happy/Django/mySite/mySite/records/person.csv', "r", encoding="utf-8") as file:
+        reader = csv.DictReader(file)
+        print('TEST')
+        print(reader)
+
+        for row in reader:
+            print("TEST 2")
+            name = row.get('name')
+            nick = row.get('nick')
+            birth = row.get('birth')
+            sex = row.get('sex')
+            jobs = row.get('jobs')
+            # url = row.get('url')
+            tags = row.get('tags')
+            status = row.get('status')
+
+            person, created = Person.objects.get_or_create(name=name, nick_name=nick, 
+                        birth_year=birth, sex=sex, status=status)
+
+            print(person)
+            person.create_tags(tags)
+            person.create_tags(name)
+
+            if jobs:
+                jobed, created = Job.objects.get_or_create(name=jobs)
+                    
+                person.jobs.add(jobed)
 
 
 class Relationship(models.Model):
@@ -214,3 +263,31 @@ class Tag(models.Model):
         return sorted_count[:10]
 
 
+class PersonNick(models.Model):
+    """docstring for PersonNick"""
+    """ 설명 """
+    person = models.ForeignKey(Person)
+    nickname = models.ForeignKey(Nickname)
+    created_user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    user_like = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='nickname_liked', blank=True)
+    user_hate = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='nickname_hated', blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = (('person', 'nickname'),)
+
+    def __str__(self):
+        return "{} {}".format(self.person, self.nickname)
+
+    @staticmethod
+    def get_user_like():
+        personnicks = PersonNick.objects.annotate(num_userlike=Count('user_like')).order_by('-num_userlike')
+        return personnicks
+
+    @property
+    def total_likes(self):
+        return self.user_like.count()
+
+    @property
+    def total_hates(self):
+        return self.user_hate.count()

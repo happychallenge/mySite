@@ -242,7 +242,7 @@ def register_relation(request, person_id):
         if children_id:
             for child in children_id:
                 other = Person.objects.get(id = child)
-                ctype = '아들' if other.sex == 'M' else '딸'
+                ctype = '아버지' if other.sex == 'M' else '어머니'
                 Relationship.objects.create(person=other, other=me, relationship='parent', ctype=ctype)
                 message += "{} 님이 아들 또는 딸로 추가되었습니다. <br>".format(other.name)
 

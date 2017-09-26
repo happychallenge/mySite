@@ -20,7 +20,7 @@
 
     {# 뉴스 내용과 URL #}
     <div class="social-body" >
-        <div class="well" style="padding:0px 10px">
+        <div class="well" style="padding:10px 10px 0px 10px">
            {{evidence.news.content|linebreaks|truncatewords:"60"}} <br>
             <small style="color:#337ab7;"> 발행일 : {{evidence.news.published_at|date:"Y/m/d" }} </small> 
         </div>
@@ -31,7 +31,7 @@
             </button>
 
             <button class='btn btn-info btn-xs pull-right add-person' data-url="{% url 'records:evidence_add_person' evidence.news.id event %}"> 
-                <i class="fa fa-user"></i> 관련자 추가
+                <i class="fa fa-user"></i> 해당 뉴스 관련자 추가
             </button>
         </div>
     </div>
@@ -39,5 +39,15 @@
     {# AJAX COMMENT_LIST #}
     <div class="social-footer comment_list">
     </div>
+
+    {# 추가 증거 Button #}
+    {% if forloop.last and user.is_authenticated %}
+        <div class="social-footer">
+            <a class="btn btn-default btn-rounded btn-block" href="{% url 'records:check_evidence' personevent.id %}"> 
+                <i class="fa fa-plus"></i> 
+                    추가 증거 등록
+            </a>
+        </div>
+    {% endif %}
 
 </div>

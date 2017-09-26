@@ -2,10 +2,10 @@
 <!-- 개인 정보 -->
 <div class="ibox float-e-margins">
     <div class="ibox-title">
-        <h5>인물 상세정보</h5>
+        <h5> {{person.name}} 인물 상세정보</h5>
         {% if not checkbox %}
-            <div class="ibox-tools">
-                <a class="collapse-link">
+            <div class="ibox-tools person">
+                <a class="collapse-link person-information">
                     <i class="fa fa-chevron-up"></i>
                 </a>
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
@@ -33,6 +33,7 @@
                 {% if checkbox %}
                     <input type="checkbox" checked value="{{person.id}}" name="person" class="checkbox checkbox-primary pull-right">
                 {% endif %}
+                <p><i class="fa fa-flag-o"></i> {{ person.nick_name }} </p>
                 <p><i class="fa fa-calendar"></i> {{ person.birth_year }} 년</p>
                 <p><i class="fa fa-flag"></i> Jobs :
                     {{person.jobs.all|join:", "}}
@@ -80,22 +81,37 @@
             </a>
         </div>
     </div>
-    <div class="ibox-content">
-        <ul class="todo-list m-t small-list">
-            <li>
-                <div class="actions pull-right">
-                    <button class="btn btn-white btn-circle btn-md" type="button">
-                        <i class="fa fa-frown-o fa-3"></i></button>
-                    <button class="btn btn-danger btn-circle btn-outline btn-md" type="button">
-                        <i class="fa fa-heart fa-2"></i></button>
-                </div>
-                <div class="m-n p-h-sm">
-                    <span>노블리스 오블리제의 최고봉 
-                        <span class="badge">1</span> 
-                        <span class="badge badge-danger">100</span> 
-                    </span>
-                </div>
-            </li>
+    <div class="ibox-content nicklist" style="padding:10px;">
+        <ul class="todo-list m-t small-list nickname_list">
+            <!-- 별명 목록과 별명에 대한 평가 ajax -->
+            {% include 'nickname/partial/nicknames.html' with personnick_list=person.get_nicknames %}
+
+            {% if person.get_total_nick >= 5 %}
+                <button class="btn b-r-md btn-primary btn-block btn-outline" id="NickMore">더 보기...</button>
+            {% else %}
+                <h4>새로운 호칭 제안</h4>
+                <form action="" method="POST" id="formCreateNick"> 
+                    {% csrf_token %}
+                    <div class="input-group search">
+                        <input type="text" name="nickname" class="form-control" id="id_nickname">
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-primary" id="btnCreateNick">Go!</button>
+                            </span>
+                        </input>
+                        <div class="results" id="nickname_results">
+                          
+                        </div>
+                    </div>
+                    <div class="row made-input">
+                        <div class="col-xs-4" id="nickname_name">
+                            
+                        </div>
+                        <div class="col-xs-2" id="nickname_id">
+                            
+                        </div>
+                    </div>
+                </form>
+            {% endif %}
         </ul>
     </div>
 </div>
@@ -104,8 +120,8 @@
 <div class="ibox float-e-margins">
     <div class="ibox-title">
         <h5>가족 관계</h5>
-        <div class="ibox-tools">
-            <a class="collapse-link">
+        <div class="ibox-tools family">
+            <a class="collapse-link family-relationship">
                 <i class="fa fa-chevron-up"></i>
             </a>
             <a class="dropdown-toggle" data-toggle="dropdown" href="#">

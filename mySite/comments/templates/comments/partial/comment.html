@@ -44,20 +44,24 @@
 
         <div class="social-comment" id="commentAdd">
         </div>
-        
-    <form action="{% url 'comments:comment' %}" method="POST" class="commentAdd">
-        <div class="social-comment">
-            {% csrf_token %}
-            <a href="" class="pull-left">
-                <img alt="image" class="img-circle" src="{% if user.profile.picture %}{{ user.profile.picture.url }}{% else %}{% static 'images/nouser.png' %}{% endif %}">
-            </a>
-            <div class="media-body">
-                <div>
-                    <textarea name="content" class="form-control" placeholder="Write comment..."></textarea>
+
+{% if user.is_authenticated %}
+        <form action="{% url 'comments:comment' %}" method="POST" class="commentAdd">
+            <div class="social-comment">
+                {% csrf_token %}
+                <a href="" class="pull-left">
+                    <img alt="image" class="img-circle" src="{% if user.profile.picture %}{{ user.profile.picture.url }}{% else %}{% static 'images/nouser.png' %}{% endif %}">
+                </a>
+                <div class="media-body">
+                    <div>
+                        <textarea name="content" class="form-control" placeholder="Write comment..."></textarea>
+                    </div>
+                    <input type="hidden" name="parent" value="">
+                    <input type="hidden" name="evidence" value="{{ evidence_id }}">
                 </div>
-                <input type="hidden" name="parent" value="">
-                <input type="hidden" name="evidence" value="{{ evidence_id }}">
             </div>
-        </div>
-    </form>
+        </form>
+{% else %}
+    커멘트를 달기 위해서는 Login 을 하시기 바랍니다.
+{% endif %}
 

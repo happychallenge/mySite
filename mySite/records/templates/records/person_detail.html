@@ -26,12 +26,12 @@
         <div class="row animated fadeInRight">
     
             {# 001. 사람 정보 #}
-            <div class="col-md-4">
+            <div class="col-md-5">
                 {% include 'records/partial/person_info.html' %}
             </div>
 
             {# 002. 이벤트 검색 결과 #}
-            <div class="col-md-8">
+            <div class="col-md-7">
             {# Person Evidence List  #}
             {% for personevent in person.personevent_set.all %}
 
@@ -55,41 +55,28 @@
                     {% for evidence in personevent.evidence_set.all %}
                         {% include 'records/partial/evidence_info.html' with event=personevent.event.id %}
                     {% endfor %} 
-                        {# 추가 증거 Button #}
-                        <div class="feed-element">
-                            <a class="btn btn-default btn-rounded btn-block" href="{% url 'records:check_evidence' personevent.id %}"> 
-                                <i class="fa fa-plus"></i> 
-                                    추가 증거 등록
-                            </a>
-                        </div>
                     </div> <!-- ibox evidence_list -->
                     
-                    {# 새로운 사건에 등록 Button #}
-                    <div class="ibox-content">
-                        <div class="feed-activity-list">
-                            <div class="feed-element">
-                                <a class="btn btn-info btn-rounded btn-block" href="{% url 'records:check_event' person.id %}">
-                                    <i class="fa fa-bell-o"></i> 
-                                        해당 인물을 다른 사건에 등록 
-                                </a>
-                            </div>
-                        </div>
-                    </div> <!-- ibox-content -->
+                    
                 </div>
 
-            {% empty %} {# for personevent in person.personevent_set.all #}
-
-                <div class="feed-element">
-                   <div class="media-body ">
-                        <a class="btn btn-info btn-rounded btn-block" href="{% url 'records:check_event' person.id %}">
-                            <i class="fa fa-plus"></i> 
-                              해당 인물을 다른 사건에 등록 
-                        </a>
-                    </div>
-                </div>
-
+            
             {% endfor %} {# for personevent in person.personevent_set.all #}
- 
+            
+            {% if user.is_authenticated %}
+                {# 새로운 사건에 등록 Button #}
+                <div class="ibox-content">
+                    <div class="feed-activity-list">
+                        <div class="feed-element">
+                            <a class="btn btn-info btn-rounded btn-block" href="{% url 'records:check_event' person.id %}">
+                                <i class="fa fa-bell-o"></i> 
+                                    해당 인물을 다른 사건에 등록 
+                            </a>
+                        </div>
+                    </div>
+                </div> 
+            {% endif %}
+
             </div> {# class="col-md-8" #}
         </div> {# class="row animated fadeInRight" #}
     </div>
@@ -176,6 +163,9 @@
     }
     var csrftoken = getCookie('csrftoken');
 
+//********************************************
+// Person Like & Following
+//********************************************
     $("button.btnPersonLike").click(function(){
         $.ajax({
             url : "{% url 'records:ajax_person_like' person.id %}", 
@@ -207,12 +197,13 @@
         });
     });
 
+//********************************************
+// 뉴스에 Comment 달기
+//********************************************
     // .comment 버턴을 누르면 하단에 커멘트가 리스트로 나옴
     $("div.evidence_list").on("click", ".comment", function(){
 
         var evidence = $(this).closest(".social-feed-box");
-        var test = $(".comment-count", evidence);
-        var count = $(".commentCount", evidence).length;
 
         if ($(".comment_list", evidence).hasClass("tracking")) {
             $(".comment_list", evidence).slideUp();
@@ -270,6 +261,125 @@
         } 
     });
 
+//********************************************
+// Nickname 관
+//********************************************
+    // NickName Like
+    $("ul.nickname_list").on("click", ".btnNickLike", function(){
+
+        var nickname = $(this).closest(".nickname");
+        var nickname_id = $(nickname).attr('data-id');
+        // var evidence_id = 12;
+        $.ajax({
+            url: "{% url 'nickname:add_like_nick' %}", 
+            data: {'nickname_id': nickname_id },
+            cache: false,
+            success: function(data){
+                if( data.is_valid ) {
+                    $("span.font-bold .likes", nickname).text(data.total_likes);
+                } else {
+                    alert(data.messages);
+                }
+            },
+        });
+        return false;
+    });
+
+    // NickName Hates ==> DisLike
+    $("ul.nickname_list").on("click", ".btnNickHates", function(){
+
+        var nickname = $(this).closest(".nickname");
+        var nickname_id = $(nickname).attr('data-id');
+        // var evidence_id = 12;
+        $.ajax({
+            url: "{% url 'nickname:add_hate_nick' %}", 
+            data: {'nickname_id': nickname_id },
+            cache: false,
+            success: function(data){
+                if( data.is_valid ) {
+                    $("span.font-bold .hates", nickname).text(data.total_hates);
+                } else {
+                    alert(data.messages);
+                }
+            },
+        });
+        return false;
+    });
+
+    $("#id_nickname").keyup(function(){
+        var search = $(this).val();
+
+        $.ajax({
+            url: "{% url 'nickname:search_nicknames' %}", 
+            data: {
+                'keyword': search,
+            },
+            dataType: 'json',
+            success: function(data){
+                $("#nickname_results").show();
+                $("#nickname_results").html(data);
+            }
+        });
+        return false;
+    });
+    
+    $("#nickname_results").on('click', 'div.child', function(){
+        var nickname_id = this.id.split(':')[0];
+        var nickname_name = this.id.split(':')[1];
+
+        $("#id_nickname").val(nickname_name);
+        $('<input>').attr({
+            type: 'text',
+            id: 'id_nickname_name',
+            value: nickname_name
+        }).appendTo('#nickname_name');
+
+        $('<input>').attr({
+            type: 'checkbox',
+            id: 'id_nickname_id',
+            name: 'nickname_id',
+            value: nickname_id,
+            checked: 'checked'
+        }).appendTo('#nickname_id');
+
+        $("#nickname_results").hide();
+    });
+
+    // 버턴을 누르면 호칭이 등록되고, 호칭 목록이 갱신이 됨
+    $("button#btnCreateNick").click(function(){
+        var form = $("#formCreateNick");
+        $.ajax({
+            url : "{% url 'nickname:add_nickname' person.id %}", 
+            type: "POST",
+            data: $(form).serialize(),
+            beforeSend: function(){
+                $("#nickname_results").hide();
+            },
+            success: function(data){
+                $('div.nicklist .nickname_list').html(data);
+            }
+        });
+        return false;
+    });
+
+
+    // 호칭 전체 보여 주기
+    $("button#NickMore").click(function(){
+        $("div.person .person-information").click();
+        $("div.family .family-relationship").click();
+
+        $.ajax({
+            url : "{% url 'nickname:get_all_nickname' person.id %}", 
+            success: function(data){
+                $('div.nicklist .nickname_list').html(data);
+            }
+        });
+        return false;
+    });
+
+//********************************************
+// 뉴스에 관련된 사람 추가 하기 
+//********************************************
     // Modal Window 뜨위기
     $(".add-person").click(function(){
         var action = $(this).attr('data-url');

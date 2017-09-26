@@ -81,21 +81,26 @@ def edit_person(request, person_id):
             if jobs:
                 person.jobs.set(jobs)
 
+            # Jobs
+            tags = form.cleaned_data.get('tags')
+            if tags:
+                person.tags.set(tags)
+
             person.created_user = request.user
             person.save()
             # Tags
-            tags = form.cleaned_data.get('tags')
-            if tags:
-                tag_list = tags.split(',')
-                for tag in tag_list:
-                    tag = tag.strip()
-                    tagged, created = Tag.objects.get_or_create(tag=tag)
-                    tag_array.append(tagged)
+            # tags = form.cleaned_data.get('tags')
+            # if tags:
+            #     tag_list = tags.split(',')
+            #     for tag in tag_list:
+            #         tag = tag.strip()
+            #         tagged, created = Tag.objects.get_or_create(tag=tag)
+            #         tag_array.append(tagged)
                     
-            person.tags.set(tag_array)
+            # person.tags.set(tag_array)
             
             messages.success(request, "{} 이 수정 되었습니다.".format(name))
-            return redirect('records:check_event', person.id)
+            return redirect('records:person_detail', person.id)
     else:
         form = PersonForm(instance=person)
     return render(request, 'records/add_person.html', {'form':form})
@@ -180,7 +185,7 @@ def check_evidence(request, personevent_id):
                 news_info = get_news(url)
                 media = get_object_or_404(Media, short=news_info['media'])
                 content = news_info['content'][:400] + ' ......'
-                news = News.objects.get_or_create(
+                news, created = News.objects.get_or_create(
                             url=url, 
                             media=media, 
                             title=news_info['title'], 
@@ -189,18 +194,17 @@ def check_evidence(request, personevent_id):
                             created_user=request.user,
                         )
             
-            personevent = PersonEvent.objects.select_related('person', 'event').get(id=personevent_id)
+            personevent = PersonEvent.objects.get(id=personevent_id)
             # Form 을 만들어 보내서 OK가 누르면 바로 입력이 되도록 한다.
-            form = PersonEvidenceForm(initial={'personevent': personevent_id, 'news':news.id})
+            form = PersonEvidenceForm(initial={'personevent': personevent.id, 'news':news.id })
             return render(request, 'records/check_evidence_result.html',{
-                    'form':form, 'personevent':personevent_id, 'news': news, 
-                    'person':personevent.person, 'event':personevent.event
+                    'form':form, 'personevent':personevent, 'news': news, 
                 })
 
     personevent = PersonEvent.objects.select_related('person', 'event').get(id=personevent_id)
 
     return render(request, 'records/check_evidence.html', {
-            'personevent':personevent_id, 'person':personevent.person, 'event':personevent.event
+            'personevent':personevent,
         })
 
 
@@ -211,10 +215,11 @@ def add_evidence(request):
         personevent_id = request.POST.get('personevent')
         news_id = request.POST.get('news')
 
-        personevent = PersonEvent.objects.select_related('person').get(id=personevent_id)
+        personevent = get_object_or_404(PersonEvent, id=personevent_id)
         news = get_object_or_404(News, id=news_id)
 
         Evidence.objects.get_or_create(personevent=personevent, news=news, created_user=request.user)
+
         messages.success(request, "{} 이 {} 사건에 뉴스를 추가 하었습니다.".format(
                     personevent.person.name, personevent.event.name))
 

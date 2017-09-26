@@ -17,6 +17,8 @@ class RelationshipAdmin(admin.ModelAdmin):
     class Meta:
         model = Relationship
     list_display = ['person', 'other', 'relationship', 'ctype']
+    list_editable = [ 'ctype' ]
+    search_fields = ['person__name']
 
 
 @admin.register(Tag)

@@ -6,12 +6,12 @@ from django.forms import Textarea
 
 # Create your forms here.
 from mySite.master.models import Job
-from .models import Person, Event, Evidence
+from .models import Person, Event, Evidence, Tag
 
 class PersonForm(forms.ModelForm):
     jobs = forms.ModelMultipleChoiceField(queryset=Job.objects.all(), 
             widget=forms.CheckboxSelectMultiple)
-    tags = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Tag을 입력해 주세요.'}))
+    tags = forms.ModelMultipleChoiceField(queryset=Tag.objects.all(), widget=forms.SelectMultiple)
     x = forms.FloatField(widget=forms.HiddenInput(),required=False)
     y = forms.FloatField(widget=forms.HiddenInput(),required=False)
     width = forms.FloatField(widget=forms.HiddenInput(),required=False)
@@ -27,13 +27,21 @@ class PersonForm(forms.ModelForm):
             })
         }
 
+    # def __init__(self):
+    #     super(PersonForm, self).__init__(*args, **kwargs)
+    #     self.fields['tags'].initial=(tag.id for tag in Tag.objects.filter())
+
     def save(self):
         person = super(PersonForm, self).save()
 
         if not person.picture:
             return person 
-            
-        x = self.cleaned_data.get('x')
+        
+
+        x = self.cleaned_data.get('x', 0)
+        if not x:
+            return person
+
         y = self.cleaned_data.get('y')
         width = self.cleaned_data.get('width')
         height = self.cleaned_data.get('height')

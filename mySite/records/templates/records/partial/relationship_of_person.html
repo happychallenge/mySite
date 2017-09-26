@@ -1,8 +1,8 @@
 {% load static %}
 <div class="col-sm-3">
     <div class="no-padding">
-        <a href="{% url 'records:person_detail' person.id %}">
-            <img alt="image" width="100px" class="img-responsive" src="{% if person.picture %}{{ person.picture.url }}
+        <a href="{% url 'records:person_detail' obj.id %}">
+            <img alt="image" width="100px" class="img-responsive" src="{% if obj.picture %}{{ obj.picture.url }}
         {% else %}{% static 'images/nouser.png' %}{% endif %}">
         </a>
     </div>    
@@ -10,24 +10,24 @@
 
         {# 해당 Person 본인 정보 #}
         <div class="media-body ">
-            <a href="{% url 'records:person_detail' person.id %}">
-                <h3><strong>{{ person.name }}</strong></h3>
+            <a href="{% url 'records:person_detail' obj.id %}">
+                <h3><strong>{{ obj.name }}</strong> <small>관계 {{ relation }} </small></h3>
             </a>
-            <p><i class="fa fa-flag"></i> {{person.nick_name}}</p>
+            <p><i class="fa fa-flag"></i> {{obj.nick_name}}</p>
             {% if checkbox %}
-                <input type="checkbox" checked value="{{person.id}}" name="person" class="checkbox checkbox-primary pull-right">
+                <input type="checkbox" checked value="{{obj.id}}" name="person" class="checkbox checkbox-primary pull-right">
             {% endif %}
-            <p><i class="fa fa-calendar"></i> {{ person.birth_year }} 년 </p>
+            <p><i class="fa fa-calendar"></i> {{ obj.birth_year }} 년 </p>
             <p><i class="fa fa-flag"></i> Jobs :
-                {{person.jobs.all|join:", "}}
+                {{obj.jobs.all|join:", "}}
             </p>
-            {% if  person.url %}
-            <a href="{{ person.url }}" target="remember">
+            {% if  obj.url %}
+            <a href="{{ obj.url }}" target="remember">
                 <p><i class="fa fa-id-badge"></i> <b> 상세 내용 : 위키 또는 나무 </b></p>
             </a>
             {% endif %}
             <p><i class="fa fa-pencil"></i> Tags :
-                {{person.tags.all|join:", "}}
+                {{obj.tags.all|join:", "}}
             </p>
         </div>
     </div>

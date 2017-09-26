@@ -781,7 +781,6 @@ def get_contents_from_ohmynews(url):
     try:
         result['title'] = soup.find('title').get_text()
         content = soup.find('div', {'class':'at_contents'}).get_text()
-        
         result['content'] = content
         span = soup.select('div.info_data div')[0].get_text()
         result['published_at'] = '20' + span[:2] + '-' + span[3:5] + '-' + span[6:8]

@@ -1,0 +1,14 @@
+{% load static %}
+
+{% for nickname in nickname_list %}
+    <div class="child" id="{{nickname.id}}:{{nickname.nickname}}">
+        <div>
+            <span>{{ nickname.nickname }}</span>
+        </div>
+    </div>
+    {% if not forloop.last %}
+        <hr>
+    {% endif %}
+{% empty %}
+    헤딩 keyword에 해당하는 호칭이 없습니다.
+{% endfor %}

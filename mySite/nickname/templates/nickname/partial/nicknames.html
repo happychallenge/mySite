@@ -1,0 +1,41 @@
+{% for personnick in personnick_list %}
+    <li class="nickname" data-id="{{ personnick.id }}">
+        <div class="actions pull-right p-h-xs">
+            <button class="btn btn-white btn-circle btn-md btnNickHates" type="button">
+                <i class="fa fa-frown-o fa-3"></i></button>
+            <button class="btn btn-info btn-circle btn-outline btn-md btnNickLike" type="button">
+                <i class="fa fa-heart fa-3"></i></button>
+        </div>
+        <div class="m-n p-h-sm">
+            <span class="font-bold">{{ personnick.nickname }} 
+                <span class="badge hates">{{ personnick.total_hates }}</span> 
+                <span class="badge badge-info likes">{{ personnick.total_likes }}</span> 
+            </span>
+        </div>
+    </li>
+{% endfor %}
+
+{% if personnick_list.length <= 15 %}
+    <h4>새로운 호칭 제안</h4>
+    <form action="" method="POST" id="formCreateNick"> 
+        {% csrf_token %}
+        <div class="input-group search">
+            <input type="text" name="nickname" class="form-control" id="id_nickname">
+                <span class="input-group-btn">
+                    <button type="button" class="btn btn-primary" id="btnCreateNick">Go!</button>
+                </span>
+            </input>
+            <div class="results" id="nickname_results">
+              
+            </div>
+        </div>
+        <div class="row made-input">
+            <div class="col-xs-4" id="nickname_name">
+                
+            </div>
+            <div class="col-xs-2" id="nickname_id">
+                
+            </div>
+        </div>
+    </form>
+{% endif %}

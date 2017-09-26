@@ -31,7 +31,7 @@
 
                     <div class="ibox-content">
                         {# FORM START #}
-                        <form method="POST" action="{% url 'records:check_evidence' personevent %}" class="form-horizontal">
+                        <form method="POST" action="{% url 'records:check_evidence' personevent.id %}" class="form-horizontal">
                             {% csrf_token %}
                             <div class="input-group">
                                 <input type="text" name='url' class="form-control"> 
@@ -52,12 +52,12 @@
         <div class="row animated fadeInRight">
             <div class='col-md-4'>
                 <h3>등록하고자 하는 사람</h3>
-                {% include 'records/partial/person_info.html' %}
+                {% include 'records/partial/person_info.html' with person=personevent.person %}
             </div>
 
             <div class='col-md-8'>
                 <h3>등록하자고 하는 이벤트 </h3>
-                {% include 'records/partial/event_info.html' %}
+                {% include 'records/partial/event_info.html' with event=personevent.event %}
             </div>
         </div>
     </div>
