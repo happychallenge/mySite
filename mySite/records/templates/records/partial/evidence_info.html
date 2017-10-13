@@ -11,7 +11,7 @@
         {# 뉴스매체와 뉴스제목 #}
         <div>
             <a href="{{ evidence.news.url}}" target="remember">
-                <strong>{{evidence.news.media}}</strong> posted 
+                <strong>{{evidence.news.media}}</strong> :: 
                 <strong>{{evidence.news.title}}</strong>
             </a> <br>
             <small class="text-muted"> 등록일 : {{ evidence.news.created_at|date:"Y/m/d" }}</small>
@@ -24,6 +24,15 @@
            {{evidence.news.content|linebreaks|truncatewords:"60"}} <br>
             <small style="color:#337ab7;"> 발행일 : {{evidence.news.published_at|date:"Y/m/d" }} </small> 
         </div>
+
+        <div class="well" style="padding:10px 10px 0px 10px">
+           {% for evi in evidence.news.get_evidences %}
+              <a href="{% url 'records:person_detail' evi.personevent.person.id %}"> 
+                 {{evi.personevent.person.name}}, 
+              </a>
+           {% endfor %}
+        </div>
+
         <div> 
             <button class='btn btn-primary btn-xs comment'>
                 <i class="fa fa-pencil"></i> Comment

@@ -54,9 +54,17 @@
                     <div class="ibox evidence_list">
                     {% for evidence in personevent.evidence_set.all %}
                         {% include 'records/partial/evidence_info.html' with event=personevent.event.id %}
+                    {% empty %}
+                        {% if forloop.last and user.is_authenticated %}
+                            <div class="social-footer">
+                                <a class="btn btn-default btn-rounded btn-block" href="{% url 'records:check_evidence' personevent.id %}"> 
+                                    <i class="fa fa-plus"></i> 
+                                        추가 증거 등록
+                                </a>
+                            </div>
+                        {% endif %}
                     {% endfor %} 
                     </div> <!-- ibox evidence_list -->
-                    
                     
                 </div>
 

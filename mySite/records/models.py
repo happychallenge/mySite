@@ -1,9 +1,12 @@
 # records/models.py
 import csv
+
+from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models import Count
 from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.shortcuts import get_object_or_404
 
 from mySite.master.models import Job, Region, EventCategory, Media
 from mySite.nickname.models import Nickname
@@ -29,8 +32,8 @@ class Person(models.Model):
         (PUBLISHED, '공개'),
         (WITHDRAWN, '철회'),
     )
-    name = models.CharField(max_length=30)
-    nick_name = models.CharField(max_length=30, verbose_name='별칭', null=True, blank=True)
+    name = models.CharField(max_length=50)
+    nick_name = models.CharField(max_length=50, verbose_name='별칭', null=True, blank=True)
     birth_year = models.IntegerField(null=True, verbose_name='출생년도', blank=True)
     sex = models.CharField(max_length=1, choices=SEX, default=MALE)
     jobs = models.ManyToManyField(Job, blank=True)
@@ -44,8 +47,8 @@ class Person(models.Model):
     following = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='person_follow', blank=True)
     created_date = models.DateTimeField(auto_now_add=True,null=True, blank=True)
 
-    class Meta:
-        ordering = ['name',]
+    # class Meta:
+    #     ordering = ['name',]
 
     def __str__(self):
         return self.name
@@ -59,10 +62,16 @@ class Person(models.Model):
         tags = tags.strip()
         tag_list = tags.split(',')
         for tag in tag_list:
-            if tag:
-                obj, created = Tag.objects.get_or_create(tag=tag.lower())
-                self.tags.add(obj)
-                
+            obj, created = Tag.objects.get_or_create(tag=tag.lower())
+            self.tags.add(obj)
+
+    def create_jobs(self, jobs):
+        jobs = jobs.strip()
+        job_list = jobs.split(',')
+        for job in job_list:
+            obj, created = Job.objects.get_or_create(name=job.lower())
+            self.jobs.add(obj)
+
     def get_tags(self):
         return Tag.objects.filter(person=self)
 
@@ -96,6 +105,21 @@ class Person(models.Model):
         else:
             return None
 
+    def make_relationship(self, other, relationship, user):
+        if relationship == 'spouse':
+            if self.sex == '남':
+                Relationship.objects.get_or_create(person=self, other=other, 
+                        relationship=relationship, ctype='아내', created_user=user)
+                Relationship.objects.get_or_create(person=other, other=self, 
+                        relationship=relationship, ctype='남편', created_user=user)
+        else:
+            if other.sex == '남':
+                Relationship.objects.get_or_create(person=self, other=other, 
+                        relationship=relationship, ctype='아버지', created_user=user)
+            else:
+                Relationship.objects.get_or_create(person=self, other=other, 
+                        relationship=relationship, ctype='어머니', created_user=user)
+
     # Get Nickname
     def get_nicknames(self):
         return PersonNick.objects.filter(person=self).annotate(
@@ -105,36 +129,79 @@ class Person(models.Model):
         return PersonNick.objects.filter(person=self).annotate(
                 num_userlike=Count('user_like')).count()
 
+from openpyxl import load_workbook
+import pandas as pd
 def read_person_data():
-    
+
+    User = get_user_model()
+    user = User.objects.get(username='happy@naver.com')
+
     job_array = []
-    with open('/Users/happy/Django/mySite/mySite/records/person.csv', "r", encoding="utf-8") as file:
-        reader = csv.DictReader(file)
-        print('TEST')
-        print(reader)
+    wb = load_workbook('person.xlsx')
+    ws = wb['Sheet']
+    df = pd.DataFrame(ws.values)
 
-        for row in reader:
-            print("TEST 2")
-            name = row.get('name')
-            nick = row.get('nick')
-            birth = row.get('birth')
-            sex = row.get('sex')
-            jobs = row.get('jobs')
-            # url = row.get('url')
-            tags = row.get('tags')
-            status = row.get('status')
+    for index, row in df.iterrows():
+        if index == 0:
+            continue
+        print(row)
+        name = row[0]
+        nick = row[1]
+        birth = row[2]
+        sex = row[3]
+        jobs = row[4]
+        tags = row[5]
+        status = row[6]
+        url = row[7]
+        event = row[8]
+        news = row[9]
+        father = row[10]
+        mother = row[11]
+        picture = row[12]
 
-            person, created = Person.objects.get_or_create(name=name, nick_name=nick, 
-                        birth_year=birth, sex=sex, status=status)
+        person, created = Person.objects.get_or_create(name=name, nick_name=nick, url=url,
+                    birth_year=birth, sex=sex, status=status)
+        print(person)
+        # 사진 입력
+        if picture:
+            person.picture = picture
+            person.save()
 
-            print(person)
+        if tags:
             person.create_tags(tags)
-            person.create_tags(name)
 
-            if jobs:
-                jobed, created = Job.objects.get_or_create(name=jobs)
-                    
-                person.jobs.add(jobed)
+        person.create_tags(name)
+
+        # Job 입력
+        if jobs:
+            person.create_jobs(jobs)
+
+        # 뉴스와 이벤트 가져오기
+        event = get_object_or_404(Event, id=event)
+        # PersonEvent 등록
+        obj, created = PersonEvent.objects.get_or_create(person=person, 
+                event=event, created_user=user)
+        
+        if news:
+            news = news.strip()
+            new_list = news.split(',')
+            for new in new_list:
+                news = get_object_or_404(News, id=new)
+                Evidence.objects.get_or_create(personevent=obj, news=news, created_user=user)
+
+        if father:
+            fathers = Person.objects.filter(name=father)
+            if len(fathers) == 1:
+                person.make_relationship(fathers[0], 'parent', user)
+            else:
+                print("{} 가 동명이인입니다. 다시 입력하시기 바랍니다.")
+
+        if mother:
+            mothers = Person.objects.filter(name=mother)
+            if len(mothers) == 1:
+                person.make_relationship(mothers[0], 'parent', user)
+            else:
+                print("{} 가 동명이인입니다. 다시 입력하시기 바랍니다.")
 
 
 class Relationship(models.Model):
@@ -205,6 +272,9 @@ class News(models.Model):
     def __str__(self):
         return self.title
 
+    def get_evidences(self):
+        return Evidence.objects.filter(news=self)
+
 class Evidence(models.Model):
     """docstring for Evidence"""
     """ Evidence """
@@ -238,6 +308,7 @@ class Tag(models.Model):
     tag = models.CharField(max_length=50, unique=True)
 
     class Meta:
+        ordering = ('tag',)
         verbose_name = 'Tag'
         verbose_name_plural = 'Tags'
 

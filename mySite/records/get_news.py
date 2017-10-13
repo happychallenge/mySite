@@ -15,7 +15,7 @@ def extract_name(url):
 def get_contents_from_huffingtonpost(url):
     result = {}
 
-    # html = requests.get(url).text
+    html = requests.get(url).text
     try:
         response = requests.get(url, headers={'Accept-Encoding': 'gzip'}).text
         # html = response.content.decode('cp949') "Accept-Encoding", "gzip"
@@ -687,24 +687,38 @@ def get_contents_from_dt(url):
 # mediatoday
 def get_contents_from_mediatoday(url):
     result = {}
-    response = requests.get(url)
-    html = response.content.decode('utf-8')
-    soup = BeautifulSoup(html, 'lxml')
-    
-    try:
-        result['title'] = soup.find('title').get_text()
-        content = soup.find('div', {'id':'talklink_contents'}).get_text()
+
+    if 'beta' in url:
+        response = requests.get(url)
+        html = response.content.decode('utf-8')
+        soup = BeautifulSoup(html, 'lxml')
         
-        result['content'] = content
-        span = soup.select('span.arl_view_date')[0].get_text().strip()
-        print(span)
-        result['published_at'] = span[:4] + '-' + span[6:8] + '-' + span[10:12]
-    except AttributeError as e:
-        print(e)
+        try:
+            result['title'] = soup.find('title').get_text()
+            content = soup.find('div', {'class':'entry-content'}).get_text()
+            result['content'] = content
+            result['published_at'] = soup.select('a time.entry-date.published')[0].get_text()
+        except AttributeError as e:
+            print(e)
+    else:
+        response = requests.get(url)
+        html = response.content.decode('utf-8')
+        soup = BeautifulSoup(html, 'lxml')
+        
+        try:
+            result['title'] = soup.find('title').get_text()
+            content = soup.find('div', {'id':'talklink_contents'}).get_text()
+            
+            result['content'] = content
+            span = soup.select('span.arl_view_date')[0].get_text().strip()
+            result['published_at'] = span[:4] + '-' + span[6:8] + '-' + span[10:12]
+        except AttributeError as e:
+            print(e)
     
+    print(result)
     return result
 
-# print(get_contents_from_mediatoday('http://www.mediatoday.co.kr/?mod=news&act=articleView&idxno=137113'))
+# print(get_contents_from_mediatoday('http://beta.mediatoday.co.kr/131631/'))
 
 # hankyung
 def get_contents_from_hankyung(url):
@@ -919,7 +933,6 @@ def get_contents_from_imbc(url):
 
 # print(get_contents_from_imbc('http://imnews.imbc.com/replay/2017/nwdesk/article/4325710_21408.html?xtr_cate=LK&xtr_ref=r8&xtr_kw=N&xtr_area=k18&xtr_cp=c5'))
 
-
 # sisain
 def get_contents_from_sisain(url):
     result = {}
@@ -932,7 +945,6 @@ def get_contents_from_sisain(url):
     try:
         result['title'] = soup.find('title').get_text()
         content = soup.find('div', {'itemprop':'articleBody'}).get_text()
-        
         result['content'] = content
         span = soup.select('span.arl_view_date')[0].get_text().strip()
         result['published_at'] = span[:4] + '-' + span[6:8] + '-' + span[10:12]

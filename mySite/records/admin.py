@@ -44,7 +44,7 @@ class PersonEventAdmin(admin.ModelAdmin):
 class NewsAdmin(admin.ModelAdmin):
     class Meta:
         model = News
-    list_display = ['media', 'title', 'created_user']
+    list_display = [ 'id', 'media', 'title', 'created_user']
 
 @admin.register(Evidence)
 class EvidenceAdmin(admin.ModelAdmin):

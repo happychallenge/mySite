@@ -3,6 +3,7 @@ from django.http import HttpResponse, Http404, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.template.loader import render_to_string
+from django.utils.decorators import method_decorator
 from django.contrib import messages
 
 from mySite.decorators import ajax_required
@@ -111,7 +112,7 @@ def check_event(request, person_id):
     if request.method == 'POST':
         tag = request.POST.get('event')
         person = get_object_or_404(Person, id=person_id)
-        event_list = Event.objects.prefetch_related('personevent_set').filter(tags__tag__contains=tag)
+        event_list = Event.objects.filter(tags__tag__contains=tag)
         return render(request, 'records/check_event_result.html', {
                 'event_list': event_list, 'person':person, 'tag':tag
             })
@@ -186,13 +187,13 @@ def check_evidence(request, personevent_id):
                 media = get_object_or_404(Media, short=news_info['media'])
                 content = news_info['content'][:400] + ' ......'
                 news, created = News.objects.get_or_create(
-                            url=url, 
-                            media=media, 
-                            title=news_info['title'], 
-                            content=content, 
-                            published_at=news_info.get('published_at', "1900-01-01"),
-                            created_user=request.user,
-                        )
+                        url=url, 
+                        media=media, 
+                        title=news_info['title'], 
+                        content=content, 
+                        published_at=news_info.get('published_at', "1900-01-01"),
+                        created_user=request.user,
+                    )
             
             personevent = PersonEvent.objects.get(id=personevent_id)
             # Form 을 만들어 보내서 OK가 누르면 바로 입력이 되도록 한다.
@@ -245,5 +246,5 @@ def evidence_add_person(request, news_id, event_id):
                 messages.success(request, "{} 이 {} 뉴스에 추가 되었습니다.".format(
                     person.name, news.title))
 
-    return redirect('records:person_relationship', person_id)
+    return redirect('records:person_detail', person_id)
         
