@@ -17,15 +17,15 @@
     {# 조상 반복 #}
     <div class="ibox-content">
         {# 본인 #}
-        {% include 'records/partial/relationship_of_person.html' with obj=person relation="본인" %}
+        {% include 'records/partial/relationship_of_person.html' with obj=person  %}
         {# 아내 또는 남 #}
         {% for person in person.get_spouse %}
-            {% include 'records/partial/relationship_of_person.html' with obj=person relation="아내/남편" %}
+            {% include 'records/partial/relationship_of_person.html' with obj=person %}
         {% endfor %}
 
         {% for sibling in person.get_sibling %}
             {% if sibling != person %}
-                {% include 'records/partial/relationship_of_person.html' with obj=sibling relation="형제/자매" %}
+                {% include 'records/partial/relationship_of_person.html' with obj=sibling %}
             {% endif %}
         {% endfor %}
 
@@ -33,9 +33,11 @@
             <div class="no-padding">
                 {% if user.is_authenticated %}
                     <button class="btn btn-primary createRelation">가족 관계 등록</button> <br>
+                    <!-- 
                     <a class="btn btn-primary" href="{% url 'records:person_family' person.id %}"> 
                         가족 전체 관계 보기
-                    </a>  
+                    </a> 
+                    -->  
                 {% endif %}
             </div>
         </div>        

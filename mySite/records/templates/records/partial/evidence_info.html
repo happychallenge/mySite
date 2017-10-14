@@ -20,12 +20,12 @@
 
     {# 뉴스 내용과 URL #}
     <div class="social-body" >
-        <div class="well" style="padding:10px 10px 0px 10px">
+        <div class="well" style="padding:0px 10px 0px 10px;margin-bottom: 5px;">
            {{evidence.news.content|linebreaks|truncatewords:"60"}} <br>
             <small style="color:#337ab7;"> 발행일 : {{evidence.news.published_at|date:"Y/m/d" }} </small> 
         </div>
 
-        <div class="well" style="padding:10px 10px 0px 10px">
+        <div class="well" style="padding:0px 10px 0px 10px;">
            {% for evi in evidence.news.get_evidences %}
               <a href="{% url 'records:person_detail' evi.personevent.person.id %}"> 
                  {{evi.personevent.person.name}}, 
@@ -33,18 +33,22 @@
            {% endfor %}
         </div>
 
+    {% if detail %}
         <div> 
             <button class='btn btn-primary btn-xs comment'>
                 <i class="fa fa-pencil"></i> Comment
                 (<span class="comment-count">{{ evidence.comments.count }}</span>)
             </button>
 
-            <button class='btn btn-info btn-xs pull-right add-person' data-url="{% url 'records:evidence_add_person' evidence.news.id event %}"> 
+            <button class='btn btn-info btn-xs pull-right add-person' data-url="{% url 'records:evidence_add_person' evidence.news.id evidence.personevent.event.id %}"> 
                 <i class="fa fa-user"></i> 해당 뉴스 관련자 추가
             </button>
         </div>
+    {% endif %}
+
     </div>
-    
+
+{% if detail %}
     {# AJAX COMMENT_LIST #}
     <div class="social-footer comment_list">
     </div>
@@ -58,5 +62,6 @@
             </a>
         </div>
     {% endif %}
+{% endif %}
 
 </div>

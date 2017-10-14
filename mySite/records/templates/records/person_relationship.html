@@ -24,45 +24,45 @@
 
     <div class="wrapper wrapper-content">
         <div class="row animated fadeInRight">
-    
-            {# 001. 증조부 #}
+
+            {# 000. 고조부 #}
             <div class="col-md-12">
-                {% for parent in person.get_parent %}
-                    {% for parent in parent.get_parent %}
-                        {% if parent.get_parent %}
-                            {% include 'records/partial/person_info_for_relationship.html' with relationship='증조부모' persons=parent.get_parent relation="증조부" %}
-                        {% endif %}  
-                    {% endfor %}
-                {% endfor %}
+                {% if person.get_father.get_father.get_father.get_father %}
+                    {% include 'records/partial/person_info_for_menspouse.html' with person=person.get_father.get_father.get_father.get_father relationship='고조부와 고조부 형제' relation="고조부" %}
+                {% endif %}
             </div>
 
-            {# 002. 조부모 #}
+            {# 001. 증조부 #}
             <div class="col-md-12">
-                {% for parent in person.get_parent %}
-                    {% if parent.get_parent %}
-                        {% include 'records/partial/person_info_for_relationship.html' with relationship='조부모' persons=parent.get_parent relation="조부"%}
-                    {% endif %}  
-                {% endfor %}
+                {% if person.get_father.get_father.get_father %}
+                    {% include 'records/partial/person_info_for_menspouse.html' with person=person.get_father.get_father.get_father relationship='증조부와 증조부 형제간' relation="증조부" %}
+                {% endif %}  
+            </div>
+
+            {# 002. 조부 #}
+            <div class="col-md-12">
+                {% if person.get_father.get_father %}
+                    {% include 'records/partial/person_info_for_menspouse.html' with person=person.get_father.get_father relationship='조부와 조부 형제간' relation="조부" %}
+                {% endif %}  
             </div>
 
             {# 003. 부모 #}
             <div class="col-md-12">
-                {% if person.get_parent %}
-                    {% include 'records/partial/person_info_for_relationship.html' with relationship='부모' persons=person.get_parent relation="부모" %}
+                {% if person.get_father %}
+                    {% include 'records/partial/person_info_for_menspouse.html' with person=person.get_father relationship='부모와 아버지 형제간' relation="부모" %}
                 {% endif %}  
             </div>
-
-            {# 004. 본인/아내/남편/형제간 #}
+    
+            {# 004. 본인과 형제간 #}
             <div class="col-md-12">
-                {% include 'records/partial/person_info_for_menspouse.html' with relationship='본인 & 아내 또는 남편 또는 형제/자매간' person=person %}
+                {% include 'records/partial/person_info_for_menspouse.html' with person=person relationship='본인 & 아내 또는 남편 그리고 형제/자매간'  %}
             </div>
 
-            {# 005. 자식들 #}
             <div class="col-md-12">
                 {% if person.get_children %}
-                    {% include 'records/partial/person_info_for_relationship.html' with relationship='직계 자식들' persons=person.get_children family=True %}
+                    {% include 'records/partial/person_info_for_relationship.html' with persons=person.get_children relationship='직계 자식들' family=True %}
                 {% endif %}  
-            </div>
+            </div> 
 
         </div> {# class="row animated fadeInRight" #}
     </div>

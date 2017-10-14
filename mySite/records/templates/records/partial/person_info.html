@@ -133,8 +133,8 @@
     {# SPOUSE 남편/아내 #}
     {% if person.get_spouse %}
         <div class="ibox-content no-padding profile-content">
-        {% for parent in person.get_spouse %}
-            {% include 'records/partial/relationship.html' with relationship='남편/아내' %}
+        {% for spouse in person.get_spouse %}
+            {% include 'records/partial/relationship.html' with person=spouse relationship='남편/아내' %}
         {% endfor %}
         </div>
     {% endif %}
@@ -144,7 +144,7 @@
         <div class="ibox-content no-padding profile-content">
             {% for parent in person.get_parent %}
                 {# 아버지/어머니 #}
-                {% include 'records/partial/relationship.html' with relationship='부모' %} 
+                {% include 'records/partial/relationship.html' with person=parent relationship='부모' %} 
             {% endfor %}
         </div>
     {% endif %}
@@ -153,8 +153,8 @@
     {% if person.get_children %}
         <div class="ibox-content no-padding profile-content">
             <div class="row">
-        {% for parent in person.get_children %}
-            {% include 'records/partial/relationship.html' with relationship='자식' %}
+        {% for child in person.get_children %}
+            {% include 'records/partial/relationship.html' with person=child relationship='자식' %}
         {% endfor %}
             </div>
         </div>

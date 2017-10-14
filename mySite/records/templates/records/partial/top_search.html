@@ -11,7 +11,7 @@
                     <span>이름: {{ person.name }}</span> <br />
                     <span>별칭: {{ person.nick_name }}</span> <br />
                     <span>출생년도: {{ person.birth_year }} 년</span> <br>
-                    <span>{{ person.tags.all|join:", "}} </span> <br>
+                    <span>{{ person.get_tag3|join:", "}} </span> <br>
                 </div>
             </div>
         </a>

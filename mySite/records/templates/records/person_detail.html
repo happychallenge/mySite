@@ -53,7 +53,7 @@
                     {# EVIDENCE INFO #}
                     <div class="ibox evidence_list">
                     {% for evidence in personevent.evidence_set.all %}
-                        {% include 'records/partial/evidence_info.html' with event=personevent.event.id %}
+                        {% include 'records/partial/evidence_info.html' with detail=True %}
                     {% empty %}
                         {% if forloop.last and user.is_authenticated %}
                             <div class="social-footer">

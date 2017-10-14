@@ -75,6 +75,9 @@ class Person(models.Model):
     def get_tags(self):
         return Tag.objects.filter(person=self)
 
+    def get_tag3(self):
+        return Tag.objects.filter(person=self)[:3]
+
     @property
     def total_likes(self):
         return self.user_like.count()
@@ -84,24 +87,33 @@ class Person(models.Model):
         return self.following.count()        
 
     def get_parent(self):
-        return [relation.other for relation in Relationship.objects.select_related("other").filter(person=self, relationship='parent')]
+        return [relation.other for relation in Relationship.objects.
+            select_related("other").filter(person=self, relationship='parent')]
+
+    def get_father(self):
+        try:
+            return [relation.other for relation in Relationship.objects.
+                        select_related("other").filter(person=self, relationship='parent', ctype='아버지')][0]
+        except Exception:
+            return None
+        
 
     def get_spouse(self):
-        return [relation.other for relation in Relationship.objects.select_related("other").filter(person=self, relationship='spouse')]
+        return [relation.other for relation in Relationship.objects.
+            select_related("other").filter(person=self, relationship='spouse')]
 
     def get_children(self):
-        return [relation.person for relation in 
-            Relationship.objects.select_related("person").filter(other=self, relationship='parent').order_by('person__sex', 'person__birth_year')]
+        return [relation.person for relation in Relationship.objects.select_related("person").
+                filter(other=self, relationship='parent').order_by('person__sex', 'person__birth_year')]
 
     def get_sibling(self):
         try:
-            father = [relation.other for relation in Relationship.objects.select_related("other").filter(
-                person=self, relationship='parent', ctype='아버지')][0]
+            father = self.get_father()
         except Exception as e:
             return None
         if father:
-            return [relation.person for relation in Relationship.objects.select_related("person").filter(
-                other=father, relationship='parent').order_by('person__sex', 'person__birth_year')]
+            return [relation.person for relation in Relationship.objects.select_related("person").
+                filter(other=father, relationship='parent').order_by('person__sex', 'person__birth_year')]
         else:
             return None
 
@@ -177,17 +189,18 @@ def read_person_data():
             person.create_jobs(jobs)
 
         # 뉴스와 이벤트 가져오기
-        event = get_object_or_404(Event, id=event)
-        # PersonEvent 등록
-        obj, created = PersonEvent.objects.get_or_create(person=person, 
-                event=event, created_user=user)
-        
-        if news:
-            news = news.strip()
-            new_list = news.split(',')
-            for new in new_list:
-                news = get_object_or_404(News, id=new)
-                Evidence.objects.get_or_create(personevent=obj, news=news, created_user=user)
+        if event:
+            event = get_object_or_404(Event, id=event)
+            # PersonEvent 등록
+            obj, created = PersonEvent.objects.get_or_create(person=person, 
+                    event=event, created_user=user)
+            
+            if news:
+                news = news.strip()
+                new_list = news.split(',')
+                for new in new_list:
+                    news = get_object_or_404(News, id=new)
+                    Evidence.objects.get_or_create(personevent=obj, news=news, created_user=user)
 
         if father:
             fathers = Person.objects.filter(name=father)

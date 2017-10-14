@@ -5,24 +5,22 @@
 {% endif %}
 <div class="media-body ">
     <div class="no-padding">
-        <a href="{% url 'records:person_detail' parent.id %}">
-            <img alt="image" class="img-responsive" width="50%" src="{% if parent.picture %}{{ parent.picture.url }}{% else %}{% static 'images/nouser.png' %}{% endif %}" style="max-width: 100px;">
+        <a href="{% url 'records:person_detail' person.id %}">
+            <img alt="image" class="img-responsive" width="50%" src="{% if person.picture %}{{ person.picture.url }}{% else %}{% static 'images/nouser.png' %}{% endif %}" style="max-width: 100px;">
         </a>
     </div>    
 
-    <a href="{% url 'records:person_detail' parent.id %}">
-        <h3><strong>{{ parent.name }} </strong></h3>
+    <a href="{% url 'records:person_detail' person.id %}">
+        <h3><strong>{{ person.name }} </strong></h3>
     </a>
-    <p><i class="fa fa-flag"></i> {{parent.nick_name}}</p>
+    <p><i class="fa fa-flag"></i> {{person.nick_name}}</p>
 
     {% if checkbox %}
-        <input type="checkbox" checked value="{{parent.id}}" name="parent" class="checkbox checkbox-primary pull-right">
+        <input type="checkbox" checked value="{{person.id}}" name="parent" class="checkbox checkbox-primary pull-right">
     {% endif %}
-    <p><i class="fa fa-calendar"></i> {{ parent.birth_year }} 년</p>
+    <p><i class="fa fa-calendar"></i> {{ person.birth_year }} 년</p>
     <p><i class="fa fa-flag"></i> Jobs :
-        {{parent.jobs.all|join:", "}}
+        {{person.jobs.all|join:", "}}
     </p>
-    <p><i class="fa fa-pencil"></i> Tags :
-        {{parent.tags.all|join:", "}}
-    </p>
+    
 </div>
