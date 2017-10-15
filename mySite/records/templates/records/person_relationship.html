@@ -55,7 +55,7 @@
     
             {# 004. 본인과 형제간 #}
             <div class="col-md-12">
-                {% include 'records/partial/person_info_for_menspouse.html' with person=person relationship='본인 & 아내 또는 남편 그리고 형제/자매간'  %}
+                {% include 'records/partial/person_info_for_menspouse.html' with person=person relationship='본인 & 아내 또는 남편 그리고 형제/자매간' register=True %}
             </div>
 
             <div class="col-md-12">
@@ -77,7 +77,7 @@
                         <button class="close" type='button' data-dismiss='modal' aria-label='Close'>
                             <span aria-hidden='true'>&times;</span>
                         </button>
-                        <h4 class="modal-title"> 가족 관계 등록 </h4>
+                        <h4 class="modal-title"> <strong>{{person.name}}</strong> 가족 관계 등록 </h4>
                     </div>
 
                     <!-- BODY -->

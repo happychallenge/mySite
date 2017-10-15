@@ -29,6 +29,7 @@
             {% endif %}
         {% endfor %}
 
+    {% if user.is_staff and register %}
         <div class="col-sm-3">
             <div class="no-padding">
                 {% if user.is_authenticated %}
@@ -41,5 +42,7 @@
                 {% endif %}
             </div>
         </div>        
+    {% endif %}
+
     </div>
 </div>
