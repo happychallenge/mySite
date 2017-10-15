@@ -67,7 +67,7 @@ def profile_detail(request):
             return redirect('authentication:profile_detail')
     else:
         form = ProfileForm()
-    return render(request, 'authentication/add_picture.html', {'form':form})
+    return render(request, 'authentication/person_profile.html', {'form':form})
 
 
 def logout(request):

@@ -1,26 +1,34 @@
 {% load static %}
 
-{% if forloop.first %}
+{% if forloop.first and display %}
     <h3><strong> {{ relationship }}</strong></h3>
 {% endif %}
-<div class="media-body ">
+<div class="media-body">
     <div class="no-padding">
         <a href="{% url 'records:person_detail' person.id %}">
             <img alt="image" class="img-responsive" width="50%" src="{% if person.picture %}{{ person.picture.url }}{% else %}{% static 'images/nouser.png' %}{% endif %}" style="max-width: 100px;">
         </a>
     </div>    
+    <div class="media-body ">
+        <h3>
+            <a href="{% url 'records:person_detail' person.id %}">
+                <strong>{{ person.name }}</strong> 
+            </a>
+            <a href="{% url 'records:person_relationship' person.id %}">
+                <small>관계 {{ relation }} </small>
+            </a>
+        </h3>
 
-    <a href="{% url 'records:person_detail' person.id %}">
-        <h3><strong>{{ person.name }} </strong></h3>
-    </a>
-    <p><i class="fa fa-flag"></i> {{person.nick_name}}</p>
+        <p>
+            <i class="fa fa-flag"></i> {{person.nick_name}}
+        </p>
 
-    {% if checkbox %}
-        <input type="checkbox" checked value="{{person.id}}" name="parent" class="checkbox checkbox-primary pull-right">
-    {% endif %}
-    <p><i class="fa fa-calendar"></i> {{ person.birth_year }} 년</p>
-    <p><i class="fa fa-flag"></i> Jobs :
-        {{person.jobs.all|join:", "}}
-    </p>
-    
+        {% if checkbox %}
+            <input type="checkbox" checked value="{{person.id}}" name="parent" class="checkbox checkbox-primary pull-right">
+        {% endif %}
+        <p><i class="fa fa-calendar"></i> {{ person.birth_year }} 년</p>
+        <p><i class="fa fa-flag"></i> Jobs :
+            {{person.jobs.all|join:", "}}
+        </p>
+    </div>
 </div>

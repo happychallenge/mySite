@@ -96,7 +96,6 @@ class Person(models.Model):
                         select_related("other").filter(person=self, relationship='parent', ctype='아버지')][0]
         except Exception:
             return None
-        
 
     def get_spouse(self):
         return [relation.other for relation in Relationship.objects.
@@ -117,20 +116,9 @@ class Person(models.Model):
         else:
             return None
 
-    def make_relationship(self, other, relationship, user):
-        if relationship == 'spouse':
-            if self.sex == '남':
-                Relationship.objects.get_or_create(person=self, other=other, 
-                        relationship=relationship, ctype='아내', created_user=user)
-                Relationship.objects.get_or_create(person=other, other=self, 
-                        relationship=relationship, ctype='남편', created_user=user)
-        else:
-            if other.sex == '남':
-                Relationship.objects.get_or_create(person=self, other=other, 
-                        relationship=relationship, ctype='아버지', created_user=user)
-            else:
-                Relationship.objects.get_or_create(person=self, other=other, 
-                        relationship=relationship, ctype='어머니', created_user=user)
+    def make_relationship(self, other, relationship, ctype, user):
+        Relationship.objects.get_or_create(person=self, other=other, 
+                relationship=relationship, ctype=ctype, created_user=user)
 
     # Get Nickname
     def get_nicknames(self):
@@ -205,14 +193,14 @@ def read_person_data():
         if father:
             fathers = Person.objects.filter(name=father)
             if len(fathers) == 1:
-                person.make_relationship(fathers[0], 'parent', user)
+                person.make_relationship(fathers[0], 'parent', '아버지', user)
             else:
                 print("{} 가 동명이인입니다. 다시 입력하시기 바랍니다.")
 
         if mother:
             mothers = Person.objects.filter(name=mother)
             if len(mothers) == 1:
-                person.make_relationship(mothers[0], 'parent', user)
+                person.make_relationship(mothers[0], 'parent', '어머니', user)
             else:
                 print("{} 가 동명이인입니다. 다시 입력하시기 바랍니다.")
 
@@ -223,7 +211,7 @@ class Relationship(models.Model):
     relationship = models.CharField(max_length=10, 
         choices=(('spouse', 'spouse'),('parent', 'parent'),))
     ctype = models.CharField(max_length=10, 
-        choices=(('결혼', '결혼'),('이혼', '이혼'),('아버지', '아버지'),('어머니', '어머니'),('아들', '아들'),('딸', '딸'),))
+        choices=(('아내', '아내'),('남편', '남편'),('아버지', '아버지'),('어머니', '어머니'),('아들', '아들'),('딸', '딸'),))
     created_user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
     
     class Meta:

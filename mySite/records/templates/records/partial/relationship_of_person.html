@@ -10,9 +10,15 @@
 
         {# 해당 Person 본인 정보 #}
         <div class="media-body ">
-            <a href="{% url 'records:person_detail' obj.id %}">
-                <h3><strong>{{ obj.name }}</strong> <small>관계 {{ relation }} </small></h3>
-            </a>
+            <h3>
+                <a href="{% url 'records:person_detail' obj.id %}">
+                    <strong>{{ obj.name }}</strong> 
+                </a>
+                <a href="{% url 'records:person_relationship' obj.id %}">
+                    <small>관계 {{ relation }} </small>
+                </a>
+            </h3>
+            
             <p><i class="fa fa-flag"></i> {{obj.nick_name}}</p>
             {% if checkbox %}
                 <input type="checkbox" checked value="{{obj.id}}" name="person" class="checkbox checkbox-primary pull-right">
@@ -29,15 +35,18 @@
     {% if obj.get_children and family %}
         <div class="ibox-content no-padding profile-content">
         {% for children in obj.get_children %}
-            {% include 'records/partial/relationship.html' with person=children relationship='손자' %}
-
-            {% for children in children.get_children %}
-                {% if forloop.first %}
-                    {% include 'records/partial/relationship.html' with person=children relationship='증손자' %}
-                {% endif %}
-            {% endfor %}
+            {% include 'records/partial/relationship.html' with person=children relationship='손자' relation='손자' display=True %}
         {% endfor %}
         </div>
     {% endif %}
+
+    {# 증손자들 #}
+    {% if obj.get_children and family %}
+        {% for children in obj.get_children %}
+            {% for children in children.get_children %}
+                {% include 'records/partial/relationship.html' with person=children relationship='증손자' relation='증손자' %}
+            {% endfor %}
+        {% endfor %}
+    {% endif %}    
 
 </div>
