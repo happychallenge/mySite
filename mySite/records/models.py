@@ -84,11 +84,13 @@ class Person(models.Model):
 
     @property
     def total_following(self):
-        return self.following.count()        
+        return self.following.count()   
 
     def get_parent(self):
         return [relation.other for relation in Relationship.objects.
             select_related("other").filter(person=self, relationship='parent')]
+        # persons = Person.objects.filter(relationships__person=self, relationships__relationship='parent')
+        # return persons
 
     def get_father(self):
         try:
@@ -112,7 +114,7 @@ class Person(models.Model):
             return None
         if father:
             return [relation.person for relation in Relationship.objects.select_related("person").
-                filter(other=father, relationship='parent').order_by('person__sex', 'person__birth_year')]
+                filter(other=father, relationship='parent').order_by('-person__sex', 'person__birth_year')]
         else:
             return None
 
@@ -128,6 +130,18 @@ class Person(models.Model):
     def get_total_nick(self):
         return PersonNick.objects.filter(person=self).annotate(
                 num_userlike=Count('user_like')).count()
+
+    def get_events(self):
+        return PersonEvent.objects.filter(person=self).all()
+
+
+def isNumber(s):
+    try:
+        float(s)
+        return True
+    except ValueError:
+        return False
+
 
 from openpyxl import load_workbook
 import pandas as pd
@@ -152,29 +166,33 @@ def read_person_data():
         jobs = row[4]
         tags = row[5]
         status = row[6]
-        url = row[7]
-        event = row[8]
-        news = row[9]
-        father = row[10]
-        mother = row[11]
-        picture = row[12]
+        event = row[7]
+        news = row[8]
+        father = row[9]
+        mother = row[10]
+        spouse = row[11]
+        url = row[12]
+        picture = row[13]
 
-        person, created = Person.objects.get_or_create(name=name, nick_name=nick, url=url,
+        if isNumber(name):
+            person = Person.objects.get(id=name)
+        else:
+            person, created = Person.objects.get_or_create(name=name, nick_name=nick, url=url,
                     birth_year=birth, sex=sex, status=status)
-        print(person)
-        # 사진 입력
-        if picture:
-            person.picture = picture
-            person.save()
+            print(person)
+            # 사진 입력
+            if picture:
+                person.picture = picture
+                person.save()
+
+            person.create_tags(name)
+
+            # Job 입력
+            if jobs:
+                person.create_jobs(jobs)
 
         if tags:
             person.create_tags(tags)
-
-        person.create_tags(name)
-
-        # Job 입력
-        if jobs:
-            person.create_jobs(jobs)
 
         # 뉴스와 이벤트 가져오기
         if event:
@@ -182,28 +200,44 @@ def read_person_data():
             # PersonEvent 등록
             obj, created = PersonEvent.objects.get_or_create(person=person, 
                     event=event, created_user=user)
-            
+            if created:
+                print('Event {} 와 사람 {} 이 생성되었습니다.'.format(event.name, person.name))
+            else:
+                print('{} 은 기존 사람입니다.'.format(person.name))
+
             if news:
                 news = news.strip()
                 new_list = news.split(',')
                 for new in new_list:
-                    news = get_object_or_404(News, id=new)
-                    Evidence.objects.get_or_create(personevent=obj, news=news, created_user=user)
+                    if new:
+                        news = get_object_or_404(News, id=new)
+                        Evidence.objects.get_or_create(personevent=obj, news=news, created_user=user)
 
         if father:
             fathers = Person.objects.filter(name=father)
             if len(fathers) == 1:
                 person.make_relationship(fathers[0], 'parent', '아버지', user)
             else:
-                print("{} 가 동명이인입니다. 다시 입력하시기 바랍니다.")
+                print("{} 가 동명이인입니다. 다시 입력하시기 바랍니다.".format(father))
 
         if mother:
             mothers = Person.objects.filter(name=mother)
             if len(mothers) == 1:
                 person.make_relationship(mothers[0], 'parent', '어머니', user)
             else:
-                print("{} 가 동명이인입니다. 다시 입력하시기 바랍니다.")
+                print("{} 가 동명이인입니다. 다시 입력하시기 바랍니다.".format(mother))
 
+        if spouse:
+            spouses = Person.objects.filter(name=spouse)
+            if len(spouses) == 1:
+                if person.sex == 'M':
+                    person.make_relationship(spouses[0], 'spouse', '아내', user)
+                    spouses[0].make_relationship(person, 'spouse', '남편', user)
+                else:
+                    person.make_relationship(spouses[0], 'spouse', '남편', user)
+                    spouses[0].make_relationship(person, 'spouse', '아내', user)
+            else:
+                print("{} 가 동명이인입니다. 다시 입력하시기 바랍니다.".format(mother))
 
 class Relationship(models.Model):
     person = models.ForeignKey(Person, related_name='relationships')
@@ -243,7 +277,17 @@ class Event(models.Model):
 
     @property
     def total_following(self):
-        return self.following.count()   
+        return self.following.count()
+
+    @property
+    def related_persons(self):
+        return self.personevent_set.count()
+
+    def person_list(self):
+        # return [ pv.person for pv in PersonEvent.objects.filter(event=self) ]
+        return Person.objects.filter(personevent__event = self).annotate(
+            num_following=Count('following')).filter(status='P').order_by('-num_following')
+            
 
 class PersonEvent(models.Model):
     """docstring for PersonBehavior"""

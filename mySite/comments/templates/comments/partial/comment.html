@@ -62,6 +62,6 @@
             </div>
         </form>
 {% else %}
-    커멘트를 달기 위해서는 Login 을 하시기 바랍니다.
+    <small> 커멘트를 달기 위해서는 <a href="{% url 'login' %}" class='btn btn-default btn-xs'> 로그인</a> 을 하시기 바랍니다. </small> 
 {% endif %}
 

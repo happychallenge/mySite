@@ -48,18 +48,19 @@
                 </p>
             </div>
 
-        {% with total_likes=person.user_like.count total_following=person.following.count users_like=person.user_like.all %}
+        {% with total_likes=person.user_like.count total_following=person.following.count users_like=person.user_like.all users_following=person.following.all %}
             <div class="actions"> 
                 <button class="btn btn-outline btn-primary btn-xs btnPersonLike">
-                    <i class="fa fa-thumbs-up"></i> {% if request.user not in users_like %}Like{% else %}UnLike{% endif %}
+                     {% if request.user not in users_like %}Like{% else %}<i class="fa fa-thumbs-up"></i>UnLike{% endif %}
                     <span class="count">(<span class="likes"> {{total_likes}} </span>)</span>
                 </button>
                 <button class="btn btn-primary btn-xs btnPersonFollowing">
-                    <span class="count">Following (<span class="follow"> {{total_following}} </span>)</span>
+                    {% if request.user not in users_following %}Follow{% else %}<i class="fa fa-thumbs-up"></i>following{% endif %}
+                    <span class="count">(<span class="follow"> {{total_following}} </span>)</span>
                 </button>
                 <button class="btn btn-outline btn-primary btn-xs"><i class="fa fa-share"></i> Share</button>
                 <a href="{% url 'records:person_relationship' person.id %}" class="btn btn-primary btn-xs"> 
-                    <i class="fa fa-share"></i>Family
+                    <i class="fa fa-share"></i>가족
                 </a>
             </div>
         {% endwith %}
@@ -81,7 +82,7 @@
             </a>
         </div>
     </div>
-    <div class="ibox-content nicklist" style="padding:10px;">
+    <div class="ibox-content nicklist" style="padding:0 10px 5px 10px;">
         <ul class="todo-list m-t small-list nickname_list">
             <!-- 별명 목록과 별명에 대한 평가 ajax -->
             {% include 'nickname/partial/nicknames.html' with personnick_list=person.get_nicknames %}

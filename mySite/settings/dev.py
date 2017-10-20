@@ -13,3 +13,10 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = join(BASE_DIR,  'media')
 
 # INTERNAL_IPS = ('127.0.0.1',)
+
+
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.naver.com'
+EMAIL_HOST_USER = 'njyoon@naver.com'
+EMAIL_HOST_PASSWORD = 'Wjdgml00$$'
+EMAIL_PORT = 587

@@ -35,16 +35,17 @@
     {% if obj.get_children and family %}
         <div class="ibox-content no-padding profile-content">
         {% for children in obj.get_children %}
-            {% include 'records/partial/relationship.html' with person=children relationship='손자' relation='손자' display=True %}
+            {% include 'records/partial/relationship.html' with person=children relationship='손자' display=True %}
         {% endfor %}
         </div>
     {% endif %}
 
     {# 증손자들 #}
     {% if obj.get_children and family %}
+        <h4>증손자</h4>
         {% for children in obj.get_children %}
             {% for children in children.get_children %}
-                {% include 'records/partial/relationship.html' with person=children relationship='증손자' relation='증손자' %}
+                {% include 'records/partial/relationship.html' with person=children relationship='증손자' %}
             {% endfor %}
         {% endfor %}
     {% endif %}    

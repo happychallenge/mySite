@@ -13,7 +13,7 @@ class Profile(models.Model):
     picture = models.ImageField(upload_to='user_profile/%Y/%m/', 
                     verbose_name='', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
-# 성적 (등록 글, 커멘트 등에 점수를 부여함)
+    # 성적 (등록 글, 커멘트 등에 점수를 부여함)
     score = models.IntegerField(default=0)
 
     def __str__(self):

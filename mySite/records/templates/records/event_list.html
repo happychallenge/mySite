@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block header-index %}
-    <h2>기억을 통해 실수를 반복하지 맙시다.</h2>
+    {% include 'title.html' %}
     <a href="{% url 'records:check_person' %}"> 
             <button type='button' class='btn btn-primary pull-right'>사람/시건/뉴스 등록</button>
     </a>
@@ -19,16 +19,14 @@
 
 
 {% block content %}
-    
     <div class="infinite-container">
-
     {% for event in event_list %}
         <div class="col-md-6 infinite-item">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <a href="{% url 'records:event_detail' event.id %}">
-                        <strong>{{ event.name }}</strong>
-                    </a>
+                        <strong>{{ event.name }}</strong> 
+                    </a> 등록된 사람 수 : {{ event.related_persons }}
                 </div>
 
                 <div class="ibox-content">
@@ -37,8 +35,8 @@
                         {% if checkbox %}
                             <input type="checkbox" value="{{event.id}}" checked name="event" class="checkbox checkbox-primary pull-right">
                         {% endif %}
-                        <p> 설명 : <br>
-                            {{ event.content|linebreaks }}
+                        <p> {{ event.content|linebreaks|truncatewords:30 }}
+                            
                         </p>
                         {% if event.happened_at %}
                             <p> <small> 발생일 : {{ event.happened_at }} </small></p>

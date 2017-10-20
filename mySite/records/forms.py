@@ -36,7 +36,6 @@ class PersonForm(forms.ModelForm):
 
         if not person.picture:
             return person 
-        
 
         x = self.cleaned_data.get('x', 0)
         if not x:

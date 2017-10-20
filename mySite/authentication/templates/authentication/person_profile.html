@@ -19,7 +19,7 @@
 
 {% block content %}
 <div class="row">
-    <div class="col-lg-12">
+    <div class="col-lg-4">
         <div class="ibox float-e-margins">
             {# FORM TITLE #}
             <div class="ibox-title">
@@ -54,6 +54,72 @@
             </div>
         </div>
     </div>
+
+    {# Summary #}
+    <div class="col-lg-8">
+        <div class="ibox float-e-margins">
+            {# FORM TITLE #}
+            <div class="ibox-title">
+                <h5> 획득한 점수 <small> 각 세부 항목마다 점수가 다르니 참고하시기 바랍니다. </small></h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-wrench"></i>
+                    </a>
+                </div>
+            </div>
+            {# FORM CONTENT #}
+            <div class="ibox-content">
+                
+           
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    {# Content #}
+    <div class="infinite-container">
+    {% for person in person_list %}
+        <div class="col-md-6 infinite-item">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <a href="{% url 'records:person_detail' person.id %}">
+                        <strong>{{ person.name }}</strong>
+                    </a>
+                </div>
+
+                <div class="ibox-content">
+                    <div class="col-sm-4">
+                        <div class="text-center">
+                            <a href="{% url 'records:person_detail' person.id %}">
+                            <img alt="image" class="img-circle m-t-xs img-responsive" width='200px' src="{% if person.picture %} {{ person.picture.url }} {% else %} {% static 'images/nouser.png' %}{% endif %}"></a>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <p><i class="fa fa-map-marker"></i> {{ person.nick_name }} </p>
+                        <p> Birth Year : {{ person.birth_year }}</p>
+                        <p> Jobs :
+                        {{person.jobs.all|join:", "}}
+                        </p>
+                        <!-- <p> Tags :
+                        {{person.tags.all|join:", "}}
+                        </p> -->
+                    </div>
+                    <div class="col-sm-4">
+                        <p><i class="fa fa-share"></i> Following : {{ person.total_following }} </p>
+                        <p><i class="fa fa-flag"></i> 좋아하는 사람 : {{ person.total_likes }}</p>
+                        <p><i class="fa fa-flag"></i> 획득 점 : {{ person.total_likes }}</p>
+                    </div>
+                </div>
+            </div>
+        </div> {# class="col-md-6" #}
+
+    {% endfor %}
+
+    </div> {# class="infinite-container" #}
 </div>
 
 <!-- MODAL TO CROP THE IMAGE -->
@@ -86,6 +152,10 @@
 </div>
 
 {% endblock content %}
+
+{% block right_side %}
+    {% include 'right_side.html' with type='P' %}
+{% endblock right_side %}
 
 
 {% block javascript %}

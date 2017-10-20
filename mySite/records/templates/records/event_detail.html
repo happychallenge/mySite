@@ -3,7 +3,7 @@
 
 
 {% block header-index %}
-    <h2>기억을 통해 실수를 반복하지 맙시다.</h2>
+    {% include 'title.html' %}
 {% if user.is_authenticated %}
     <a href="{% url 'records:check_person' %}"> 
             <button type='button' class='btn btn-primary pull-right'>사람/시건/뉴스 등록</button>
@@ -44,9 +44,9 @@
 
                     <div class="ibox-content">
                     {# Person Evidence List  #}
-                    {% for personevent in event.personevent_set.all %}
+                    {% for person in event.person_list %}
                     {# New Content  #}
-                        {% include 'records/partial/event_persons.html' %}
+                        {% include 'records/partial/event_persons.html' with person=person %}
                     {% endfor %}
                     </div>
                 
@@ -85,15 +85,14 @@
             dataType : 'json',
             success: function(data){
                 if(data.status) {
-                    $('.btnEventLike').html(data.like == 'like' ? '<i class="fa fa-thumbs-up"></i>Like<span class="count">(<span class="total">  </span>)</span>':'<i class="fa fa-thumbs-down"></i>UnLike<span class="count">(<span class="total"></span>)</span>');
-                    $('span.count .total').text(data.total_likes);
-                    alert(data.message);
+                    $('.btnEventLike').html(data.like == 'like' ? 'Like<span class="count">(<span class="likes">  </span>)</span>':'<i class="fa fa-thumbs-up"></i>UnLike<span class="count">(<span class="likes"></span>)</span>');
+                    $('span.count .likes').text(data.total_likes);
                 }
             }
         });
     });
 
-    $("a.following").click(function(e){
+    $("button.btnEventFollowing").click(function(e){
         e.preventDefault();
         $.ajax({
             url : "{% url 'records:ajax_event_following' event.id %}", 
@@ -102,8 +101,9 @@
             dataType : 'json',
             success: function(data){
                 if(data.status) {
-                    $('a.following').html(data.follow);
-                    $('span.count .following').text(data.total_following);
+                    $('.btnEventFollowing').html(data.follow == 'following' ? 'Follow<span class="count">(<span class="follow">  </span>)</span>':'<i class="fa fa-thumbs-up"></i>following<span class="count">(<span class="follow"> </span>)</span>');
+                    $('span.count .follow').text(data.total_following);
+                    alert(data.message);
                 }
             }
         });

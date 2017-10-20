@@ -2,13 +2,10 @@
 {% load static %}
 
 {% block header-index %}
-    <h2>기억을 통해 실수를 반복하지 맙시다.</h2>
+    {% include 'title.html' %}
 {% if user.is_authenticated %}
     <a href="{% url 'records:check_person' %}"> 
         <button type='button' class='btn btn-primary pull-right'>사람/시건/뉴스 등록</button>
-    </a>
-    <a href="{% url 'records:check_person' %}"> 
-        <button type='button' class='btn btn-success pull-right'>한개 뉴스에 여러 사람 등록</button>
     </a>
 {% endif %}
     <ol class="breadcrumb">
@@ -36,17 +33,6 @@
                     <a href="{% url 'records:person_detail' person.id %}">
                         <strong>{{ person.name }}</strong>
                     </a>
-                    <!--
-                    <div class="ibox-tools">
-                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                            <i class="fa fa-wrench"></i>
-                        </a>
-                        
-                        <ul class="dropdown-menu dropdown-user">
-                            <li><a href="#">Following</a></li>
-                        </ul>
-                    </div>
-                    -->
                 </div>
 
                 <div class="ibox-content">

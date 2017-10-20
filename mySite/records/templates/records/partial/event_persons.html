@@ -5,23 +5,23 @@
         <div class="ibox row">
             <div class="col-sm-6">
                 <div class="text-center">
-                    <a href="{% url 'records:person_detail' personevent.person.id %}">
-                    <img alt="image" width='200' class="img-circle m-t-xs img-responsive" src="{% if personevent.person.picture %}{{ personevent.person.picture.url }}{% else %}
+                    <a href="{% url 'records:person_detail' person.id %}">
+                    <img alt="image" width='200' class="img-circle m-t-xs img-responsive" src="{% if person.picture %}{{ person.picture.url }}{% else %}
                     {% static 'images/nouser.png' %}{% endif %}
                     "> </a>
                 </div>
             </div>
             <div class="col-sm-6">
-                <a href="{% url 'records:person_detail' personevent.person.id %}">
-                    <h4><strong>{{ personevent.person.name }}</strong></h4>
+                <a href="{% url 'records:person_detail' person.id %}">
+                    <h4><strong>{{ person.name }}</strong></h4>
                 </a>
-                <p><i class="fa fa-map-marker"></i> {{ personevent.person.nick_name }} </p>
-                <p><i class="fa fa-calendar"></i> Birth Year : {{ personevent.person.birth }}</p>
+                <p><i class="fa fa-map-marker"></i> {{ person.nick_name }} </p>
+                <p><i class="fa fa-calendar"></i> Birth Year : {{ person.birth }}</p>
                 <p><i class="fa fa-flag"></i> Jobs :
-                    {{personevent.person.jobs.all|join:", "}}
+                    {{person.jobs.all|join:", "}}
                 </p>
                 <p><i class="fa fa-pencil"></i> Tags :
-                    {{personevent.person.tags.all|join:", "}}
+                    {{person.tags.all|join:", "}}
                 </p>
             </div>
             

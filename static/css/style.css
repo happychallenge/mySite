@@ -127,7 +127,7 @@ h5 {
   margin-right: 0;
 }
 .navbar-top-links .dropdown-menu li a {
-  padding: 3px 20px;
+  padding: 3px 10px;
   min-height: 0;
 }
 .navbar-top-links .dropdown-menu li a div {
@@ -432,7 +432,7 @@ body.canvas-menu.mini-navbar .footer {
 body.fixed-sidebar .navbar-static-side,
 body.canvas-menu .navbar-static-side {
   position: fixed;
-  width: 250px;
+  width: 200px;
   z-index: 2001;
   height: 100%;
 }
@@ -443,10 +443,10 @@ body.fixed-sidebar.mini-navbar #page-wrapper {
   margin: 0 0 0 0;
 }
 body.body-small.fixed-sidebar.mini-navbar #page-wrapper {
-  margin: 0 0 0 250px;
+  margin: 0 0 0 200px;
 }
 body.body-small.fixed-sidebar.mini-navbar .navbar-static-side {
-  width: 250px;
+  width: 200px;
 }
 .fixed-sidebar.mini-navbar .nav li:focus > .nav-second-level,
 .canvas-menu.mini-navbar .nav li:focus > .nav-second-level {
@@ -3636,7 +3636,7 @@ video {
   padding: 0 20px;
 }
 .wrapper-content {
-  padding: 5px 10px 5px;
+  padding: 5px 0px 5px;
 }
 #page-wrapper {
   padding: 0 15px;
@@ -3704,7 +3704,7 @@ ol.unstyled {
   padding: 10px 20px;
   background: white;
   border-top: 1px solid #e7eaec;
-  margin-left: 250px;
+  margin-left: 200px;
 }
 body.mini-navbar .footer.fixed,
 body.body-small.mini-navbar .footer.fixed {
@@ -3715,7 +3715,7 @@ body.canvas-menu .footer.fixed {
   margin: 0 !important;
 }
 body.fixed-sidebar.body-small.mini-navbar .footer.fixed {
-  margin: 0 0 0 250px;
+  margin: 0 0 0 200px;
 }
 body.body-small .footer.fixed {
   margin-left: 0;
@@ -3723,7 +3723,7 @@ body.body-small .footer.fixed {
 /* PANELS */
 .page-heading {
   border-top: 0;
-  padding: 0 10px 20px 10px;
+  padding: 0 10px 10px 20px;
 }
 .panel-heading h1,
 .panel-heading h2 {
@@ -3932,7 +3932,8 @@ code {
   border-color: #e7eaec;
   border-image: none;
   border-style: solid solid none;
-  border-width: 0 0 0; /* 2px 0 0; */
+  border-width: 0 0 1px;
+  /* 2px 0 0; */
   color: inherit;
   margin-bottom: 0;
   padding: 15px 15px 7px;
@@ -3945,6 +3946,7 @@ code {
   border-color: #e7eaec;
   border-image: none;
   border-style: solid solid none;
+  /* solid solid none; */
   border-width: 1px 0;
 }
 .ibox-footer {
@@ -4638,7 +4640,7 @@ body.mini-navbar.fixed-sidebar .logo-element {
 .contact-box {
   background-color: #ffffff;
   border: 1px solid #e7eaec;
-  padding: 10px;
+  padding: 20px;
   margin-bottom: 20px;
 }
 .contact-box > a {
@@ -5055,14 +5057,14 @@ a.compose-mail {
 .profile-info {
   margin-left: 120px;
 }
-/*.feed-activity-list .feed-element {
-  border-bottom: 1px solid #e7eaec;
-}*/
+.feed-activity-list .feed-element {
+  /* border-bottom: 1px solid @border-color; */
+}
 .feed-element:first-child {
   margin-top: 0;
 }
 .feed-element {
-  padding-bottom: 15px;
+  padding-bottom: 5px;
 }
 .feed-element,
 .feed-element .media {
@@ -7587,10 +7589,10 @@ body.rtls.mini-navbar.fixed-sidebar #page-wrapper {
   margin: 0 0 0 0;
 }
 body.rtls.body-small.fixed-sidebar.mini-navbar #page-wrapper {
-  margin: 0 250px 0 0;
+  margin: 0 200px 0 0;
 }
 body.rtls.body-small.fixed-sidebar.mini-navbar .navbar-static-side {
-  width: 250px;
+  width: 200px;
 }
 .body-small.rtls .navbar-fixed-top {
   margin-right: 0;
@@ -7632,7 +7634,7 @@ body.rtls.top-navigation .footer.fixed {
     display: none;
     z-index: 2001;
     position: fixed;
-    width: 250px;
+    width: 200px;
   }
   .rtls.fixed-sidebar.body-small.mini-navbar .navbar-static-side {
     display: block;
@@ -8428,7 +8430,7 @@ body.md-skin {
   margin: 0 0 0 0;
 }
 .md-skin.body-small.fixed-sidebar.mini-navbar .navbar-static-side {
-  width: 250px;
+  width: 200px;
   background-color: #ffffff;
 }
 .md-skin.boxed-layout #wrapper {
@@ -8444,13 +8446,13 @@ body.md-skin {
 @media (min-width: 768px) {
   #page-wrapper {
     position: inherit;
-    margin: 0 0 0 250px;
+    margin: 0 0 0 200px;
     min-height: 100vh;
   }
   .navbar-static-side {
     z-index: 2001;
     position: absolute;
-    width: 250px;
+    width: 200px;
   }
   .navbar-top-links .dropdown-messages,
   .navbar-top-links .dropdown-tasks,
@@ -8497,7 +8499,7 @@ body.md-skin {
     display: none;
     z-index: 2001;
     position: fixed;
-    width: 250px;
+    width: 200px;
   }
   .fixed-sidebar.body-small.mini-navbar .navbar-static-side {
     display: block;

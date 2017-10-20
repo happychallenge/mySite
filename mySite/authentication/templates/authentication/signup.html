@@ -1,6 +1,6 @@
 {% extends 'login_base.html' %}
 
-{% load staticfiles i18n %}
+{% load bootstrap3 staticfiles i18n %}
 
 {% block content %}
 <style>
@@ -22,28 +22,18 @@
                     <h4>사용자 등록</h4>
                 </div>
                 <div class="ibox-content">
-                    <h2 class="logo">I Remember Your Past</h2>
+                    <h3 class="logo">I Remember Your Past</h3>
                     <div class="signup">
                         <form action="{% url 'signup' %}" method="post" role="form" id='signup'>
                             {% csrf_token %} 
-                            {% for field in form.visible_fields %}
-                              <div class="form-group{% if field.errors %} has-error{% endif %}">
-                                  <label for="{{ field.label }}">{{ field.label }}</label>
-                                  {{ field }} 
-                                  {% if field.help_text %}
-                                    <span class="help-block">{{ field.help_text|safe }}</span> 
-                                  {% endif %} 
-                                  {% for error in field.errors %}
-                                    <label class="control-label">{{ error }}</label>
-                                  {% endfor %}
-                              </div>
-                            {% endfor %}
-                            {% for field in form.hidden_fields %}
-                                {{ field }}
-                            {% endfor %}
+                            {% bootstrap_form form %}
                             <button type="submit" class="btn btn-primary">
                                 {% trans 'Create an account' %}
                             </button>
+                            
+                            <a href="{% url 'home' %}" class="btn btn-primary pull-right">
+                                {% trans '홈으로' %}
+                            </a>
                         </form>
                     </div> 
                 </div>
@@ -58,11 +48,32 @@
 {% block javascript %}
   <script>
     $(function(){
+
+      $("#id_email").focusout(function() {
+          var email = $(this).val();
+
+          $.ajax({
+            url: "/authentication/checkemail/", 
+            data: {
+                'email': email,
+            },
+            dataType: 'json',
+            success: function(data){
+                if(data.exists) {
+                   $("#id_email").val("기존에 등록된 Email이 존재합니다.");
+                   $("#id_email").focus();
+                } 
+            }
+          });
+          return false;
+      });
+
       $('.btn-primary').click(function(){
-        var username = $('#id_email').val();
-        console.log(username);
-        $('#id_username').val(username);
+          var username = $('#id_email').val();
+          console.log(username);
+          $('#id_username').val(username);
       });
     });
+
   </script>
 {% endblock javascript %}

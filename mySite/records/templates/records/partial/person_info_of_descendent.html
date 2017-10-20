@@ -8,7 +8,7 @@
                     <i class="fa fa-wrench"></i>
                 </a>
                 <ul class="dropdown-menu dropdown-user">
-                    <li><a class='following' href="">Following</a></li> 
+                    <li><a class='following' href="">선택</a></li> 
                 </ul> 
             </div>
         {% endif %}
@@ -17,7 +17,7 @@
     {# 조상 반복 #}
     <div class="ibox-content">
         {% for person in persons %}
-            {% include 'records/partial/relationship_of_person.html' with obj=person %}
+            {% include 'records/partial/relationship_of_person.html' with obj=person  %}
         {% endfor %}
     </div>
 </div>

@@ -77,28 +77,19 @@ def edit_person(request, person_id):
             person = form.save()
             name = form.cleaned_data.get('name')
 
-            # Jobs
-            jobs = form.cleaned_data.get('jobs')
-            if jobs:
-                person.jobs.set(jobs)
+            person.save_m2m()
+            # # Jobs
+            # jobs = form.cleaned_data.get('jobs')
+            # if jobs:
+            #     person.jobs.set(jobs)
 
-            # Jobs
-            tags = form.cleaned_data.get('tags')
-            if tags:
-                person.tags.set(tags)
+            # # Jobs
+            # tags = form.cleaned_data.get('tags')
+            # if tags:
+            #     person.tags.set(tags)
 
             person.created_user = request.user
             person.save()
-            # Tags
-            # tags = form.cleaned_data.get('tags')
-            # if tags:
-            #     tag_list = tags.split(',')
-            #     for tag in tag_list:
-            #         tag = tag.strip()
-            #         tagged, created = Tag.objects.get_or_create(tag=tag)
-            #         tag_array.append(tagged)
-                    
-            # person.tags.set(tag_array)
             
             messages.success(request, "{} 이 수정 되었습니다.".format(name))
             return redirect('records:person_detail', person.id)

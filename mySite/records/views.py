@@ -7,6 +7,8 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 from django.template.loader import render_to_string
 from django.http import JsonResponse
+from django.contrib.auth.models import User
+from django.db.models import Count
 
 from .models import Person, PersonEvent, Event, Tag, Relationship
 
@@ -32,9 +34,17 @@ def _person_list(request, person_list):
 
 
 def person_list(request):
-    person_list = Person.objects.prefetch_related('tags', 'jobs').filter(status='P')
+    person_list = Person.objects.annotate(
+            num_following=Count('following')).filter(status='P').order_by('-num_following')
     return _person_list(request, person_list)
 
+def person_table(request):
+    person_list = Person.objects.prefetch_related('tags', 'jobs').filter(status='P')
+    popular_tags = Tag.get_person_popular_tags()
+    following = Person.get_persons_following()[:10]
+    context = {'person_list': person_list, 'popular_tags': popular_tags, 
+                'following': following, }
+    return render(request, 'records/person_table.html', context)
 
 def person_detail(request, person_id):
     person = Person.objects.select_related('created_user').prefetch_related(
@@ -73,7 +83,6 @@ def person_family(request, person_id):
 
 # Create your views here.
 def _event_list(request, event_list):
-    event_list = event_list.order_by()
     paginator = Paginator(event_list, 6)
     page = request.GET.get('page')
 
@@ -90,9 +99,9 @@ def _event_list(request, event_list):
 
 def event_list(request):
     event_list = Event.objects.prefetch_related('tags', 'user_like', 
-            'following').select_related('category', 'created_user').all()
+            'following').select_related('category', 'created_user').annotate(
+            related_person=Count('personevent')).order_by('-related_person')
     return _event_list(request, event_list)
-
 
 def event_detail(request, event_id):
     event = Event.objects.select_related('category').get(id=event_id)
@@ -275,12 +284,13 @@ def top_search(request):
     html = ""
     search_query = request.GET.get('keyword')
     if search_query:
-        person_list = Person.objects.filter(name__contains = search_query)
+        person_list = Person.objects.filter(name__contains = search_query, )
     
         html = render_to_string('records/partial/top_search.html', {
             'person_list': person_list,
         })
     return JsonResponse(html, safe=False)
+
 
 
 ############################

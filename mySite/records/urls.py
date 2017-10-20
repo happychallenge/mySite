@@ -6,6 +6,7 @@ from . import views_reg
 
 urlpatterns = [
     url(r'^$', views.person_list, name='person_list'),
+    url(r'^table/$', views.person_table, name='person_table'),
     url(r'^persondetail/(?P<person_id>\d+)/$', views.person_detail, name='person_detail'),
     url(r'^personrelationship/(?P<person_id>\d+)/$', views.person_relationship, name='person_relationship'),
     url(r'^event_list/$', views.event_list, name='event_list'),

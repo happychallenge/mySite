@@ -39,6 +39,7 @@ def validate_password_strength(value):
     if not any(char.isalpha() for char in value):
         raise ValidationError(_('Password must contain at least 1 letter.'))
 
+
 class SignUpForm(forms.ModelForm):
     username = forms.CharField(
         widget=forms.HiddenInput())  # noqa: E261
@@ -52,6 +53,7 @@ class SignUpForm(forms.ModelForm):
         label="Name",
         max_length=75)
     password = forms.CharField(
+        help_text='비밀번호는 8자 이상, 특수문자(!@#$%^&*)포함, 숫자가 포함되어야 함.',
         widget=forms.PasswordInput(attrs={'class': 'form-control'}))
     confirm_password = forms.CharField(
         widget=forms.PasswordInput(attrs={'class': 'form-control'}),
@@ -75,24 +77,44 @@ class SignUpForm(forms.ModelForm):
         confirm_password = self.cleaned_data.get('confirm_password')
         if password and password != confirm_password:
             self._errors['password'] = self.error_class(
-                ['Passwords don\'t match'])
+                ['비밀번호가 일치하지 않습니다.'])
         return self.cleaned_data
 
 
-# records/forms.py
-#
-# class ArticleForm(forms.ModelForm):
-#   title = forms.CharField(
-#       widgets = forms.TextInput(attrs={'class':'form-control'}), max_length=255)
-#   title = forms.CharField(
-#       widgets = forms.HiddenInput()
-#   title = forms.CharField(
-#       widgets = forms.Textarea(attrs={'class':'form-control'}), max_length=4000)
-#   title = forms.CharField(
-#       widgets = forms.TextInput(attrs={'class':'form-control'}), max_length=4000, required=False, help_text='.....')
-#
-#
+class ChangePasswordForm(forms.ModelForm):
+    id = forms.CharField(widget=forms.HiddenInput())
+    old_password = forms.CharField(
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+        label="Old password",
+        required=True)
 
+    new_password = forms.CharField(
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+        label="New password",
+        required=True)
+    confirm_password = forms.CharField(
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+        label="Confirm new password",
+        required=True)
+
+    class Meta:
+        model = User
+        fields = ['id', 'old_password', 'new_password', 'confirm_password']
+
+    def clean(self):
+        super(ChangePasswordForm, self).clean()
+        old_password = self.cleaned_data.get('old_password')
+        new_password = self.cleaned_data.get('new_password')
+        confirm_password = self.cleaned_data.get('confirm_password')
+        id = self.cleaned_data.get('id')
+        user = User.objects.get(pk=id)
+        if not user.check_password(old_password):
+            self._errors['old_password'] = self.error_class([
+                'Old password don\'t match'])
+        if new_password and new_password != confirm_password:
+            self._errors['new_password'] = self.error_class([
+                'Passwords don\'t match'])
+        return self.cleaned_data
 
 class ProfileForm(forms.ModelForm):
     x = forms.FloatField(widget=forms.HiddenInput())
@@ -113,7 +135,13 @@ class ProfileForm(forms.ModelForm):
     def save(self):
         profile = super(ProfileForm, self).save()
 
-        x = self.cleaned_data.get('x')
+        if not profile.picture:
+            return profile 
+
+        x = self.cleaned_data.get('x', 0)
+        if not x:
+            return profile
+            
         y = self.cleaned_data.get('y')
         width = self.cleaned_data.get('width')
         height = self.cleaned_data.get('height')

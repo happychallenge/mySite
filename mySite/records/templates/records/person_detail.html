@@ -2,7 +2,7 @@
 {% load i18n static %}
 
 {% block header-index %}
-    <h2>기억을 통해 실수를 반복하지 맙시다.</h2>
+    {% include 'title.html' %}
     <a href="{% url 'records:check_person' %}"> 
             <button type='button' class='btn btn-primary pull-right'>사람/시건/뉴스 등록</button>
     </a>
@@ -21,19 +21,18 @@
 
 
 {% block content %}
-
     <div class="wrapper wrapper-content">
         <div class="row animated fadeInRight">
     
             {# 001. 사람 정보 #}
-            <div class="col-md-5">
+            <div class="col-md-4">
                 {% include 'records/partial/person_info.html' %}
             </div>
 
             {# 002. 이벤트 검색 결과 #}
-            <div class="col-md-7">
+            <div class="col-md-8">
             {# Person Evidence List  #}
-            {% for personevent in person.personevent_set.all %}
+            {% for personevent in person.get_events %}
 
                 <div class="ibox">
                     {# EVENT INFO  #}
@@ -45,17 +44,28 @@
                             </a>
                             <ul class="dropdown-menu dropdown-user">
                                 <li><a href="{% url 'records:event_detail' personevent.event.id %}">사건 상세 내용</a></li> 
-                                <li><a href="#">Following</a></li>
                             </ul>
                         </div>
                     </div> <!-- ibox-title -->
 
                     {# EVIDENCE INFO #}
-                    <div class="ibox evidence_list">
-                    {% for evidence in personevent.evidence_set.all %}
-                        {% include 'records/partial/evidence_info.html' with detail=True %}
-                    {% empty %}
-                        {% if forloop.last and user.is_authenticated %}
+                    {% if personevent.evidence_set.all %}
+                        <div class="ibox evidence_list">
+                        {% for evidence in personevent.evidence_set.all %}
+                            {% include 'records/partial/evidence_info.html' with detail=True %}
+                        {% empty %}
+                            {% if forloop.last and user.is_authenticated %}
+                                <div class="social-footer">
+                                    <a class="btn btn-default btn-rounded btn-block" href="{% url 'records:check_evidence' personevent.id %}"> 
+                                        <i class="fa fa-plus"></i> 
+                                            추가 증거 등록
+                                    </a>
+                                </div>
+                            {% endif %}
+                        {% endfor %} 
+                        </div> <!-- ibox evidence_list -->
+                    {% else %}
+                        {% if user.is_authenticated %}
                             <div class="social-footer">
                                 <a class="btn btn-default btn-rounded btn-block" href="{% url 'records:check_evidence' personevent.id %}"> 
                                     <i class="fa fa-plus"></i> 
@@ -63,12 +73,9 @@
                                 </a>
                             </div>
                         {% endif %}
-                    {% endfor %} 
-                    </div> <!-- ibox evidence_list -->
+                    {% endif %}
                     
                 </div>
-
-            
             {% endfor %} {# for personevent in person.personevent_set.all #}
             
             {% if user.is_authenticated %}
@@ -182,7 +189,7 @@
             dataType : 'json',
             success: function(data){
                 if(data.status) {
-                    $('button.btnPersonLike').html(data.like == 'like' ? '<i class="fa fa-thumbs-up"></i>Like<span class="count">(<span class="likes">  </span>)</span>':'<i class="fa fa-thumbs-down"></i>UnLike<span class="count">(<span class="likes"> </span>)</span>');
+                    $('button.btnPersonLike').html(data.like == 'like' ? 'Like<span class="count">(<span class="likes"> </span>)</span>':'<i class="fa fa-thumbs-up"></i>UnLike<span class="count">(<span class="likes"> </span>)</span>');
                     $('span.count .likes').text(data.total_likes);
                 }
             }
@@ -197,7 +204,7 @@
             dataType : 'json',
             success: function(data){
                 if(data.status) {
-                    $('button.btnPersonFollowing').html(data.follow == 'following' ? '<i class="fa fa-thumbs-up"></i>Follow<span class="count">(<span class="follow">  </span>)</span>':'<i class="fa fa-thumbs-down"></i>UnFollow<span class="count">(<span class="follow"> </span>)</span>');
+                    $('button.btnPersonFollowing').html(data.follow == 'following' ? 'Follow<span class="count">(<span class="follow">  </span>)</span>':'<i class="fa fa-thumbs-up"></i>following<span class="count">(<span class="follow"> </span>)</span>');
                     $('span.count .follow').text(data.total_following);
                     alert(data.message);
                 }

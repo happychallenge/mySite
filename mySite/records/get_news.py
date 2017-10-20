@@ -272,7 +272,7 @@ def get_contents_from_hani(url):
         print(e)
     return result
 
-# print(get_contents_from_hani('http://www.hani.co.kr/arti/culture/entertainment/776675.html?dable=30.52.3'))
+# print(get_contents_from_hani('http://www.hani.co.kr/arti/society/society_general/12746.html'))
 
 # Chosun
 def get_contents_from_chosun(url):
@@ -794,7 +794,7 @@ def get_contents_from_ohmynews(url):
     
     try:
         result['title'] = soup.find('title').get_text()
-        content = soup.find('div', {'class':'at_contents'}).get_text()
+        content = soup.find('div', {'class':'article_view'}).get_text()
         result['content'] = content
         span = soup.select('div.info_data div')[0].get_text()
         result['published_at'] = '20' + span[:2] + '-' + span[3:5] + '-' + span[6:8]
@@ -803,7 +803,7 @@ def get_contents_from_ohmynews(url):
     
     return result
 
-# print(get_contents_from_ohmynews('http://www.ohmynews.com/NWS_Web/View/at_pg.aspx?CNTN_CD=A0002330490&PAGE_CD=ET001&BLCK_NO=1&CMPT_CD=T0016'))
+# print(get_contents_from_ohmynews('http://www.ohmynews.com/NWS_Web/view/at_pg.aspx?CNTN_CD=A0000188924'))
 
 # ytn
 def get_contents_from_ytn(url):

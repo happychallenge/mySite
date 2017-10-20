@@ -7,7 +7,7 @@ from .models import News, Evaluation, Evidence
 class PersonAdmin(admin.ModelAdmin):
     class Meta:
         model = Person
-    list_display = ['id', 'name', 'nick_name', 'birth_year', 'sex', 'picture', 'status']
+    list_display = ['id', 'name', 'nick_name', 'birth_year', 'sex', 'created_user', 'picture', 'status']
     list_editable = ['sex', 'nick_name', 'birth_year', 'status']
     search_fields = ['name']
 
@@ -51,6 +51,7 @@ class EvidenceAdmin(admin.ModelAdmin):
     class Meta:
         model = Evidence
     list_display = [ 'id', 'personevent', 'news']
+    search_fields = ['personevent__person__name']
 
 @admin.register(Evaluation)
 class EvaluationAdmin(admin.ModelAdmin):

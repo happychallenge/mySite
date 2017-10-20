@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block header-index %}
-    <h2>기억을 통해 실수를 반복하지 맙시다.</h2>
+    {% include 'title.html' %}
     <ol class="breadcrumb">
         <li>
             <a href="{% url 'home' %}"> <i class="fa fa-home"></i> Home </a> 

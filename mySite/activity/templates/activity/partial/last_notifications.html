@@ -2,7 +2,7 @@
 
 {% for noti in notifications %}
     <li>
-        <div class="dropdown-messages-box">
+        <div class="dropdown-messages-box" style="min-height: 35px">
             <a href="" class="pull-left">
                 <img alt="image" class="img-circle no-padding" src="{% if noti.from_user.profile.picture %} {{ noti.from_user.profile.picture.url }}{% else %} {% static 'images/nouser.png' %}{% endif %}" width="150">
             </a>

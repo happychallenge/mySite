@@ -6,4 +6,4 @@ from .models import Profile
 class ProfileAdmin(admin.ModelAdmin):
     class Meta:
         model = Profile
-    list_display = [ 'user', 'picture']
+    list_display = [ 'id', 'user', 'picture']
