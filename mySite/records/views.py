@@ -1,4 +1,7 @@
 # records/views.py
+from datetime import timedelta, datetime
+# from django.utils import timezone
+
 from django.contrib import messages
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -13,6 +16,23 @@ from django.db.models import Count
 from .models import Person, PersonEvent, Event, Tag, Relationship
 
 # Create your views here.
+def check_session(request):
+
+    now = datetime.now()
+    if 'popular_tags' in request.session:
+        dt, _ = request.session.get('reg_time').split('.')
+        reg_time = datetime.strptime(dt, '%Y-%m-%d %H:%M:%S') + timedelta(days=1)
+        if now < reg_time:
+            return False
+  
+    request.session.set_expiry(int(timedelta(days=365).total_seconds()))
+    request.session['popular_tags'] = Tag.get_person_popular_tags()
+    request.session['pop_persons'] = Person.get_persons_following()
+    request.session['new_persons'] = Person.get_new_persons()
+    request.session['reg_time'] = str(now)
+    print(str(now))
+    return True
+
 
 def _person_list(request, person_list):
     
@@ -25,11 +45,9 @@ def _person_list(request, person_list):
         person_list = paginator.page(1)
     except EmptyPage:
         person_list = paginator.page(paginator.num_pages)
-    
-    popular_tags = Tag.get_person_popular_tags()
-    following = Person.get_persons_following()[:10]
-    context = {'person_list': person_list, 'popular_tags': popular_tags, 
-                'following': following, }
+
+    check_session(request)
+    context = {'person_list': person_list}
     return render(request, 'records/person_list.html', context)
 
 
@@ -40,10 +58,8 @@ def person_list(request):
 
 def person_table(request):
     person_list = Person.objects.prefetch_related('tags', 'jobs').filter(status='P')
-    popular_tags = Tag.get_person_popular_tags()
-    following = Person.get_persons_following()[:10]
-    context = {'person_list': person_list, 'popular_tags': popular_tags, 
-                'following': following, }
+    
+    context = {'person_list': person_list}
     return render(request, 'records/person_table.html', context)
 
 def person_detail(request, person_id):
@@ -51,10 +67,8 @@ def person_detail(request, person_id):
             'tags', 'jobs', 'personevent_set__event', 'personevent_set__evidence_set__news', 
             'user_like', 'following').get(id=person_id)
     # personevent_list = PersonEvent.objects.select_related('event', 'person').filter(person=person).all()
-    popular_tags = Tag.get_person_popular_tags()
-    following = Person.get_persons_following()[:10]
-    context = { 'person': person, 'popular_tags': popular_tags, 
-                'following': following, }
+    check_session(request)
+    context = { 'person': person }
     return render(request, 'records/person_detail.html', context)
 
 
@@ -63,10 +77,8 @@ def person_relationship(request, person_id):
             'tags', 'jobs', 'personevent_set__event', 'personevent_set__evidence_set__news', 
             'user_like', 'following').get(id=person_id)
     # personevent_list = PersonEvent.objects.select_related('event', 'person').filter(person=person).all()
-    popular_tags = Tag.get_person_popular_tags()
-    following = Person.get_persons_following()[:10]
-    context = { 'person': person, 'popular_tags': popular_tags, 
-                'following': following, }
+    check_session(request)
+    context = { 'person': person }
     return render(request, 'records/person_relationship.html', context)
 
 
@@ -75,10 +87,8 @@ def person_family(request, person_id):
             'tags', 'jobs', 'personevent_set__event', 'personevent_set__evidence_set__news', 
             'user_like', 'following').get(id=person_id)
     # personevent_list = PersonEvent.objects.select_related('event', 'person').filter(person=person).all()
-    popular_tags = Tag.get_person_popular_tags()
-    following = Person.get_persons_following()[:10]
-    context = { 'person': person, 'popular_tags': popular_tags, 
-                'following': following, }
+    check_session(request)
+    context = { 'person': person, }
     return render(request, 'records/person_family.html', context)
 
 # Create your views here.
@@ -92,9 +102,7 @@ def _event_list(request, event_list):
         event_list = paginator.page(1)
     except EmptyPage:
         event_list = paginator.page(paginator.num_pages)
-    
-    popular_tags = Tag.get_event_popular_tags()    
-    context = {'event_list': event_list, 'popular_tags': popular_tags}
+    check_session(request)
     return render(request, 'records/event_list.html', context)
 
 def event_list(request):
@@ -106,6 +114,7 @@ def event_list(request):
 def event_detail(request, event_id):
     event = Event.objects.select_related('category').get(id=event_id)
     personevent_list = PersonEvent.objects.select_related('person').filter(event=event).all()
+    check_session(request)
     context = { 'event': event, 'personevent_list': personevent_list }
     return render(request, 'records/event_detail.html', context)
 
@@ -292,9 +301,9 @@ def top_search(request):
     return JsonResponse(html, safe=False)
 
 
-
 ############################
 # About US
 ############################
 def aboutUS(request):
+    check_session(request)
     return render(request, 'aboutUS.html')

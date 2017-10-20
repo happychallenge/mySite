@@ -175,7 +175,11 @@ def check_evidence(request, personevent_id):
             
             else:
                 news_info = get_news(url)
-                media = get_object_or_404(Media, short=news_info['media'])
+                try:
+                    media = get_object_or_404(Media, short=news_info['media'])
+                except Media.DoesNotExists:
+                    media = get_object_or_404(Media, short='기타')
+                
                 content = news_info['content'][:400] + ' ......'
                 news, created = News.objects.get_or_create(
                         url=url, 

@@ -1,5 +1,6 @@
 # records/models.py
 import csv
+import datetime
 
 from django.contrib.auth import get_user_model
 from django.db import models
@@ -55,8 +56,39 @@ class Person(models.Model):
 
     @staticmethod
     def get_persons_following():
+        pop_persons = {}
+        count = 0
         persons = Person.objects.annotate(num_following=Count('following')).order_by('-num_following')
-        return persons
+        for person in persons:
+            pop_persons[person.name] = {}
+            pop_persons[person.name]['id'] = person.id
+            pop_persons[person.name]['name'] = person.name
+            pop_persons[person.name]['following'] = person.num_following
+
+            count += 1
+            if count == 8:
+                break
+        return pop_persons
+
+    @staticmethod
+    def get_new_persons():
+        new_persons = {}
+        count = 0
+        days_ago = datetime.datetime.now() - datetime.timedelta(days=7)
+        persons = Person.objects.filter(created_date__gt = days_ago).annotate(
+                num_following=Count('following')).order_by('-num_following')
+
+        for person in persons:
+            new_persons[person.name] = {}
+            new_persons[person.name]['id'] = person.id
+            new_persons[person.name]['name'] = person.name
+            new_persons[person.name]['following'] = person.num_following
+
+            count += 1
+            if count == 8:
+                break
+        return new_persons
+
 
     def create_tags(self, tags):
         tags = tags.strip()
@@ -284,9 +316,11 @@ class Event(models.Model):
         return self.personevent_set.count()
 
     def person_list(self):
-        # return [ pv.person for pv in PersonEvent.objects.filter(event=self) ]
         return Person.objects.filter(personevent__event = self).annotate(
             num_following=Count('following')).filter(status='P').order_by('-num_following')
+
+    def get_news(self):
+        return News.objects.filter(events=self)
             
 
 class PersonEvent(models.Model):
@@ -313,6 +347,7 @@ class News(models.Model):
     published_at = models.DateField(null=True, blank=True)
     created_user = models.ForeignKey(settings.AUTH_USER_MODEL,null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    events = models.ManyToManyField(Event, related_name='eventnews', blank=True)
 
     def __str__(self):
         return self.title
@@ -368,6 +403,7 @@ class Tag(models.Model):
             count[tag.tag] = tag.person_set.count()
         sorted_count = sorted(count.items(), key=lambda t: t[1], reverse=True)
         return sorted_count[:10]
+
 
     @staticmethod
     def get_event_popular_tags():

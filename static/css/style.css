@@ -3905,9 +3905,9 @@ code {
 }
 .ibox {
   clear: both;
-  margin-bottom: 25px;
+  margin-bottom: 20px;
   margin-top: 0;
-  padding: 0;
+  padding: 0 0 0 5px;
 }
 .ibox.collapsed .ibox-content {
   display: none;
@@ -5658,7 +5658,7 @@ table.shoping-cart-table tr td:last-child {
   margin-top: 0;
 }
 .social-comment {
-  margin-top: 15px;
+  margin-top: 5px;
 }
 .social-comment textarea {
   font-size: 12px;

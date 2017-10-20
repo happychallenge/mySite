@@ -1,0 +1,39 @@
+{% load static %}
+
+{# 뉴스 매체 매칭 #}
+<div class="social-feed-box" news-id="{{news.id}}">
+    
+    {# 등록자 사진 #}
+    <div class="social-avatar">
+        <a href="#" class="pull-left">
+           <img alt="image" class="img-circle" src="{% if news.created_user.profile.picture.url %} {{ news.created_user.profile.picture.url }} {% else %} {% static 'image/nouser.png' %}{% endif %}">
+        </a>
+        {# 뉴스매체와 뉴스제목 #}
+        <div>
+            <a href="{{ news.url}}" target="remember">
+                <strong>{{news.media}}</strong> :: 
+                <strong>{{news.title}}</strong>
+            </a> <br>
+            <small class="text-muted"> 등록일 : {{ news.created_at|date:"Y/m/d" }}</small>
+        </div>
+    </div>
+
+    {# 뉴스 내용과 URL #}
+    <div class="social-body" >
+        <div class="well" style="padding:0px 10px 0px 10px;margin-bottom: 10px;">
+           {{news.content|linebreaks|truncatewords:"60"}} <br>
+            <small style="color:#337ab7;"> 발행일 : {{news.published_at|date:"Y/m/d" }} </small> 
+        </div>
+        <div> 
+            <button class='btn btn-primary btn-xs comment'>
+                <i class="fa fa-pencil"></i> Comment
+                (<span class="comment-count">{{ comments.count }}</span>)
+            </button>
+        </div>
+    </div>
+
+    {# AJAX COMMENT_LIST #}
+    <div class="social-footer comment_list">
+    </div>
+
+</div>

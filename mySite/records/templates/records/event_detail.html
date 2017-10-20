@@ -5,8 +5,8 @@
 {% block header-index %}
     {% include 'title.html' %}
 {% if user.is_authenticated %}
-    <a href="{% url 'records:check_person' %}"> 
-            <button type='button' class='btn btn-primary pull-right'>사람/시건/뉴스 등록</button>
+    <a href="{% url 'records:add_event_news' event.id %}"> 
+            <button type='button' class='btn btn-primary pull-right'>사건에 관련된 뉴스 등록</button>
     </a>
 {% endif %}
     <ol class="breadcrumb">
@@ -34,7 +34,25 @@
 
             {# Person Evidence #}
             <div class="col-md-8">
+                
+                {# 관련된 뉴스 #}
+                <div class="ibox float-e-margins">
+                    {# Event Title  #}
+                    <div class="ibox-title">
+                        <h4> <strong>{{ event.name }}</strong> 관련 뉴스 </h4>
+                        
+                    </div>
+                    <div class="ibox-content news_list">
+                    {# Person Evidence List  #}
+                    {% for news in event.get_news %}
+                    {# New Content  #}
+                        {% include 'records/partial/event_news.html' %}
+                    {% endfor %}
+                    </div>
+                
+                </div>
             
+                {# 관련된 사람들 #}
                 <div class="ibox float-e-margins">
                     {# Event Title  #}
                     <div class="ibox-title">
@@ -107,6 +125,70 @@
                 }
             }
         });
+    });
+
+//********************************************
+// 뉴스에 Comment 달기
+//********************************************
+    // .comment 버턴을 누르면 하단에 커멘트가 리스트로 나옴
+    $("div.news_list").on("click", ".comment", function(){
+
+        var news = $(this).closest(".social-feed-box");
+
+        if ($(".comment_list", news).hasClass("tracking")) {
+            $(".comment_list", news).slideUp();
+            $(".comment_list", news).removeClass("tracking");
+
+        } else {
+            $(".comment_list", news).show();
+            $(".comment_list", news).addClass("tracking");
+            $(".comment_list input[name='content']", news).focus();
+
+            var news_id = $(news).attr('news-id');
+            // var news_id = 12;
+            $.ajax({
+                url: "{% url 'comments:news_comment' %}", 
+                data: {'news_id': news_id },
+                cache: false,
+                beforeSend: function(){
+                    $("div.comment_list", news).html("<img src='/static/images/loading.gif'");
+                },
+                success: function(data){
+                    $("div.comment_list", news).html(data);
+                    // $(".comment-count", news).text($(".commentCount", news).length)
+                },
+            });
+            return false;
+        }
+    });
+   
+    // .comment 입력하고 Enter 키를 누르면 Comment가 입력이 됨
+    $("div.news_list").on("keydown", ".comment_list textarea[name='content']", function(evt){
+
+        var keyCode = evt.which?evt.which:evt.keyCode;
+        var news = $(this).closest(".social-feed-box");
+
+        if (keyCode == 13) {
+            var form = $(this).closest("form");
+            var container = $(this).closest(".comment_list")
+            var input = $(this);
+
+            $.ajax({
+                url: "{% url 'comments:news_comment' %}", 
+                data: $(form).serialize(),
+                type: "POST",
+                cache: false,
+                beforeSend: function(){
+                    $(input).val("");
+                },
+                success: function(data){
+                    $("div.comment_list", news).html(data);
+                    var evid_container = $(container).closest(".social-feed-box");
+                    $(".comment-count", evid_container).text($(".commentCount", container).length);
+                },
+            });
+            return false;
+        } 
     });
 </script>
 {% endblock javascript %}

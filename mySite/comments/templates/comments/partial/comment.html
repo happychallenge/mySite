@@ -1,67 +1,96 @@
 {% load static humanize %}
 {% for comment in comment_list %}
-
-    {% if comment.parent %}  {# Comment 의 부모가 있는 경우 한 단계 접어서 보여줌. #}
-        <div class="social-comment commentCount">
-            <div class="social-comment">
-                <a href="" class="pull-left">
-                    <img alt="image" class="img-circle" src="{% if comment.created_user.profile.picture %}{{ comment.created_user.profile.picture.url }}{% else %}{% static 'images/nouser.png' %}{% endif %}">
-                </a>
-                <div class="media-body">
-                    <a href="#">
-                        {{ comment.created_user.first_name }}
-                    </a>
-                    {{ comment.content}} <br>
-                    {{comment.created_at|naturaltime}}
-                </div>
-                <div class="social-comment" style="display:none;">
-                    <form action="" method="POST">
-                        <input type="hidden" name="evidence" value="{{evidence.id}}"> 
-                        <input type="hidden" name="parent" value="{{comment.id}}"> 
-                        <div class="media-body" id="commentSubAdd" >
-                            <textarea name="content" class="form-control" placeholder="Write comment..."></textarea>
-                        </div>
-                    </form>
-                </div>
-            </div>
+    
+    <div class="social-comment commentCount">
+        <a href="" class="pull-left">
+            <img alt="image" class="img-circle" src="{% if comment.created_user.profile.picture %}{{ comment.created_user.profile.picture.url }}{% else %}{% static 'images/nouser.png' %}{% endif %}">
+        </a>
+        <div class="media-body">
+            <a href="#">
+                {{ comment.created_user.first_name }}
+            </a> 
+            {{ comment.content}} <br>
+            {{comment.created_at|naturaltime }} 
+            <button class="btn btn-default btn-xs btn_reply" data-url='{{comment.id}}'>답글 달기</button>
+            {% if comment.created_user == user %}
+                <button class="btn btn-default btn-xs btn_delete" data-url='{{comment.id}}'>답글 삭제</button>
+            {% endif %}
         </div>
-    {% else %} {# Comment 의 부모가 없는 경우 상위에 보여 줌  #}
-        <div class="social-comment commentCount">
+
+{% if comment.get_replys %}
+    {% for reply in comment.get_replys %}
+        <div class="social-comment commentCount {{reply.id}}">
             <a href="" class="pull-left">
-                <img alt="image" class="img-circle" src="{% if comment.created_user.profile.picture %}{{ comment.created_user.profile.picture.url }}{% else %}{% static 'images/nouser.png' %}{% endif %}">
+                <img alt="image" class="img-circle" src="{% if reply.created_user.profile.picture %}{{ reply.created_user.profile.picture.url }}{% else %}{% static 'images/nouser.png' %}{% endif %}">
             </a>
             <div class="media-body">
                 <a href="#">
-                    {{ comment.created_user.first_name }}
+                    {{ reply.created_user.first_name }}
                 </a> 
-                {{ comment.content}} <br>
-                {{comment.created_at|naturaltime }}
+                {{ reply.content}} <br>
+                {{reply.created_at|naturaltime }} 
+                <button class="btn btn-default btn-xs btn_reply" data-url='{{reply.id}}'>답글 달기</button>
+                {% if comment.created_user == user %}
+                    <button class="btn btn-default btn-xs btn_delete" data-url='{{reply.id}}'>답글 삭제</button>
+                {% endif %}
+                
             </div>
         </div>
-    {% endif %}
+        <!-- Reply Comment -->
+        <div class="social-comment reply{{comment.id}}" style='display:none'>
+            <a href="" class="pull-left">
+                <img alt="image" class="img-circle" src="{% if user.profile.picture %}{{ user.profile.picture.url }}{% else %}{% static 'images/nouser.png' %}{% endif %}">
+            </a>
+            <div class="media-body">
+                <form action="" method="POST">
+                    <input type="hidden" name="evidence" value="{{evidence.id}}"> 
+                    <input type="hidden" name="parent" value="{{comment.id}}"> 
+                    <div class="media-body" id="commentSubAdd" >
+                        <textarea name="content" class="form-control" placeholder="Write comment..."></textarea>
+                    </div>
+                </form>
+            </div>
+        </div>
+    {% endfor %}
+{% endif %}
+
+        <!-- Add Comment -->
+        <div class="social-comment reply{{comment.id}}" style='display:none'>
+            <a href="" class="pull-left">
+                <img alt="image" class="img-circle" src="{% if user.profile.picture %}{{ user.profile.picture.url }}{% else %}{% static 'images/nouser.png' %}{% endif %}">
+            </a>
+            <div class="media-body">
+                <form action="" method="POST">
+                    <input type="hidden" name="evidence" value="{{evidence.id}}"> 
+                    <input type="hidden" name="parent" value="{{comment.id}}"> 
+                    <div class="media-body" id="commentSubAdd" >
+                        <textarea name="content" class="form-control" placeholder="Write comment..."></textarea>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
 {% endfor %}
 
-        <div class="social-comment" id="commentAdd">
-        </div>
+
 
 {% if user.is_authenticated %}
-        <form action="{% url 'comments:comment' %}" method="POST" class="commentAdd">
-            <div class="social-comment">
-                {% csrf_token %}
-                <a href="" class="pull-left">
-                    <img alt="image" class="img-circle" src="{% if user.profile.picture %}{{ user.profile.picture.url }}{% else %}{% static 'images/nouser.png' %}{% endif %}">
-                </a>
-                <div class="media-body">
-                    <div>
-                        <textarea name="content" class="form-control" placeholder="Write comment..."></textarea>
-                    </div>
-                    <input type="hidden" name="parent" value="">
-                    <input type="hidden" name="evidence" value="{{ evidence_id }}">
+    <form action="{% url 'comments:evidence_comment' %}" method="POST" class="commentAdd">
+        <div class="social-comment">
+            {% csrf_token %}
+            <a href="" class="pull-left">
+                <img alt="image" class="img-circle" src="{% if user.profile.picture %}{{ user.profile.picture.url }}{% else %}{% static 'images/nouser.png' %}{% endif %}">
+            </a>
+            <div class="media-body">
+                <div>
+                    <textarea name="content" class="form-control" placeholder="Write comment..."></textarea>
                 </div>
+                <input type="hidden" name="parent" value="">
+                <input type="hidden" name="evidence" value="{{ evidence_id }}">
             </div>
-        </form>
+        </div>
+    </form>
 {% else %}
     <small> 커멘트를 달기 위해서는 <a href="{% url 'login' %}" class='btn btn-default btn-xs'> 로그인</a> 을 하시기 바랍니다. </small> 
 {% endif %}
-

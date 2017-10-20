@@ -2,7 +2,7 @@
 <!-- 개인 정보 -->
 <div class="ibox float-e-margins">
     <div class="ibox-title">
-        <h5> {{person.name}} 인물 상세정보</h5>
+        <h5> {{person.name}} <small>  인물 상세정보</small></h5>
         {% if not checkbox %}
             <div class="ibox-tools person">
                 <a class="collapse-link person-information">
@@ -29,7 +29,6 @@
 
             {# 해당 Person 본인 정보 #}
             <div class="media-body no-padding">
-                <h3><strong>{{ person.name }}</strong></h3>
                 {% if checkbox %}
                     <input type="checkbox" checked value="{{person.id}}" name="person" class="checkbox checkbox-primary pull-right">
                 {% endif %}

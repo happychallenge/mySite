@@ -3,9 +3,11 @@
 
 {% block header-index %}
     {% include 'title.html' %}
-    <a href="{% url 'records:check_person' %}"> 
-            <button type='button' class='btn btn-primary pull-right'>사람/시건/뉴스 등록</button>
-    </a>
+    {% if user.is_authenticated %}
+        <a href="{% url 'records:check_person' %}"> 
+                <button type='button' class='btn btn-primary pull-right'>사람/시건/뉴스 등록</button>
+        </a>
+    {% endif %}
     <ol class="breadcrumb">
         <li>
             <a href="{% url 'home' %}"> <i class="fa fa-home"></i> Home </a> 
@@ -232,7 +234,7 @@
             var evidence_id = $(evidence).attr('evidence-id');
             // var evidence_id = 12;
             $.ajax({
-                url: "{% url 'comments:comment' %}", 
+                url: "{% url 'comments:evidence_comment' %}", 
                 data: {'evidence_id': evidence_id },
                 cache: false,
                 beforeSend: function(){
@@ -240,7 +242,7 @@
                 },
                 success: function(data){
                     $("div.comment_list", evidence).html(data);
-                    // $(".comment-count", evidence).text($(".commentCount", evidence).length)
+                    $(".comment-count", evidence).text($(".commentCount", evidence).length)
                 },
             });
             return false;
@@ -259,7 +261,7 @@
             var input = $(this);
 
             $.ajax({
-                url: "{% url 'comments:comment' %}", 
+                url: "{% url 'comments:evidence_comment' %}", 
                 data: $(form).serialize(),
                 type: "POST",
                 cache: false,
@@ -276,6 +278,53 @@
         } 
     });
 
+    $("div.evidence_list").on("click", ".btn_reply", function(){
+
+        var comment = $(this).attr("data-url");
+
+        
+        $(".comment_list", evidence).show();
+        $(".comment_list", evidence).addClass("tracking");
+        $(".comment_list input[name='content']", evidence).focus();
+
+        var evidence_id = $(evidence).attr('evidence-id');
+        // var evidence_id = 12;
+        $.ajax({
+            url: "{% url 'comments:evidence_comment' %}", 
+            data: {'evidence_id': evidence_id },
+            cache: false,
+            beforeSend: function(){
+                $("div.comment_list", evidence).html("<img src='/static/images/loading.gif'");
+            },
+            success: function(data){
+                $("div.comment_list", evidence).html(data);
+                // $(".comment-count", evidence).text($(".commentCount", evidence).length)
+            },
+        });
+        return false;
+    });
+
+    // 삭제 답
+    $("div.comment_list").on("click", ".btn_delete", function(){
+
+        var comment_id = $(this).attr('data-url');
+        var evidence = $(this).closest(".social-feed-box");
+        var evidence_id = $(evidence).attr('evidence-id');
+        // var evidence_id = 12;
+        $.ajax({
+            url: "{% url 'comments:evi_comment_delete' %}", 
+            data: {'comment': comment_id, 'evidence': evidence_id },
+            cache: false,
+            beforeSend: function(){
+                $("div.comment_list", evidence).html("<img src='/static/images/loading.gif'");
+            },
+            success: function(data){
+                $("div.comment_list", evidence).html(data);
+                $(".comment-count", evidence).text($(".commentCount", evidence).length)
+            },
+        });
+        return false;
+    });
 //********************************************
 // Nickname 관
 //********************************************

@@ -1,8 +1,7 @@
 # records/urls.py
 """records URL Configuration"""
 from django.conf.urls import url
-from . import views
-from . import views_reg
+from . import views, views_reg, views_news
 
 urlpatterns = [
     url(r'^$', views.person_list, name='person_list'),
@@ -26,6 +25,9 @@ urlpatterns = [
 # 9월 21일 추가함
     url(r'^evidence_add_person/(?P<news_id>\d+)/(?P<event_id>\d+)/$', views_reg.evidence_add_person, name='evidence_add_person'),
 
+# 10/28 
+    url(r'^add_event_news/(?P<event_id>\d+)/$', views_news.add_event_news, name='add_event_news'),
+
     url(r'^ajax_person_like/(?P<person_id>\d+)/$', views.ajax_person_like, name='ajax_person_like'),
     url(r'^ajax_person_following/(?P<person_id>\d+)/$', views.ajax_person_following, name='ajax_person_following'),
 
@@ -39,4 +41,5 @@ urlpatterns = [
     url(r'^search_persons/$', views.search_persons, name='search_persons'),
 
     url(r'^aboutUS/$', views.aboutUS, name='aboutUS'),
+
 ]
