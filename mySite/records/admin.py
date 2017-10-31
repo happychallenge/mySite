@@ -30,7 +30,7 @@ class TagAdmin(admin.ModelAdmin):
 class EventAdmin(admin.ModelAdmin):
     class Meta:
         model = Event
-    list_display = [ 'id', 'name', 'category', 'get_tags']
+    list_display = [ 'id', 'name', 'category', 'happened_at']
 
     def get_tags(self, obj):
         return ", ".join([tag.tag for tag in obj.tags.all()])

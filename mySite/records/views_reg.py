@@ -77,7 +77,7 @@ def edit_person(request, person_id):
             person = form.save()
             name = form.cleaned_data.get('name')
 
-            person.save_m2m()
+            # person.save_m2m()
             # # Jobs
             # jobs = form.cleaned_data.get('jobs')
             # if jobs:

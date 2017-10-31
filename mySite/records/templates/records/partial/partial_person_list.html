@@ -1,0 +1,35 @@
+{% load static %}
+
+{% for person in person_list %}
+    <div class="col-md-6 person">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <a href="{% url 'records:person_detail' person.id %}">
+                    <strong>{{ person.name }}</strong>
+                </a>
+            </div>
+
+            <div class="ibox-content">
+                <div class="col-sm-6">
+                    <div class="text-center">
+                        <a href="{% url 'records:person_detail' person.id %}">
+                        <img alt="image" class="img-circle m-t-xs img-responsive" width='200px' src="{% if person.picture %} {{ person.picture.url }} {% else %} {% static 'images/nouser.png' %}{% endif %}"></a>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    
+                    <p><i class="fa fa-map-marker"></i> {{ person.nick_name }} </p>
+                    <p> Birth Year : {{ person.birth_year }}</p>
+                    <p> Jobs :
+                    {{person.jobs.all|join:", "}}
+                    </p>
+                    <p> Tags :
+                    {{person.tags.all|join:", "}}
+                    </p>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div> {# class="col-md-6" #}
+
+{% endfor %}

@@ -43,7 +43,7 @@
                     {% bootstrap_form form %}
                     
                     <div class="form-group">
-                        <div class="col-sm-6 col-sm-offset-2">
+                        <div class="col-sm-6">
                             <button class="btn btn-white" type="cancel">Cancel</button>
                             <button class="btn btn-primary" type="submit">Save changes</button>
                         </div>
@@ -56,3 +56,6 @@
 </div>
 {% endblock content %}
 
+{% block right_side %}
+    {% include 'right_side.html' with type='P' %}
+{% endblock right_side %}

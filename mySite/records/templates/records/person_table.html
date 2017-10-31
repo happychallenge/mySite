@@ -61,11 +61,11 @@
                             <td>{{ person.nick_name }}</td>
                             <td>{{ person.birth_year|upper }}</td>
                             <td>{{ person.sex }}</td>
-                            <td></td>
-                            <td></td>
-                            <td> {{ person.status }}</td>
-                            <td> {{ person.url }}</td>
-                            <td> {% if person.picture %} {{ person.picture.url }} {% endif %}</td>
+                            <td>{{person.jobs.all|join:", "}}</td>
+                            <td>{{person.tags.all|join:", "}}</td>
+                            <td>{{ person.status }}</td>
+                            <td>{{ person.url }}</td>
+                            <td>{% if person.picture %} {{ person.picture.url }} {% endif %}</td>
                         </tr>
                     {% endfor %}
 
@@ -79,9 +79,6 @@
 
 {% endblock content %}
 
-{% block right_side %}
-    {% include 'right_side.html' with type='P' %}
-{% endblock right_side %}
 
 
 {% block javascript %}

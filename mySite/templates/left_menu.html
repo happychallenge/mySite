@@ -36,22 +36,22 @@
                 </a>
             </li>
         {% endif %}
-            <li>
-                <a href="/xmlyoon/" target="admin"><i class="fa fa-diamond"></i> <span class="nav-label">ADMIN</span></a> 
-            </li>
             
             <li>
-                <a href="{% url 'records:person_list' %}"><i class="fa fa-diamond"></i> <span class="nav-label">좋은 분 목록</span></a> 
+                <a href="{% url 'records:person_list' %}"><i class="fa fa-user"></i> <span class="nav-label">기억할 사람들</span></a> 
             </li>
 
             <li>
-                <a href="{% url 'records:check_person' %}"><i class="fa fa-user"></i> <span class="nav-label">사람/사건/증거</span></a> 
+                <a href="{% url 'records:check_person' %}"><i class="fa fa-th-large"></i> <span class="nav-label">사람 등록</span></a> 
             </li>
             <li>
-                <a href="{% url 'records:event_list' %}"><i class="fa fa-bar-chart-o"></i> <span class="nav-label">사건 목록</span></a> 
+                <a href="{% url 'records:event_list' %}"><i class="fa fa-flask"></i> <span class="nav-label">사건 목록</span></a> 
             </li>
             <li>
-                <a href="{% url 'mistake:add_report' %}"><i class="fa fa-bar-chart-o"></i> <span class="nav-label">오류 보고</span></a> 
+                <a href="{% url 'calendars:event_list' %}"><i class="fa fa-calendar"></i> <span class="nav-label">달력</span></a> 
+            </li>
+            <li>
+                <a href="{% url 'mistake:add_report' %}"><i class="fa fa-desktop"></i> <span class="nav-label">오류 보고</span></a> 
             </li>
             <li>
                 <a href="#"><i class="fa fa-bar-chart-o"></i> <span class="nav-label">Graphs</span><span class="fa arrow"></span></a>

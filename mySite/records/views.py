@@ -34,7 +34,7 @@ def check_session(request):
     return True
 
 
-def _person_list(request, person_list):
+def _person_list(request, person_list, template='records/person_list.html'):
     
     paginator = Paginator(person_list, 6)
     page = request.GET.get('page')
@@ -48,13 +48,19 @@ def _person_list(request, person_list):
 
     check_session(request)
     context = {'person_list': person_list}
-    return render(request, 'records/person_list.html', context)
+    return render(request, template, context)
 
 
 def person_list(request):
     person_list = Person.objects.annotate(
             num_following=Count('following')).filter(status='P').order_by('-num_following')
     return _person_list(request, person_list)
+
+def ajax_person_list(request):
+    person_list = Person.objects.annotate(
+            num_following=Count('following')).filter(status='P').order_by('-num_following')
+    return _person_list(request, person_list, 
+            template='records/partial/partial_person_list.html')
 
 def person_table(request):
     person_list = Person.objects.prefetch_related('tags', 'jobs').filter(status='P')
@@ -103,6 +109,8 @@ def _event_list(request, event_list):
     except EmptyPage:
         event_list = paginator.page(paginator.num_pages)
     check_session(request)
+    context = { 'event_list': event_list }
+
     return render(request, 'records/event_list.html', context)
 
 def event_list(request):

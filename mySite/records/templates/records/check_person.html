@@ -11,7 +11,7 @@
             사람 / 사건 / 증거의 기록 
         </li>
         <li class="active">
-            <strong>첫번째 단계 : 사등록 </strong>
+            <strong>첫번째 단계 : 사람 등록 </strong>
         </li>
     </ol>
 {% endblock header-index %}
@@ -25,7 +25,7 @@
             <div class='col-md-12'>
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
-                        <h5> 등록하고자 하는 사건이되어 있는지 등록 여부 확인</h5>
+                        <h5> 등록하고자 하는 사람이 이미 등록이 되어 있는지 확인</h5>
                     </div>
                     <div class="ibox-content">
                         {# FORM START #}
@@ -65,6 +65,11 @@
     </div>
 
 {% endblock content %}
+
+
+{% block right_side %}
+    {% include 'right_side.html' with type='P' %}
+{% endblock right_side %}
 
 
 {% block javascript %}

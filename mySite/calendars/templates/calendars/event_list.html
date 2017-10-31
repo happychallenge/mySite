@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block header-index %}
+    {% include 'title.html' %}
+    {% if user.is_authenticated %}
+        <a href="{% url 'records:check_person' %}"> 
+            <button type='button' class='btn btn-primary pull-right'>사람/시건/뉴스 등록</button>
+        </a>
+    {% endif %}
+    <ol class="breadcrumb">
+        <li>
+            <a href="{% url 'home' %}"> <i class="fa fa-home"></i> Home </a> 
+        </li>
+        <li>
+            좋은 분 
+        </li>
+        <li class="active">
+            <strong>사람 </strong>
+        </li>    
+    </ol>
+{% endblock header-index %}
+
+
+{% block content %}
+    
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>EVENT CALENDAR </h5>
+                <div class="ibox-tools">
+
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-wrench"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+                        <li><a href="#">Config option 1</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="ibox-content"> 
+                <!-- CALENDAR -->
+                <div id="calendar"></div>
+            </div> <!-- class="ibox-content" -->
+        </div> <!-- class="ibox float-e-margins" -->
+    </div> <!-- class="col-lg-12" -->
+
+{% endblock content %}
+
+{% block right_side %}
+    {% include 'right_side.html' with type='P' %}
+{% endblock right_side %}
+
+
+{% block javascript %}
+<!-- Custom and plugin javascript -->
+<link href="{% static 'css/plugins/fullcalendar/fullcalendar.css' %}" rel="stylesheet">
+<link href="{% static 'css/plugins/datapicker/datepicker3.css' %}" rel="stylesheet">
+<script src="{% static 'js/plugins/fullcalendar/moment.min.js' %}"></script>
+<script src="{% static 'js/plugins/fullcalendar/fullcalendar.min.js' %}"></script>
+
+<script>
+    $(document).ready(function(){
+        var date = new Date();
+        var d = date.getDate();
+        var m = date.getMonth();
+        var y = date.getFullYear();
+
+        $('#calendar').fullCalendar({
+            header: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'month,basicDay'
+            },
+            editable: false,
+            droppable: true, 
+            events: [
+            {% for key,obj in event_list.items %}
+                {
+                    id: {{obj.id}},
+                    title: '{{obj.name}}',
+                    start: '{{obj.hdate|date:"Y-m-d"}}',
+                    allDay: false,
+                    url: "{% url 'records:event_detail' obj.id %}", 
+                },
+            {% endfor %}
+            ]
+        });
+    });
+</script>
+<style>
+    element.style {
+        overflow-x: hidden;
+        overflow-y: hidden;
+    }
+</style>
+{% endblock javascript %}

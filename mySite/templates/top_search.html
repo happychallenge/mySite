@@ -2,7 +2,8 @@
     <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
     <form role="search" class="navbar-form-custom">
         <div class="form-group top_search">
-            <input type="text" placeholder="검색하고자 하는 단어를 입력하세요...." class="form-control" name="top_search" id="top_search" style="width:300px">
+            {% csrf_token %}
+            <input type="text" placeholder="검색하고자 하는 단어를 입력하세요...." class="form-control" name="top_search" id="top_search" style="width:200px">
             <div class="top_results" id="top_results">
               
             </div>

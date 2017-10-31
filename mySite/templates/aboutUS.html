@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block header-index %}
-    <h2> 사람과 해당 사람의 사건 그리고 증거를 기억합시.</h2>
+    {% include 'title.html' %}
     <a href="{% url 'records:check_person' %}"> 
             <button type='button' class='btn btn-primary pull-right'>사람/시건/뉴스 등록</button>
     </a>
@@ -11,11 +11,9 @@
             <a href="{% url 'home' %}"> <i class="fa fa-home"></i> Home </a> 
         </li>
         <li>
-            사람 / 사건 / 증거의 기록 
+            about US 
         </li>
-        <li class="active">
-            <strong>첫번째 단계 : 사등록 </strong>
-        </li>
+        
     </ol>
 {% endblock header-index %}
 

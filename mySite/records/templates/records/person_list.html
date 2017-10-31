@@ -24,57 +24,26 @@
 
 {% block content %}
     
-    <div class="infinite-container">
+    <div id="person-container">
 
-    {% for person in person_list %}
-        <div class="col-md-6 infinite-item">
-            <div class="ibox float-e-margins">
-                <div class="ibox-title">
-                    <a href="{% url 'records:person_detail' person.id %}">
-                        <strong>{{ person.name }}</strong>
-                    </a>
-                </div>
-
-                <div class="ibox-content">
-                    <div class="col-sm-6">
-                        <div class="text-center">
-                            <a href="{% url 'records:person_detail' person.id %}">
-                            <img alt="image" class="img-circle m-t-xs img-responsive" width='200px' src="{% if person.picture %} {{ person.picture.url }} {% else %} {% static 'images/nouser.png' %}{% endif %}"></a>
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        
-                        <p><i class="fa fa-map-marker"></i> {{ person.nick_name }} </p>
-                        <p> Birth Year : {{ person.birth_year }}</p>
-                        <p> Jobs :
-                        {{person.jobs.all|join:", "}}
-                        </p>
-                        <p> Tags :
-                        {{person.tags.all|join:", "}}
-                        </p>
-                    </div>
-                    <div class="clearfix"></div>
-                </div>
-            </div>
-        </div> {# class="col-md-6" #}
-
-    {% endfor %}
+    {% include 'records/partial/partial_person_list.html' %}
 
     </div> {# class="infinite-container" #}
 
+
     <div class="col-md-12" id="loading" style="display:none;">
         <div class="row animated fadeInRight" >
-            LODING .......
+            <img src="{% static "images/loading.gif" %}" alt=""> 
+            <input id="page" type="hidden" value="{{ person_list.next_page_number }}">
         </div>
     </div>
 
     {% if person_list.has_next %}
-        <div class="col-md-12">
+        <div class="col-md-12" id='pagination'>
             <div class="row animated fadeInRight">
-                <a class="btn btn-primary btn-rounded btn-block infinite-more-link" href="?page={{ person_list.next_page_number }}"> 
-                    <i class="fa fa-info-circle"></i> 
-                    MORE
-                </a>
+                <button class="btn btn-primary btn-rounded btn-block nextPage"> 
+                    <i class="fa fa-info-circle"></i> MORE
+                </button>
             </div>
         </div>
     {% endif %}
@@ -87,17 +56,48 @@
 
 
 {% block javascript %}
-    <script src="{% static 'js/scroll/jquery.waypoints.min.js' %}"></script>
-    <script src="{% static 'js/scroll/infinite.min.js' %}"></script>
-    <script>
-    var infinite = new Waypoint.Infinite({
-        element: $(".infinite-container")[0],
-        onBeforePageLoad: function() {
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        // Each time the user scrolls
+        var scrollHeight = $(window).scrollTop() + $(window).height() + 100;
+        var documentHeight = $(document).height();
+        
+        if (scrollHeight >= documentHeight){
+            callMorePerson();
+        }
+
+        $(".nextPage").click(function(){
+            callMorePerson();
+        })
+
+        function callMorePerson(){
             $('#loading').show();
-        },
-        onAfterPageLoad: function($items) {
-            $('#loading').hide();
-        },
+            var page = $("#page").val();
+            $.ajax( {
+                url: "{% url 'records:ajax_person_list' %}",
+                data: {
+                    'page': page,
+                },
+                success: function(data){
+                    $("#person-container").append(data);
+                    $('#loading').hide();
+                },
+                dataType: 'html'
+            });
+            $("#page").val(parseInt(page)+1);
+        }
     });
-    </script>
+
+
+// var infinite = new Waypoint.Infinite({
+//     element: $(".infinite-container")[0],
+//     onBeforePageLoad: function() {
+//         $('#loading').show();
+//     },
+//     onAfterPageLoad: function($items) {
+//         $('#loading').hide();
+//     },
+// });
+</script>
 {% endblock javascript %}

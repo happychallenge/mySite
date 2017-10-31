@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'mySite.mistake',
     'mySite.activity',
     'mySite.nickname',
+    'mySite.calendars',
 ]
 
 MIDDLEWARE = [

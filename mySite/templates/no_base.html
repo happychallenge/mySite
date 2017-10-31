@@ -1,0 +1,35 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> {% block title %} 우리는 과거를 통해 미래를 예측한다. {% endblock title %} </title>
+    <link href="{% static 'css/vendor/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/animate.css' %}" rel="stylesheet">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+</head>  
+
+<body class="gray-bg">
+    <div class="middle-box text-center animated fadeInDown">
+
+    {% block content %}
+        
+    {% endblock content %}
+        
+    </div>
+    <!-- Mainly scripts --> 
+    <script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+
+    {% block javascript %}
+        
+    {% endblock javascript %}
+    <!-- Custom and plugin javascript -->
+
+</body>
+
+</html>

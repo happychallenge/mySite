@@ -6,7 +6,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> {% block title %} 우리는 과거의 경험을 통해 발전한다. {% endblock title %} </title>
+    <title> {% block title %} 역사를 잊은 민족에게 미래는 없다. {% endblock title %} </title>
     <link href="{% static 'css/vendor/bootstrap.css' %}" rel="stylesheet">
     <link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/animate.css' %}" rel="stylesheet">
@@ -30,34 +30,7 @@
                     {% include 'top_search.html' %}
 
                 <!--  Top Search -->
-                    <ul class="nav navbar-top-links navbar-right">
-                        <li>
-                            <span class="m-r-sm text-muted welcome-message">  "I Remember Your Past." 에 오신 것을 환영합니다. </span>
-                        </li>
-                        
-                    {% if user.is_authenticated %}
-                        <li class="dropdown" id="noti">
-                            <a class="dropdown-toggle count-info" data-toggle="popover" id="notifications">
-                                <i class="fa fa-bell"></i>
-                                    <span class="label label-warning noti_count"> <span class="count">0</span></span>
-                            </a>
-                            <ul class="dropdown-menu dropdown-messages noti-content">
-                            </ul>
-                        </li>
-                        <li>
-                            <a href="{% url 'logout' %}">
-                                <i class="fa fa-sign-out"></i> Log out
-                            </a>
-                        </li>
-                    {% else %}
-                        <li>
-                            <a href="{% url 'login' %}"> 
-                                <i class="fa fa-sign-in"></i>로그인 
-                            </a>
-
-                        </li>
-                    {% endif %}
-                    </ul>
+                    {% include 'top_menu.html' %}
                 </nav>
             </div>
 
@@ -94,7 +67,7 @@
                     <!--  RIGHT SIDE -->
                     <div class="col-md-2">
                     {% block right_side %}
-                        {% include 'right_side.html' %}
+
                     {% endblock right_side %}
                     </div>
                 </div>
@@ -115,7 +88,6 @@
     <script src="{% static 'js/plugins/metisMenu/jquery.metisMenu.js' %}"></script>
     <script src="{% static 'js/plugins/slimscroll/jquery.slimscroll.min.js' %}"></script>
     <script src="{% static 'js/inspinia.js' %}"></script>
-    <script src="{% static 'js/plugins/pace/pace.min.js' %}"></script>
     <script src="{% static 'js/topmenu.js' %}"></script>
 
     <!-- Custom and plugin javascript -->

@@ -32,6 +32,7 @@ urlpatterns = [
     url(r'^comments/', include('mySite.comments.urls', namespace='comments')),
     url(r'^activity/', include('mySite.activity.urls', namespace='activity')),
     url(r'^nickname/', include('mySite.nickname.urls', namespace='nickname')),
+    url(r'^calendars/', include('mySite.calendars.urls', namespace='calendars')),
 
     url(r'^accounts/', include('allauth.urls')),
     # url(r'^evidence/', include('evidence.urls', namespace='evidence')),
