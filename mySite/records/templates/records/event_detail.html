@@ -107,7 +107,7 @@
             dataType : 'json',
             success: function(data){
                 if(data.status) {
-                    $('.btnEventLike').html(data.like == 'like' ? 'Like<span class="count">(<span class="likes">  </span>)</span>':'<i class="fa fa-thumbs-up"></i>UnLike<span class="count">(<span class="likes"></span>)</span>');
+                    $('.btnEventLike').html(data.like == 'like' ? '<i class="fa fa-heart-o"></i><span class="count">(<span class="likes">  </span>)</span>':'<i class="fa fa-heart"></i><span class="count">(<span class="likes"></span>)</span>');
                     $('span.count .likes').text(data.total_likes);
                 }
             }
@@ -151,8 +151,8 @@
             var news_id = $(news).attr('news-id');
             // var news_id = 12;
             $.ajax({
-                url: "{% url 'comments:news_comment' %}", 
-                data: {'news_id': news_id },
+                url: "{% url 'comments:en_comment' %}", 
+                data: {'news': news_id, 'event': {{event.id}} },
                 cache: false,
                 beforeSend: function(){
                     $("div.comment_list", news).html("<img src='/static/images/loading.gif'");
@@ -178,7 +178,7 @@
             var input = $(this);
 
             $.ajax({
-                url: "{% url 'comments:news_comment' %}", 
+                url: "{% url 'comments:en_comment' %}", 
                 data: $(form).serialize(),
                 type: "POST",
                 cache: false,
@@ -193,6 +193,28 @@
             });
             return false;
         } 
+    });
+
+    // 삭제 답글
+    $("div.news_list").on("click", ".btn_delete", function(){
+
+        var comment_id = $(this).attr('data-url');
+        var news = $(this).closest(".social-feed-box");
+        var news_id = $(news).attr('news-id');
+        // var news_id = 12;
+        $.ajax({
+            url: "{% url 'comments:en_comment_delete' %}", 
+            data: {'comment': comment_id, 'event': {{event.id}}, 'news': news_id },
+            cache: false,
+            beforeSend: function(){
+                $("div.comment_list", news).html("<img src='/static/images/loading.gif'");
+            },
+            success: function(data){
+                $("div.comment_list", news).html(data);
+                $(".comment-count", news).text($(".commentCount", news).length)
+            },
+        });
+        return false;
     });
 </script>
 {% endblock javascript %}

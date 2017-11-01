@@ -2,7 +2,7 @@
 <!-- 개인 정보 -->
 <div class="ibox float-e-margins">
     <div class="ibox-title">
-        <h5> {{person.name}} <small>  인물 상세정보</small></h5>
+        <h5> {{person.name}} <small> 인물 상세정보</small></h5>
         {% if not checkbox %}
             <div class="ibox-tools person">
                 <a class="collapse-link person-information">
@@ -50,8 +50,8 @@
         {% with total_likes=person.user_like.count total_following=person.following.count users_like=person.user_like.all users_following=person.following.all %}
             <div class="actions"> 
                 <button class="btn btn-outline btn-primary btn-xs btnPersonLike">
-                     {% if request.user not in users_like %}Like{% else %}<i class="fa fa-thumbs-up"></i>UnLike{% endif %}
-                    <span class="count">(<span class="likes"> {{total_likes}} </span>)</span>
+                     {% if request.user not in users_like %}<i class="fa fa-heart-o"></i>{% else %}<i class="fa fa-heart"></i>{% endif %}
+                    <span class="count">(<span class="likes">{{total_likes}}</span>)</span>
                 </button>
                 <button class="btn btn-primary btn-xs btnPersonFollowing">
                     {% if request.user not in users_following %}Follow{% else %}<i class="fa fa-thumbs-up"></i>following{% endif %}
@@ -59,7 +59,7 @@
                 </button>
                 <button class="btn btn-outline btn-primary btn-xs"><i class="fa fa-share"></i> Share</button>
                 <a href="{% url 'records:person_relationship' person.id %}" class="btn btn-primary btn-xs"> 
-                    <i class="fa fa-share"></i>가족
+                    <i class="fa fa-users"></i>가족
                 </a>
             </div>
         {% endwith %}

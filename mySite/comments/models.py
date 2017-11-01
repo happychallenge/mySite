@@ -37,5 +37,5 @@ class ENComment(models.Model):
         ordering = ( 'id', )
 
     def __str__(self):
-        return "{} {} {}".format(self.event, self.news, self.created_user)
+        return "{} {}".format(self.event, self.news)
 

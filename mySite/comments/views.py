@@ -1,8 +1,4 @@
 from django.shortcuts import render
-from django.template.loader import render_to_string
-from django.http.response import JsonResponse
-from django.contrib.auth.decorators import login_required
-from django.views.decorators.http import require_http_methods
 
 # from decorators import ajax_required
 from .models import Comment, ENComment
@@ -42,9 +38,10 @@ def evi_comment_delete(request):
 
     
 
-def news_comment(request):
+def en_comment(request):
     if request.method == 'POST':
-        form = CommentForm(request.POST)
+        form = ENCommentForm(request.POST)
+        eventid = request.POST.get('event')
         newsid = request.POST.get('news')
 
         if form.is_valid():
@@ -53,16 +50,29 @@ def news_comment(request):
             comment.created_user = user
             comment.save()
 
-        comment_list = Comment.objects.filter(evidence__id = eid)
-        return render(request, 'comments/partial/comment.html',
-            { 'comment_list': comment_list, 'evidence_id': eid })
+        comment_list = ENComment.objects.filter(
+                event__id = eventid, news__id = newsid, parent__isnull=True)
+        return render(request, 'comments/partial/en_comment.html',
+            { 'comment_list': comment_list, 'evidence_id': eventid })
 
     else:
-        newsid = request.GET.get('news_id')
-        eventid = request.GET.get('event_id')
-        comment_list = Comment.objects.filter(event__id = eventid, news__id=newsid)
-        return render(request, 'comments/partial/comment.html',
+        newsid = request.GET.get('news')
+        eventid = request.GET.get('event')
+        comment_list = ENComment.objects.filter(
+                event__id = eventid, news__id = newsid, parent__isnull=True)
+        return render(request, 'comments/partial/en_comment.html',
             { 'comment_list': comment_list, 'event_id': eventid, 'news_id': newsid })
 
 
+def en_comment_delete(request):
+    comment_id = request.GET.get('comment')
+    event = request.GET.get('event')
+    newsid = request.GET.get('news')
+
+    ENComment.objects.get(id=comment_id).delete()
+
+    comment_list = ENComment.objects.filter(
+        event__id = event, news__id = newsid, parent__isnull=True)
+    return render(request, 'comments/partial/en_comment.html',
+        { 'comment_list': comment_list, 'event_id': event, 'news_id': newsid })
 

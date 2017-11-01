@@ -28,8 +28,8 @@
     {% with total_likes=event.user_like.count total_following=event.following.count users_like=event.user_like.all user_following=event.following.all %}
         <div class="actions"> 
             <button class="btn btn-outline btn-primary btn-xs btnEventLike">
-                 {% if request.user not in users_like %}Like{% else %}<i class="fa fa-thumbs-up"></i>UnLike{% endif %}
-                <span class="count">(<span class="likes"> {{total_likes}} </span>)</span>
+                 {% if request.user not in users_like %}<i class="fa fa-heart-o"></i>{% else %}<i class="fa fa-heart"></i>{% endif %}
+                <span class="count">(<span class="likes">{{total_likes}}</span>)</span>
             </button>
             <button class="btn btn-primary btn-xs btnEventFollowing">
                 {% if request.user not in user_following %}Follow{% else %}<i class="fa fa-thumbs-up"></i>following{% endif %}
