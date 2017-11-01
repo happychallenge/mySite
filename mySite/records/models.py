@@ -12,7 +12,6 @@ from django.shortcuts import get_object_or_404
 from mySite.master.models import Job, Region, EventCategory, Media
 from mySite.nickname.models import Nickname
 
-
 # Create your models here.
 
 
@@ -356,8 +355,8 @@ class News(models.Model):
     def get_evidences(self):
         return Evidence.objects.filter(news=self)
 
-    # def get_comments(self):
-    #     return ENComment.objects.filter(news=self).count()
+    def get_comments(self):
+        return self.comments.count()
 
 class Evidence(models.Model):
     """docstring for Evidence"""
