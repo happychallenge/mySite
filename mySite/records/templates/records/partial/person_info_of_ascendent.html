@@ -17,10 +17,10 @@
     {# 조상 반복 #}
     <div class="ibox-content">
         {# 본인 #}
-        {% include 'records/partial/relationship_of_person.html' with obj=person   %}
+        {% include 'records/partial/relationship_of_person.html' with obj=person %}
         {# 아내 또는 남 #}
         {% for person in person.get_spouse %}
-            {% include 'records/partial/relationship_of_person.html' with obj=person  %}
+            {% include 'records/partial/relationship_of_person.html' with obj=person %}
         {% endfor %}
 
         {% for sibling in person.get_sibling %}

@@ -16,8 +16,10 @@
 
     {# 조상 반복 #}
     <div class="ibox-content">
+        <div class="row">
         {% for person in persons %}
             {% include 'records/partial/relationship_of_person.html' with obj=person  %}
         {% endfor %}
+        </div>
     </div>
 </div>

@@ -39,6 +39,7 @@ class EventAdmin(admin.ModelAdmin):
 class PersonEventAdmin(admin.ModelAdmin):
     class Meta:
         model = PersonEvent
+    list_display = ['id', 'person', 'event']
 
 @admin.register(News)
 class NewsAdmin(admin.ModelAdmin):

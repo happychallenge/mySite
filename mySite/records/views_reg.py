@@ -149,7 +149,7 @@ def add_event(request, person_id):
 
             person = get_object_or_404(Person, id=person_id)
 
-            personevent = PersonEvent.objects.get_or_create(
+            personevent, created = PersonEvent.objects.get_or_create(
                     person=person, event=event, created_user=request.user)
 
         return redirect('records:check_evidence', personevent.id)

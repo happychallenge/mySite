@@ -1,0 +1,44 @@
+{% load static %}
+<div class="ibox float-e-margins">
+    <div class="ibox-title">
+        <h5> {{ relationship }} </h5>
+        {% if checkbox %}
+            <div class="ibox-tools">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                    <i class="fa fa-wrench"></i>
+                </a>
+                <ul class="dropdown-menu dropdown-user">
+                    <li><a class='following' href="">선택</a></li> 
+                </ul> 
+            </div>
+        {% endif %}
+    </div>
+
+    {# 조상 반복 #}
+    <div class="ibox-content">
+        {# 본인 #}
+        {% include 'records/partial/relationship_of_person.html' with obj=person relation="본인"  %}
+        {# 아내 또는 남 #}
+        {% for person in person.get_spouse %}
+            {% include 'records/partial/relationship_of_person.html' with obj=person relation="아내" %}
+        {% endfor %}
+
+        {% for sibling in person.get_sibling %}
+            {% if sibling != person %}
+                {% include 'records/partial/relationship_of_person.html' with obj=sibling relation="남매" %}
+            {% endif %}
+        {% endfor %}
+
+    {% if user.is_staff and register %}
+        <div class="col-sm-3">
+            <div class="no-padding">
+                {% if user.is_authenticated %}
+                    <button class="btn btn-primary createRelation">가족 관계 등록</button> <br>
+                    사진 밑에 있는 "관계"를 누르시면 그 사람 중심으로 가족 관계를 볼 수 있습니다.
+                {% endif %}
+            </div>
+        </div>        
+    {% endif %}
+
+    </div>
+</div>

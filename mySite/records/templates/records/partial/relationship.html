@@ -10,14 +10,14 @@
         </a>
     </div>    
     <div class="media-body ">
-        <h3>
+        <h4>
             <a href="{% url 'records:person_detail' person.id %}">
                 <strong>{{ person.name }}</strong> 
             </a>
             <a href="{% url 'records:person_relationship' person.id %}">
                 <small>관계 {{ relation }} </small>
             </a>
-        </h3>
+        </h4>
 
         <p>
             <i class="fa fa-flag"></i> {{person.nick_name}}

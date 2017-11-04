@@ -30,34 +30,34 @@
             {# 000. 고조부 #}
             <div class="col-md-12">
                 {% if person.get_father.get_father.get_father.get_father %}
-                    {% include 'records/partial/person_info_of_himandspouse.html' with person=person.get_father.get_father.get_father.get_father relationship='고조부와 고조부 형제' relation="고조부" %}
+                    {% include 'records/partial/person_info_of_ascendent.html' with person=person.get_father.get_father.get_father.get_father relationship='고조부와 고조부 형제' relation="고조부" %}
                 {% endif %}
             </div>
 
             {# 001. 증조부 #}
             <div class="col-md-12">
                 {% if person.get_father.get_father.get_father %}
-                    {% include 'records/partial/person_info_of_himandspouse.html' with person=person.get_father.get_father.get_father relationship='증조부와 증조부 형제간' relation="증조부" %}
+                    {% include 'records/partial/person_info_of_ascendent.html' with person=person.get_father.get_father.get_father relationship='증조부와 증조부 형제간' relation="증조부" %}
                 {% endif %}  
             </div>
 
             {# 002. 조부 #}
             <div class="col-md-12">
                 {% if person.get_father.get_father %}
-                    {% include 'records/partial/person_info_of_himandspouse.html' with person=person.get_father.get_father relationship='조부와 조부 형제간' relation="조부" %}
+                    {% include 'records/partial/person_info_of_ascendent.html' with person=person.get_father.get_father relationship='조부와 조부 형제간' relation="조부" %}
                 {% endif %}  
             </div>
 
             {# 003. 부모 #}
             <div class="col-md-12">
                 {% if person.get_father %}
-                    {% include 'records/partial/person_info_of_himandspouse.html' with person=person.get_father relationship='부모와 아버지 형제간' relation="부모" %}
+                    {% include 'records/partial/person_info_of_ascendent.html' with person=person.get_father relationship='부모와 아버지 형제간' relation="부모" %}
                 {% endif %}  
             </div>
     
             {# 004. 본인과 형제간 #}
             <div class="col-md-12">
-                {% include 'records/partial/person_info_of_himandspouse.html' with person=person relationship='본인 & 아내 또는 남편 그리고 형제/자매간' register=True %}
+                {% include 'records/partial/person_info_of_selfandspouse.html' with person=person relationship='본인 & 아내 또는 남편 그리고 형제/자매간' register=True %}
             </div>
 
             <div class="col-md-12">

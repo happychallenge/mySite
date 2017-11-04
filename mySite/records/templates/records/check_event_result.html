@@ -66,55 +66,36 @@
                     <h3>관련 이벤트 리스트</h3>
                     {% for event in event_list %}
                         {% include 'records/partial/event_info.html' with checkbox=True %}
-                            <div class="ibox float-e-margins">
-                                {% for personevent in event.personevent_set.all %}
-                                    {% include 'records/partial/event_persons.html' %}
-                                {% endfor %}
-                            </div>
-                    {% empty %}
-                        {# 결과가 없을 때 #}
-                        <div class="ibox ibox-content">
-                           <div class="media-body "> 
-                                <h3> '{{tag}}' 가 포함된 사건이 없습니다. </h3>
-                            </div>
+                        <div class="ibox float-e-margins">
+                            {% for personevent in event.personevent_set.all %}
+                                {% include 'records/partial/event_persons.html' with person=personevent.person %}
+                            {% endfor %}
                         </div>
-    
-                        {# 새로운 사건 등록 BUTTON #}
-                        <div class="feed-element">
-                           <div class="media-body "> 
-                                <a class="btn btn-info btn-rounded btn-block" href="{% url 'records:add_event' person.id %}">
-                                    <i class="fa fa-plus"></i> 
-                                      새로운 사건 등록 
-                                </a>
-                            </div>
-                        </div>
+                    
                     {% endfor %}
-                </div>
+                
             
-            {# 사건이 있는 경우 해당 사건과 매핑을 할 것인지? #}
-            {% if event_list %}
-                <div class="wrapper wrapper-content">
+                {# 사건이 있는 경우 해당 사건과 매핑을 할 것인지? #}
+                {% if event_list %}
+                    <div class="wrapper wrapper-content">
+                        <div class="row animated fadeInRight">
+                            <button type="submit" class="btn btn-primary btn-rounded btn-block" > 
+                                <i class="fa fa-info-circle"></i> 
+                                 {{ person.name }} 과 사건 {{event.name}} 를 매핑하시겠습니까?
+                            </a>
+                        </div>
+                    </div>         
+                {% endif %}  
+
                     <div class="row animated fadeInRight">
-                        <button type="submit" class="btn btn-primary btn-rounded btn-block" > 
-                            <i class="fa fa-info-circle"></i> 
-                             {{ person.name }} 과 사건 {{event.name}} 를 매핑하시겠습니까?
+                        <a class="btn btn-info btn-rounded btn-block" href="{% url 'records:add_event' person.id %}">
+                            <i class="fa fa-plus"></i> 
+                                새로운 사건 등록 
                         </a>
                     </div>
-                </div>         
-            {% endif %}  
-
-            <div class="wrapper wrapper-content">
-                <div class="row animated fadeInRight">
-                    <a class="btn btn-info btn-rounded btn-block" href="{% url 'records:add_event' person.id %}">
-                                    <i class="fa fa-plus"></i> 
-                                      새로운 사건 등록 
-                    </a>
                 </div>
-            </div>   
-
             </div>
         </form>
-
     </div>
 
     

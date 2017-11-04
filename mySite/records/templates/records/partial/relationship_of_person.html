@@ -1,5 +1,5 @@
 {% load static %}
-<div class="col-sm-3">
+<div class="col-lg-2 col-md-3 col-sm-4">
     <div class="no-padding">
         <a href="{% url 'records:person_detail' obj.pk %}">
             <img alt="image" width="100px" class="img-responsive" src="{% if obj.picture %}{{ obj.picture.url }}
@@ -10,16 +10,17 @@
 
         {# 해당 Person 본인 정보 #}
         <div class="media-body ">
-            <h3>
+            <h4>
                 <a href="{% url 'records:person_detail' obj.id %}">
                     <strong>{{ obj.name }}</strong> 
                 </a>
                 <a href="{% url 'records:person_relationship' obj.id %}">
                     <small>관계 {{ relation }} </small>
                 </a>
-            </h3>
+            </h4>
             
             <p><i class="fa fa-flag"></i> {{obj.nick_name}}</p>
+            <p>부:{{obj.get_father}} 모:{{obj.get_mother}}</p>
             {% if checkbox %}
                 <input type="checkbox" checked value="{{obj.id}}" name="person" class="checkbox checkbox-primary pull-right">
             {% endif %}

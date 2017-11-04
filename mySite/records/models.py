@@ -131,13 +131,20 @@ class Person(models.Model):
         except Exception:
             return None
 
+    def get_mother(self):
+        try:
+            return [relation.other for relation in Relationship.objects.
+                        select_related("other").filter(person=self, relationship='parent', ctype='어머니')][0]
+        except Exception:
+            return None
+
     def get_spouse(self):
         return [relation.other for relation in Relationship.objects.
             select_related("other").filter(person=self, relationship='spouse')]
 
     def get_children(self):
         return [relation.person for relation in Relationship.objects.select_related("person").
-                filter(other=self, relationship='parent').order_by('person__sex', 'person__birth_year')]
+                filter(other=self, relationship='parent').order_by('-person__sex', 'person__birth_year')]
 
     def get_sibling(self):
         try:
