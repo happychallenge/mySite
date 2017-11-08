@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 
 from os.path import dirname, abspath, join
 from django.core.urlresolvers import reverse_lazy
+from decouple import config
 
 # Build paths inside the project like this:  join(BASE_DIR, ...)
 BASE_DIR = dirname(dirname(dirname(abspath(__file__))))
@@ -22,7 +23,7 @@ BASE_DIR = dirname(dirname(dirname(abspath(__file__))))
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '!x+hsnfjpp(1+qsqjurz+1*i@xqa4wvt1ai=zkdia(m_!*vu#u'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
